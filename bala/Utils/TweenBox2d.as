@@ -1,4 +1,4 @@
-package bala.Utils
+﻿package bala.Utils
 {
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.b2Body;
@@ -22,11 +22,12 @@ package bala.Utils
 		public static var popup1:MovieClip;
 		public function TweenBox2d(_game:Game)
 		{
-			game = _game;
+			//pls work on this..
+			/*game = _game;
 			tweenObjj = new TempVals();
 			
 			popup1 = new popupMC1()
-			popup1.y = 30;
+			popup1.y = 30;*/
 		}
 		
 		

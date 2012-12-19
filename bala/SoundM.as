@@ -44,7 +44,7 @@
 		
 		//sounm
 		private function createSounds(){
-			snd_menu = new menu();
+			/*snd_menu = new menu();
 			snd_btn = new btn();
 			snd_bg1 = new bg1();
 			snd_lComplete = new lComplete();
@@ -55,7 +55,7 @@
 			snd_steel = new steel();
 			snd_glass = new glass();
 			snd_hdie = new hdie();
-			snd_edie = new edie();
+			snd_edie = new edie();*/
 			trace("created sounds...")
 		}
 		
