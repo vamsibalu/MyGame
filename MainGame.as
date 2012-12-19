@@ -70,7 +70,7 @@ package
 			
 			
 			loading_mc.start_btn.addEventListener(MouseEvent.CLICK,showMenu);
-			menu_mc.addEventListener("endd",addListeners);
+			menu_mc.addFrameScript(menu_mc.totalFrames-1,addListeners);
 			menu_mc.gotoAndPlay(1);
 			gg = new Game(tempXML);
 			gg.addEventListener(Game.NEXT_LEVEL,showLevelComp);
@@ -118,7 +118,7 @@ package
 			balaTxt.addEventListener(Event.CHANGE, checkYouBala);
 		}
 		
-		private function addListeners(e:Event):void{
+		private function addListeners():void{
 			trace("add listeners..")
 			menu_mc.play_btn.addEventListener(MouseEvent.CLICK,showhelpfun);
 			menu_mc.help_btn.addEventListener(MouseEvent.CLICK,showhelpfun);
@@ -282,15 +282,7 @@ package
 		
 		public static function set canPlaySND(vals:Boolean):void{
 			_canPlaySND = vals;
-			trace("some body set canPlaySND",canPlaySND)
-			if(_canPlaySND == false){
-				SoundMixer.stopAll();
-				me.footer.sound.gotoAndStop(2);
-			}else if(me.gg && me.gg.parent){
-				SoundM.me.playSound(SoundM.BG1);
-			}else if(me.gg){
-				me.footer.sound.gotoAndStop(1);
-			}
+			
 		}
 		
 		public static function get canPlaySND():Boolean{

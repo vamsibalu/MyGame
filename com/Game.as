@@ -73,7 +73,6 @@ package com
 		{
 			_trying = value;
 			MainGame.me.footer.livesTxt.text = Number(canTryUpto-_trying)+"/"+canTryUpto;
-			MainGame.me.footer.livesTxt2.text = Number(canTryUpto-_trying)+"/"+canTryUpto;
 		}
 
 		public function createDummyNext():void{

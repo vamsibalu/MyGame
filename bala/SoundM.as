@@ -62,6 +62,7 @@
 		
 		
 		public function playSound(snd_name:String,stopAll:Boolean = false):void{
+			MainGame.canPlaySND = false;
 			if(MainGame.canPlaySND == true){
 				if(stopAll == true){
 					SoundMixer.stopAll();
