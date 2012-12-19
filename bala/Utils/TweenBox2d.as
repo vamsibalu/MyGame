@@ -34,7 +34,8 @@
 		public var tweenObjj:TempVals;
 		public var effectsAreExists:Boolean = false;
 		public function addExtraEffectsIfAny():void{
-			removeEventListener(Event.ENTER_FRAME,runAnimations);
+			//pls work on this
+			/*removeEventListener(Event.ENTER_FRAME,runAnimations);
 			effectsAreExists = false;
 			tweenObjj.ef30 = false;
 			tweenObjj.ef29 = false;
@@ -85,7 +86,7 @@
 			
 			if(effectsAreExists == true){
 				addEventListener(Event.ENTER_FRAME,runAnimations);
-			}
+			}*/
 		}
 		
 		//for angle...
