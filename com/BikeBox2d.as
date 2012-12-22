@@ -43,6 +43,7 @@
 		public function BikeBox2d(_passWorld:b2World) {
 			// constructor code
 			passWorld = _passWorld
+			trace("passWorld=",passWorld);
 			// ************************ THE CAR ************************ //
 			var carShape:b2PolygonShape = new b2PolygonShape();
 			carShape.SetAsBox(carWidth/worldScale,carHeight/worldScale);
@@ -65,11 +66,9 @@
 			leftAxleContainerFixture.filter.groupIndex=-1;
 			leftAxleContainerFixture.shape=leftAxleContainerShape;
 			// ************************ RIGHT AXLE CONTAINER ************************ //
-			var rightAxleContainerShape:b2PolygonShape = new 
-				b2PolygonShape();
+			var rightAxleContainerShape:b2PolygonShape = new b2PolygonShape();
 			rightAxleContainerShape.SetAsOrientedBox(axleContainerWidth/worldScale,axleContainerHeight/worldScale,new b2Vec2(axleContainerDistance/worldScale,axleContainerDepth/worldScale),-axleAngle*degreesToRadians);
-			var rightAxleContainerFixture:b2FixtureDef = new 
-				b2FixtureDef();
+			var rightAxleContainerFixture:b2FixtureDef = new b2FixtureDef();
 			rightAxleContainerFixture.density=3;
 			rightAxleContainerFixture.friction=3;
 			rightAxleContainerFixture.restitution=0.3;
@@ -108,8 +107,7 @@
 			rightAxle.CreateFixture(rightAxleFixture);
 			rightAxle.SetPosition(new b2Vec2(carPosX/worldScale+axleContainerDistance/worldScale+axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians)));
 			// ************************ THE WHEELS ************************ //;
-			var wheelShape:b2CircleShape=new 
-				b2CircleShape(wheelRadius/worldScale);
+			var wheelShape:b2CircleShape=new b2CircleShape(wheelRadius/worldScale);
 			var wheelFixture:b2FixtureDef = new b2FixtureDef();
 			wheelFixture.density=1;
 			wheelFixture.friction=15;
@@ -154,13 +152,15 @@
 			rightAxlePrismaticJoint=passWorld.CreateJoint(rightAxlePrismaticJointDef) as b2PrismaticJoint;
 			rightAxlePrismaticJoint.SetMaxMotorForce(10);                         
 			rightAxlePrismaticJoint.SetMotorSpeed(10);      
-			addEventListener(Event.ENTER_FRAME,updateWorld);
-			stage.addEventListener(KeyboardEvent.KEY_DOWN,keyPressed);
-			stage.addEventListener(KeyboardEvent.KEY_UP,keyReleased);
-			
+			//addEventListener(Event.ENTER_FRAME,updateWorld);
+			addEventListener(Event.ADDED_TO_STAGE,added);
 			
 		}
 		
+		private function added(e:Event):void{
+			stage.addEventListener(KeyboardEvent.KEY_DOWN,keyPressed);
+			stage.addEventListener(KeyboardEvent.KEY_UP,keyReleased);
+		}
 		
 		private function keyPressed(e:KeyboardEvent):void {
 			switch (e.keyCode) {

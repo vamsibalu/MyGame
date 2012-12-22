@@ -63,7 +63,7 @@ package com
 				//trace("explosions parnte=",explosions[explosions.length-1].parent)
 			}
 			trying = 0;
-			//bike = new BikeBox2d(world);
+			bike = new BikeBox2d(world);
 			
 		}
 		
