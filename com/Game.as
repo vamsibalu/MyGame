@@ -45,6 +45,7 @@ package com
 		
 		//private var bgMC:MovieClip;
 		public var tweenBox:TweenBox2d;
+		private var bike:BikeBox2d;
 		public function Game(_dummyXML:XML = null)
 		{
 			super(_dummyXML);
@@ -62,6 +63,8 @@ package com
 				//trace("explosions parnte=",explosions[explosions.length-1].parent)
 			}
 			trying = 0;
+			//bike = new BikeBox2d(world);
+			
 		}
 		
 		public static function get trying():int

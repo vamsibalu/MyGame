@@ -245,7 +245,7 @@ package bala
 			db.SetDrawScale(ptm_ratio);
 			db.SetFillAlpha(1);
 			db.SetLineThickness(2);
-			db.SetFlags(b2DebugDraw.e_jointBit) // | b2DebugDraw.e_centerOfMassBit//b2DebugDraw.e_shapeBit//t|b2DebugDraw.e_shapeBit
+			db.SetFlags(b2DebugDraw.e_jointBit | b2DebugDraw.e_shapeBit) // | b2DebugDraw.e_centerOfMassBit//b2DebugDraw.e_shapeBit//t|b2DebugDraw.e_shapeBit
 			world.SetDebugDraw(db);
 		}
 		
