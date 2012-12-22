@@ -45,14 +45,14 @@ package com
 		
 		//private var bgMC:MovieClip;
 		public var tweenBox:TweenBox2d;
-		private var bike:BikeBox2d;
+		public var bike:BikeBox2d;
 		public function Game(_dummyXML:XML = null)
 		{
 			super(_dummyXML);
 			me = this;
 			myWorld = world;
 			addChild(sp);
-			this.addEventListener(MouseEvent.CLICK,shootEnemy);
+			//this.addEventListener(MouseEvent.CLICK,shootEnemy);  //we will add this for hero hand..
 			createDummyNext();
 			tweenBox = new TweenBox2d(this);
 			
@@ -63,21 +63,24 @@ package com
 				//trace("explosions parnte=",explosions[explosions.length-1].parent)
 			}
 			trying = 0;
-			bike = new BikeBox2d(world);
 			
+			addEventListener(Event.ADDED_TO_STAGE,added);
 		}
 		
+		private function added(e:Event):void{
+			
+		}
 		public static function get trying():int
 		{
 			return _trying;
 		}
-
+		
 		public static function set trying(value:int):void
 		{
 			_trying = value;
 			MainGame.me.footer.livesTxt.text = Number(canTryUpto-_trying)+"/"+canTryUpto;
 		}
-
+		
 		public function createDummyNext():void{
 			if(MainGame.testing==true){
 				testingnext = new nextdummy();
@@ -93,6 +96,9 @@ package com
 			traceAllbullets();
 			checkHeroPos();
 			removeWasteBodies();
+			if(bike){
+				bike.updateBike();
+			}
 		}
 		
 		public override function loadMyLevelForPreview(_levelAry:Array):void{
@@ -110,6 +116,7 @@ package com
 			}
 			SoundM.me.playSound(SoundM.BG1,true);
 			tweenBox.addExtraEffectsIfAny();
+			bike = new BikeBox2d(world);
 		}
 		
 		private var dispatched:Boolean =  false;
@@ -235,37 +242,37 @@ package com
 		
 		/*public function doAmmoCheck() : void
 		{
-			var _loc_1:Boolean = false;
-			var _loc_2:int = 0;
-			if (this.ammoArray[this.currentWeapon] == 0)
-			{
-				_loc_1 = false;
-				_loc_2 = 1;
-				while (_loc_2 < this.ammoArray.length)
-				{
-					
-					if (this.ammoArray[_loc_2] != 0)
-					{
-						_loc_1 = true;
-						//this.equipWeapon(_loc_2);
-						break;
-					}
-					_loc_2++;
-				}
-				if (!_loc_1)
-				{
-					trace("All ammo has been used up, wait to end level");
-					heroBody.GetUserData().arm.weapon.gotoAndStop("empty");
-					//this.startChecking();
-				}
-			}
-			return;
+		var _loc_1:Boolean = false;
+		var _loc_2:int = 0;
+		if (this.ammoArray[this.currentWeapon] == 0)
+		{
+		_loc_1 = false;
+		_loc_2 = 1;
+		while (_loc_2 < this.ammoArray.length)
+		{
+		
+		if (this.ammoArray[_loc_2] != 0)
+		{
+		_loc_1 = true;
+		//this.equipWeapon(_loc_2);
+		break;
+		}
+		_loc_2++;
+		}
+		if (!_loc_1)
+		{
+		trace("All ammo has been used up, wait to end level");
+		heroBody.GetUserData().arm.weapon.gotoAndStop("empty");
+		//this.startChecking();
+		}
+		}
+		return;
 		}
 		
 		public function updateHealthDisplay(param1:MovieClip) : void
 		{
-			param1.healthBar.bar.scaleX = param1.health / 100;
-			return;
+		param1.healthBar.bar.scaleX = param1.health / 100;
+		return;
 		}*/
 		
 		private function removeWasteBodies():void{

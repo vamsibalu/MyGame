@@ -14,6 +14,7 @@
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.ui.Keyboard;
 	
 	public class BikeBox2d extends MovieClip{
 		
@@ -40,6 +41,7 @@
 		private var wheelRadius:Number=25;
 		private const degreesToRadians:Number=0.0174532925;
 		private var passWorld:b2World;
+		public var motorPower:Number = 10;
 		public function BikeBox2d(_passWorld:b2World) {
 			// constructor code
 			passWorld = _passWorld
@@ -56,6 +58,8 @@
 			var carBodyDef:b2BodyDef = new b2BodyDef();
 			carBodyDef.position.Set(carPosX/worldScale,carPosY/worldScale);
 			carBodyDef.type=b2Body.b2_dynamicBody;
+			carBodyDef.userData = new BikeBody_MC();
+			Game.me.addChild(carBodyDef.userData);
 			// ************************ LEFT AXLE CONTAINER ************************ //
 			var leftAxleContainerShape:b2PolygonShape = new b2PolygonShape();
 			leftAxleContainerShape.SetAsOrientedBox(axleContainerWidth/worldScale,axleContainerHeight/worldScale,new b2Vec2(-axleContainerDistance/worldScale,axleContainerDepth/worldScale),axleAngle*degreesToRadians);
@@ -117,9 +121,15 @@
 			var wheelBodyDef:b2BodyDef = new b2BodyDef();
 			wheelBodyDef.type=b2Body.b2_dynamicBody;
 			wheelBodyDef.position.Set(carPosX/worldScale-axleContainerDistance/worldScale-2*axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+2*axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians));
+			wheelBodyDef.userData = new Wheel_MC();
+			Game.me.addChild(wheelBodyDef.userData);
+			
 			var leftWheel:b2Body=passWorld.CreateBody(wheelBodyDef);
 			leftWheel.CreateFixture(wheelFixture);
 			wheelBodyDef.position.Set(carPosX/worldScale+axleContainerDistance/worldScale+2*axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+2*axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians));
+			wheelBodyDef.userData = new Wheel_MC();
+			Game.me.addChild(wheelBodyDef.userData);
+			
 			var rightWheel:b2Body=passWorld.CreateBody(wheelBodyDef);
 			rightWheel.CreateFixture(wheelFixture);
 			// ************************ REVOLUTE JOINTS ************************ //
@@ -132,7 +142,7 @@
 			rightWheelRevoluteJointDef.Initialize(rightWheel,rightAxle,rightWheel.GetWorldCenter());
 			rightWheelRevoluteJointDef.enableMotor=true;
 			rightWheelRevoluteJoint=passWorld.CreateJoint(rightWheelRevoluteJointDef) as b2RevoluteJoint;
-			rightWheelRevoluteJoint.SetMaxMotorTorque(10);
+			rightWheelRevoluteJoint.SetMaxMotorTorque(motorPower);
 			// ************************ PRISMATIC JOINTS ************************ //
 			var leftAxlePrismaticJointDef:b2PrismaticJointDef=new b2PrismaticJointDef();
 			leftAxlePrismaticJointDef.lowerTranslation=0;
@@ -141,7 +151,7 @@
 			leftAxlePrismaticJointDef.enableMotor=true;
 			leftAxlePrismaticJointDef.Initialize(car,leftAxle,leftAxle.GetWorldCenter(), new b2Vec2(-Math.cos((90-axleAngle)*degreesToRadians),Math.sin((90-axleAngle)*degreesToRadians)));
 			leftAxlePrismaticJoint=passWorld.CreateJoint(leftAxlePrismaticJointDef) as b2PrismaticJoint;
-			leftAxlePrismaticJoint.SetMaxMotorForce(10);                         
+			leftAxlePrismaticJoint.SetMaxMotorForce(motorPower);                         
 			leftAxlePrismaticJoint.SetMotorSpeed(10);                         			
 			var rightAxlePrismaticJointDef:b2PrismaticJointDef=new b2PrismaticJointDef();
 			rightAxlePrismaticJointDef.lowerTranslation=0;
@@ -150,39 +160,36 @@
 			rightAxlePrismaticJointDef.enableMotor=true;
 			rightAxlePrismaticJointDef.Initialize(car,rightAxle,rightAxle.GetWorldCenter(), new b2Vec2(Math.cos((90-axleAngle)*degreesToRadians),Math.sin((90-axleAngle)*degreesToRadians)));
 			rightAxlePrismaticJoint=passWorld.CreateJoint(rightAxlePrismaticJointDef) as b2PrismaticJoint;
-			rightAxlePrismaticJoint.SetMaxMotorForce(10);                         
+			rightAxlePrismaticJoint.SetMaxMotorForce(motorPower);                         
 			rightAxlePrismaticJoint.SetMotorSpeed(10);      
 			//addEventListener(Event.ENTER_FRAME,updateWorld);
-			addEventListener(Event.ADDED_TO_STAGE,added);
-			
+			//addEventListener(Event.ADDED_TO_STAGE,added);
+			trace("bike added..")
 		}
 		
-		private function added(e:Event):void{
-			stage.addEventListener(KeyboardEvent.KEY_DOWN,keyPressed);
-			stage.addEventListener(KeyboardEvent.KEY_UP,keyReleased);
-		}
-		
-		private function keyPressed(e:KeyboardEvent):void {
+		public function keyDown(e:KeyboardEvent):void {
 			switch (e.keyCode) {
-				case 37 :
+				case Keyboard.LEFT :
 					left=true;
+					trace("left keyPressed")
 					break;
-				case 39 :
+				case Keyboard.RIGHT :
 					right=true;
 					break;
 			}
 		}
-		private function keyReleased(e:KeyboardEvent):void {
+		public function keyUp(e:KeyboardEvent):void {
 			switch (e.keyCode) {
-				case 37 :
+				case Keyboard.LEFT :
 					left=false;
+					trace("left")
 					break;
-				case 39 :
+				case Keyboard.RIGHT :
 					right=false;
 					break;
 			}
 		}
-		private function updateWorld(e:Event):void {
+		public function updateBike(e:Event=null):void {
 			if (left) {
 				motorSpeed+=0.5;
 			}
@@ -195,11 +202,8 @@
 			}
 			leftWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
 			rightWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
-			passWorld.Step(1/30,10,10);
-			passWorld.ClearForces();
-			passWorld.DrawDebugData();
 		}
-
+		
 	}
 	
 }

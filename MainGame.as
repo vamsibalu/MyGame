@@ -76,6 +76,7 @@ package
 			gg.addEventListener(Game.NEXT_LEVEL,showLevelComp);
 			gg.addEventListener(Game.LEVEL_FAIL,levelFail);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN,keyDownf);
+			stage.addEventListener(KeyboardEvent.KEY_UP,keyUpf);
 			BodyContacts.setGame(gg);
 			sndManager = new SoundM();
 		}
@@ -139,8 +140,8 @@ package
 			var popup11:PopUpmc2 = new PopUpmc2();
 			popup11.x = 129.95;
 			popup11.y = 199.25;
-			addChild(popup11);
-			popup11.gotoAndPlay(2);
+			//addChild(popup11);
+			//popup11.gotoAndPlay(2);
 		}
 		
 		private function showLevelComp(e:Event):void{
@@ -265,10 +266,18 @@ package
 			switch(e.keyCode)
 			{
 				case Keyboard.R:
-				{
 					resetFun();
 					break;
-				}
+			}
+			
+			if(gg && gg.bike){
+				gg.bike.keyDown(e);
+			}
+		}
+		
+		private function keyUpf(e:KeyboardEvent):void{
+			if(gg && gg.bike){
+				gg.bike.keyUp(e);
 			}
 		}
 		

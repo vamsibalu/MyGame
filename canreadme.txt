@@ -18,3 +18,13 @@ yes kranthi we are planning to rotate gun along with hand while driving..
 i'am thinking to stuff like Zombies can also attack hero like throwing sharp nifes rocks ...
 Hero should bend to protect from the nifes..
 
+
+//bala some important and usefull git commands..
+
+git checkout .   (this will reset you uncomminted changes..)
+
+git reset --hard origin/master    (to reset uncommited and commited changes and got back to origin master)
+
+
+note..
+ avoid multiple developers working on same .fla file  (no problem for any other files)

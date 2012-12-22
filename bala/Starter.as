@@ -123,12 +123,12 @@ package bala{
 		public function HostGame(e:MouseEvent)
 		{
 			trace("hosted")
-			var urld:URLRequest = new URLRequest("http://www.gameseverytime.com/zombiesdiehard.zip");
+			var urld:URLRequest = new URLRequest("http://www.as3bala.in/");
 			navigateToURL(urld,"_blank");
 		}
 		
 		public function morefun(e:MouseEvent = null):void{
-			navigateToURL(new URLRequest("http://www.slungo.com/index.php?rdmid=57dfbdee0f704d0544b59edefe2de667&utm_source=plemgames&utm_campaign=zombiediehard2"),"blank");
+			navigateToURL(new URLRequest("http://www.as3bala.in/"),"blank");
 		}
 		
 	}
