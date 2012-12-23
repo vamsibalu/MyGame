@@ -11,6 +11,8 @@
 	import Box2D.Dynamics.b2FixtureDef;
 	import Box2D.Dynamics.b2World;
 	
+	import bala.BaseWorld;
+	
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
@@ -46,6 +48,7 @@
 		public function BikeBox2d(_passWorld:b2World) {
 			// constructor code
 			passWorld = _passWorld;
+			worldScale = BaseWorld.ptm_ratio;
 			trace("passWorld=",passWorld);
 			//Bala dynamic pos and size from bikeBluePrint..
 			carPosX = bikeBluePrint.body.x;
@@ -126,13 +129,14 @@
 			wheelFixture.shape=wheelShape;
 			var wheelBodyDef:b2BodyDef = new b2BodyDef();
 			wheelBodyDef.type=b2Body.b2_dynamicBody;
-			//bala 1st wheel..
+			//bala 1st wheel..wheelback-wb
 			wheelBodyDef.position.Set(carPosX/worldScale-axleContainerDistance/worldScale-2*axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+2*axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians));
 			wheelBodyDef.userData = bikeBluePrint.wb;
+			wheelBodyDef.userData.alpha = .4
 			Game.me.addChild(wheelBodyDef.userData);
 			var leftWheel:b2Body=passWorld.CreateBody(wheelBodyDef);
 			leftWheel.CreateFixture(wheelFixture);
-			//bala 2nd wheel..
+			//bala 2nd wheel..wheelfront-wf
 			wheelBodyDef.position.Set(carPosX/worldScale+axleContainerDistance/worldScale+2*axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+2*axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians));
 			wheelBodyDef.userData =bikeBluePrint.wf;
 			Game.me.addChild(wheelBodyDef.userData);
