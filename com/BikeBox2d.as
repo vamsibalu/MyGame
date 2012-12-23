@@ -42,10 +42,15 @@
 		private const degreesToRadians:Number=0.0174532925;
 		private var passWorld:b2World;
 		public var motorPower:Number = 10;
+		private var bikeBluePrint:MovieClip = new BikeBluePrint();
 		public function BikeBox2d(_passWorld:b2World) {
 			// constructor code
-			passWorld = _passWorld
+			passWorld = _passWorld;
 			trace("passWorld=",passWorld);
+			//Bala dynamic pos and size from bikeBluePrint..
+			carPosX = bikeBluePrint.body.x;
+			carPosY = bikeBluePrint.body.y;
+			trace("dynamci bike poses=",carPosX,carPosY)
 			// ************************ THE CAR ************************ //
 			var carShape:b2PolygonShape = new b2PolygonShape();
 			carShape.SetAsBox(carWidth/worldScale,carHeight/worldScale);
@@ -59,6 +64,7 @@
 			carBodyDef.position.Set(carPosX/worldScale,carPosY/worldScale);
 			carBodyDef.type=b2Body.b2_dynamicBody;
 			carBodyDef.userData = new BikeBody_MC();
+			carBodyDef.userData.alpha = .5
 			Game.me.addChild(carBodyDef.userData);
 			// ************************ LEFT AXLE CONTAINER ************************ //
 			var leftAxleContainerShape:b2PolygonShape = new b2PolygonShape();
@@ -120,18 +126,19 @@
 			wheelFixture.shape=wheelShape;
 			var wheelBodyDef:b2BodyDef = new b2BodyDef();
 			wheelBodyDef.type=b2Body.b2_dynamicBody;
+			//bala 1st wheel..
 			wheelBodyDef.position.Set(carPosX/worldScale-axleContainerDistance/worldScale-2*axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+2*axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians));
-			wheelBodyDef.userData = new Wheel_MC();
+			wheelBodyDef.userData = bikeBluePrint.wb;
 			Game.me.addChild(wheelBodyDef.userData);
-			
 			var leftWheel:b2Body=passWorld.CreateBody(wheelBodyDef);
 			leftWheel.CreateFixture(wheelFixture);
+			//bala 2nd wheel..
 			wheelBodyDef.position.Set(carPosX/worldScale+axleContainerDistance/worldScale+2*axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+2*axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians));
-			wheelBodyDef.userData = new Wheel_MC();
+			wheelBodyDef.userData =bikeBluePrint.wf;
 			Game.me.addChild(wheelBodyDef.userData);
-			
 			var rightWheel:b2Body=passWorld.CreateBody(wheelBodyDef);
 			rightWheel.CreateFixture(wheelFixture);
+			
 			// ************************ REVOLUTE JOINTS ************************ //
 			var leftWheelRevoluteJointDef:b2RevoluteJointDef=new b2RevoluteJointDef();
 			leftWheelRevoluteJointDef.Initialize(leftWheel,leftAxle,leftWheel.GetWorldCenter());
