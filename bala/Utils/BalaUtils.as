@@ -10,6 +10,7 @@
 	import flash.geom.Point;
 	import flash.text.AntiAliasType;
 	import flash.text.Font;
+	import flash.text.StaticText;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
@@ -111,11 +112,6 @@
 			return point;
 		}
 		
-		public function randomNumber(param1:int, param2:int) : Number
-		{
-			return Math.floor(Math.random() * (1 + param2 - param1)) + param1;
-		}// end function
-		
 		public function addSlow(obj:MovieClip,time:Number,_delay:Number):void{
 			obj.alpha = 0;
 			obj.gotoAndStop(1);
@@ -200,6 +196,42 @@
 				}
 			}
 			return mcc;
+		}
+		
+		public static function average(... args) : Number{
+			var sum:Number = 0;
+			for (var i:uint = 0; i < args.length; i++) {
+				sum += args[i];
+			}
+			return (sum / args.length);
+		}
+		
+		//Number utils..
+		public function randomNumber(param1:int, param2:int) : Number
+		{
+			return Math.floor(Math.random() * (1 + param2 - param1)) + param1;
+		}// end function
+		
+		public static function randomWithinRange(min:Number, max:Number):Number {
+			return min + (Math.random() * (max - min));
+		}
+		
+		public static function randomIntegerWithinRange(min:int, max:int):int {
+			return Math.floor(Math.random() * (1 + max - min) + min);
+		}
+		
+		public static function isEven(value:Number):Boolean {
+			return (value & 1) == 0;
+		}
+		
+		public static function isOdd(value:Number):Boolean {
+			return !BalaUtils.isEven(value);
+		}
+		
+		public static function roundDecimalToPlace(value:Number, place:uint):Number {
+			var p:Number = Math.pow(10, place);
+			
+			return Math.round(value * p) / p;
 		}
 	}
 }

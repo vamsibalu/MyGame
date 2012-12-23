@@ -12,10 +12,12 @@
 	import Box2D.Dynamics.b2World;
 	
 	import bala.BaseWorld;
+	import bala.Utils.BalaUtils;
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.geom.Point;
 	import flash.ui.Keyboard;
 	
 	public class BikeBox2d extends MovieClip{
@@ -35,7 +37,11 @@
 		private var carPosY:Number=250;
 		private var carWidth:Number=45;
 		private var carHeight:Number=10;
-		private var axleContainerDistance:Number=30;
+		
+		private var axleContainerDistance:Number=60;
+		private var axleContainerDistance_Wb:Number=0;
+		private var axleContainerDistance_Wf:Number=0;
+		
 		private var axleContainerWidth:Number=5;
 		private var axleContainerHeight:Number=20;
 		private var axleContainerDepth:Number=10;
@@ -46,14 +52,24 @@
 		public var motorPower:Number = 10;
 		private var bikeBluePrint:MovieClip = new BikeBluePrint();
 		public function BikeBox2d(_passWorld:b2World) {
-			// constructor code
+			// Bala constructor code to setup dynamic values..
 			passWorld = _passWorld;
 			worldScale = BaseWorld.ptm_ratio;
-			trace("passWorld=",passWorld);
-			//Bala dynamic pos and size from bikeBluePrint..
+			axleContainerDistance_Wb = Point.distance(new Point(bikeBluePrint.wb.x,0),new Point(bikeBluePrint.body.x,0))
+			axleContainerDistance_Wf = Point.distance(new Point(bikeBluePrint.wf.x,0),new Point(bikeBluePrint.body.x,0))
+			axleContainerDistance = BalaUtils.average(axleContainerDistance_Wb,axleContainerDistance_Wf);
+			trace("axleContainerDistance=",axleContainerDistance);
+			
 			carPosX = bikeBluePrint.body.x;
 			carPosY = bikeBluePrint.body.y;
-			trace("dynamci bike poses=",carPosX,carPosY)
+			
+			var avrgWheelLenFromBody:Number = BalaUtils.average(bikeBluePrint.wb.y,bikeBluePrint.wf.y);
+			axleContainerHeight = Point.distance(new Point(0,bikeBluePrint.wb.y),new Point(0,carPosY))/2;
+			//Bala dynamic pos and size from bikeBluePrint..
+			if(axleContainerHeight<16){
+				axleContainerHeight = 16;
+			}
+			trace("axleContainerHeight=",axleContainerHeight,carPosY,bikeBluePrint.wb.y)
 			// ************************ THE CAR ************************ //
 			var carShape:b2PolygonShape = new b2PolygonShape();
 			carShape.SetAsBox(carWidth/worldScale,carHeight/worldScale);
