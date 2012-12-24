@@ -52,7 +52,7 @@ package com
 			me = this;
 			myWorld = world;
 			addChild(sp);
-			//this.addEventListener(MouseEvent.CLICK,shootEnemy);  //we will add this for hero hand..
+			this.addEventListener(MouseEvent.CLICK,shootEnemy);  //we will add this for hero hand..
 			createDummyNext();
 			tweenBox = new TweenBox2d(this);
 			
@@ -99,6 +99,8 @@ package com
 			if(bike){
 				bike.updateBike();
 			}
+			
+			forArrowsCheck() //bala added for arrows
 		}
 		
 		public override function loadMyLevelForPreview(_levelAry:Array):void{
@@ -221,16 +223,16 @@ package com
 			if(e.target is SimpleButton || e.target is sndbtn || e.target is FooterMC){
 				trace("don't shoot..");
 			}else{
-				var bul:b2Body = createBullet();
+				/*var bul:b2Body = createBullet();
 				addChild(new BulletTracer(bul));
 				if(heroBody){
 					var sxx:Number = heroBody.GetUserData().scaleX;
 					heroBody.GetUserData().arm.weapon.beffect.visible = true;
 					heroBody.GetUserData().arm.weapon.beffect.play();
 					bul.ApplyImpulse(new b2Vec2(sxx* Math.cos(weaponAngle) * power, sxx* Math.sin(weaponAngle) * power), body.GetPosition());
-				}
-				
-				SoundM.me.playSound(SoundM.SHOOT);
+				}*/
+				addArrow(); //added for arrow bala
+				//SoundM.me.playSound(SoundM.SHOOT);
 			}
 		}
 		
@@ -279,6 +281,35 @@ package com
 			while(tempBodiesTobeRemoved.length>0){
 				world.DestroyBody(tempBodiesTobeRemoved[0]);
 				tempBodiesTobeRemoved.shift();
+			}
+		}
+		
+		//for arrows bala
+		private function forArrowsCheck():void{
+			for (var i:Number=arrowVector.length-1; i>=0; i--) {
+				var body:b2Body=arrowVector[i];
+				if (body.GetType()==b2Body.b2_dynamicBody) {
+					if (! body.GetUserData().freeFlight) {
+						var flyingAngle:Number=Math.atan2(body.GetLinearVelocity().y,body.GetLinearVelocity().x);
+						body.SetAngle(flyingAngle);
+					}
+				}
+				else {
+					arrowVector.splice(i,1);
+					body.SetBullet(false);
+					body.GetUserData().follow=false;
+				}
+				if (body.GetUserData().follow) {
+					var posX:Number=body.GetPosition().x*ptm_ratio;
+					posX=stage.stageWidth/2-posX;
+					if (posX>0) {
+						posX=0;
+					}
+					if (posX<-640) {
+						posX=-640;
+					}
+					x=posX;
+				}
 			}
 		}
 		

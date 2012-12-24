@@ -500,33 +500,40 @@
 		}
 		
 		
-		/*public function findBodyAtPoint(_mouseXX:Number,_mouseYY:Number):b2Body{
-		var yourBody:b2Body;    
-		var mVec:b2Vec2 = new b2Vec2(_mouseXX / ptm_ratio, mouseY / ptm_ratio);
+		//for arrows bala
+		public var arrowVector:Vector.<b2Body>=new Vector.<b2Body>();
 		
-		
-		//Check to see if there's a body under the mouse cursor.
-		var node:b2Body = world.GetBodyList();   
-		var done:Boolean = false;
-		
-		if (node)
-		{
-		while (node && !done)
-		{
-		if (node.GetFixtureList())
-		{
-		if (node.GetFixtureList().TestPoint(mVec))
-		{
-		yourBody = node;
-		//Set your body to active here:               
-		done = true;
+		protected function addArrow():void {
+			var angle:Number=Math.atan2(mouseY-240,mouseX-50);
+			var vertices:Vector.<b2Vec2>=new Vector.<b2Vec2>();
+			vertices.push(new b2Vec2(-1.4,0));
+			vertices.push(new b2Vec2(0,-0.1));
+			vertices.push(new b2Vec2(0.6,0));
+			vertices.push(new b2Vec2(0,0.1));
+			var bodyDef:b2BodyDef= new b2BodyDef();
+			bodyDef.position.Set(50/ptm_ratio,240/ptm_ratio);
+			bodyDef.type=b2Body.b2_dynamicBody;
+			var udata:MovieClip = new MovieClip();
+			udata.name = "arrow";
+			udata.freeFlight = false;
+			udata.follow = true;
+			bodyDef.userData = udata; //{name:"arrow",freeFlight:false,follow:true};
+			bodyDef.bullet=true;
+			var polygonShape:b2PolygonShape = new b2PolygonShape();
+			polygonShape.SetAsVector(vertices,4);
+			var fixtureDef:b2FixtureDef = new b2FixtureDef();
+			fixtureDef.shape=polygonShape;
+			fixtureDef.density=1;
+			fixtureDef.friction=0.5;
+			fixtureDef.restitution=0.5;
+			var body:b2Body=world.CreateBody(bodyDef);
+			body.CreateFixture(fixtureDef);
+			body.SetLinearVelocity(new b2Vec2(30*Math.cos(angle),30*Math.sin(angle)));
+			body.SetAngle(angle);
+			for (var i:Number=0; i<arrowVector.length; i++) {
+				arrowVector[i].GetUserData().follow=false;
+			}
+			arrowVector.push(body);
 		}
-		}
-		
-		node = node.GetNext();
-		}
-		}
-		return yourBody;
-		}*/
 	}
 }

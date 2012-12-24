@@ -1,6 +1,10 @@
 ﻿package bala
 {
+	import Box2D.Collision.b2Manifold;
+	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Contacts.b2Contact;
+	import Box2D.Dynamics.Joints.b2JointEdge;
+	import Box2D.Dynamics.Joints.b2WeldJointDef;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2ContactListener;
 	
@@ -91,6 +95,67 @@
 				
 			}
 		}
+		
+		
+		
+		//for arrow Hit Bala
+		override public function PreSolve(contact:b2Contact, oldManifold:b2Manifold):void {
+			var contactPoint:b2Vec2;
+			var weldJointDef:b2WeldJointDef;
+			if (contact.IsTouching()) {
+				var bodyA:b2Body=contact.GetFixtureA().GetBody();
+				var bodyB:b2Body=contact.GetFixtureB().GetBody();
+				var objA:Object=bodyA.GetUserData();
+				var objB:Object=bodyB.GetUserData();
+				if (objA.name=="arrow"&&objB.name=="arrow") {
+					for (var j:b2JointEdge=bodyA.GetJointList(); j; j=j.next) {
+						bodyA.GetWorld().DestroyJoint(j.joint);
+					}
+					for (j=bodyB.GetJointList(); j; j=j.next) {
+						bodyB.GetWorld().DestroyJoint(j.joint);
+					}
+				}
+				if (objA.name=="notmoving"&&objB.name=="arrow") {
+					if (! objB.freeFlight) {
+						weldJointDef = new b2WeldJointDef();
+						weldJointDef.Initialize(bodyB,bodyA,bodyA.GetWorldCenter());
+						bodyB.GetWorld().CreateJoint(weldJointDef);
+					}
+				}
+				if (objB.name=="notmoving"&&objA.name=="arrow") {
+					if (! objA.freeFlight) {
+						weldJointDef = new b2WeldJointDef();
+						weldJointDef.Initialize(bodyA,bodyB,bodyB.GetWorldCenter());
+						bodyA.GetWorld().CreateJoint(weldJointDef);
+					}
+				}
+				if (objA.name=="enemy"&&objB.name=="arrow") {
+					contactPoint=contact.GetManifold().m_points[0].m_localPoint;
+					if (! objB.freeFlight&&Math.round(contactPoint.x*10)==6) {
+						weldJointDef = new b2WeldJointDef();
+						weldJointDef.Initialize(bodyB,bodyA,bodyA.GetWorldCenter());
+						bodyB.GetWorld().CreateJoint(weldJointDef);
+					}
+				}
+				if (objB.name=="enemy"&&objA.name=="arrow") {
+					contactPoint=contact.GetManifold().m_points[0].m_localPoint;
+					if (! objA.freeFlight&&Math.round(contactPoint.x*10)==6) {
+						weldJointDef = new b2WeldJointDef();
+						weldJointDef.Initialize(bodyA,bodyB,bodyB.GetWorldCenter());
+						bodyA.GetWorld().CreateJoint(weldJointDef);
+					}
+				}
+				if (objB.name=="arrow") {
+					objB.freeFlight=true;
+				}
+				if (objA.name=="arrow") {
+					objA.freeFlight=true;
+				}
+			}
+		}
+		
+		
+		//add anything
 	}
 	
 }
