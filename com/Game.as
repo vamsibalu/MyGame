@@ -209,7 +209,7 @@ package com
 				}
 				
 				heroBody.GetUserData().arm.rotation = (this.weaponAngle * RadtoDeg -  heroBody.GetUserData().rotation) *  heroBody.GetUserData().scaleX;
-				heroBody.GetUserData().hamboHead.rotation = (this.weaponAngle * RadtoDeg -  heroBody.GetUserData().rotation) *  heroBody.GetUserData().scaleX / 2;
+				//heroBody.GetUserData().hamboHead.rotation = (this.weaponAngle * RadtoDeg -  heroBody.GetUserData().rotation) *  heroBody.GetUserData().scaleX / 2;
 				
 				//trace("hero rotation=",heroBody.GetAngle(),heroBody.GetAngularVelocity(),heroBody.GetAngularDamping())
 				/*if(heroBody.GetAngle()>2 || heroBody.GetAngle()<-2){
@@ -311,6 +311,35 @@ package com
 					x=posX;
 				}
 			}
+		}
+		
+		private function cameraMovement():void{
+			var pos_x:Number;
+			var pos_y:Number;
+			
+			if (heroBody) {
+				pos_x=heroBody.GetWorldCenter().x*ptm_ratio;
+				pos_y=heroBody.GetWorldCenter().y*ptm_ratio;
+			} else {
+				//pos_x=the_cannonball_itself.GetWorldCenter().x*world_scale;
+				//pos_y=the_cannonball_itself.GetWorldCenter().y*world_scale;
+			}
+			pos_x=stage.stageWidth/2-pos_x;
+			if (pos_x<0-4500) {
+				pos_x=-4500;
+			}
+			if (pos_x>0) {
+				pos_x=0;
+			}
+			x=pos_x;
+			pos_y=stage.stageHeight/2-pos_y;
+			if (pos_y<0-15) {
+				pos_y=-15;
+			}
+			if (pos_y>285) {
+				pos_y=285;
+			}
+			y=pos_y;
 		}
 		
 	}
