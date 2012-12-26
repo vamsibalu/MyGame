@@ -18,6 +18,7 @@ package com
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.utils.Timer;
 	
 	public class Game extends BalaBaseGame
@@ -92,7 +93,7 @@ package com
 		
 		public override function renderGame(e:Event):void{
 			super.renderGame(e);
-			updateHand();
+			updateGun()
 			traceAllbullets();
 			checkHeroPos();
 			removeWasteBodies();
@@ -192,32 +193,53 @@ package com
 			}
 		}
 		
-		public function updateHand() : void
+		/*public function updateHand() : void
 		{
-			if(heroBody && heroBody.GetUserData()){
-				var diffx:Number =  heroBody.GetUserData().x - mouseX;
-				var diffy:Number =  heroBody.GetUserData().y - mouseY;
-				this.weaponAngle = Math.atan2(-diffy, -diffx);
-				if (mouseX <  heroBody.GetUserData().x)
+		//if(heroBody && heroBody.GetUserData()){
+		var diffx:Number =  heroBody.GetUserData().x - mouseX;
+		var diffy:Number =  heroBody.GetUserData().y - mouseY;
+		this.weaponAngle = Math.atan2(-diffy, -diffx);
+		if (mouseX <  heroBody.GetUserData().x)
+		{
+		heroBody.GetUserData().scaleX = -1;
+		this.weaponAngle = Math.atan2(diffy, diffx);
+		}
+		else
+		{
+		heroBody.GetUserData().scaleX = 1;
+		}
+		
+		heroBody.GetUserData().arm.rotation = (this.weaponAngle * RadtoDeg -  heroBody.GetUserData().rotation) *  heroBody.GetUserData().scaleX;
+		//heroBody.GetUserData().hamboHead.rotation = (this.weaponAngle * RadtoDeg -  heroBody.GetUserData().rotation) *  heroBody.GetUserData().scaleX / 2;
+		
+		//trace("hero rotation=",heroBody.GetAngle(),heroBody.GetAngularVelocity(),heroBody.GetAngularDamping())
+		if(heroBody.GetAngle()>2 || heroBody.GetAngle()<-2){
+		heroBody.SetAngle(0);
+		//trace("setting hero angle to 0",heroBody.GetAngle());
+		}
+		//}
+		}*/
+		
+		public function updateGun():void{
+			if(BikeBox2d.me && BikeBox2d.me.bikeBody && BikeBox2d.me.bikeBody.GetUserData().hand){
+				var handPP:Point = BalaUtils.localToLocal(BikeBox2d.me.bikeBody.GetUserData(),this,new Point(BikeBox2d.me.bikeBody.GetUserData().hand.x,BikeBox2d.me.bikeBody.GetUserData().hand.y));
+				var diffx:Number =  handPP.x - mouseX;
+				var diffy:Number =  handPP.y - mouseY;
+				weaponAngle = Math.atan2(-diffy, -diffx);
+				if (mouseX <  handPP.x)
 				{
-					heroBody.GetUserData().scaleX = -1;
-					this.weaponAngle = Math.atan2(diffy, diffx);
+					//heroBody.GetUserData().scaleX = -1;
+					//weaponAngle = Math.atan2(diffy, diffx);
 				}
 				else
 				{
-					heroBody.GetUserData().scaleX = 1;
+					//heroBody.GetUserData().scaleX = 1;
 				}
 				
-				heroBody.GetUserData().arm.rotation = (this.weaponAngle * RadtoDeg -  heroBody.GetUserData().rotation) *  heroBody.GetUserData().scaleX;
-				//heroBody.GetUserData().hamboHead.rotation = (this.weaponAngle * RadtoDeg -  heroBody.GetUserData().rotation) *  heroBody.GetUserData().scaleX / 2;
-				
-				//trace("hero rotation=",heroBody.GetAngle(),heroBody.GetAngularVelocity(),heroBody.GetAngularDamping())
-				/*if(heroBody.GetAngle()>2 || heroBody.GetAngle()<-2){
-				heroBody.SetAngle(0);
-				//trace("setting hero angle to 0",heroBody.GetAngle());
-				}*/
+				BikeBox2d.me.bikeBody.GetUserData().hand.rotation = (weaponAngle * RadtoDeg -  BikeBox2d.me.bikeBody.GetUserData().rotation) *  BikeBox2d.me.bikeBody.GetUserData().scaleX;
 			}
-		}// end function
+		}
+		
 		
 		public function shootEnemy(e:MouseEvent):void{
 			if(e.target is SimpleButton || e.target is sndbtn || e.target is FooterMC){
@@ -226,10 +248,10 @@ package com
 				/*var bul:b2Body = createBullet();
 				addChild(new BulletTracer(bul));
 				if(heroBody){
-					var sxx:Number = heroBody.GetUserData().scaleX;
-					heroBody.GetUserData().arm.weapon.beffect.visible = true;
-					heroBody.GetUserData().arm.weapon.beffect.play();
-					bul.ApplyImpulse(new b2Vec2(sxx* Math.cos(weaponAngle) * power, sxx* Math.sin(weaponAngle) * power), body.GetPosition());
+				var sxx:Number = heroBody.GetUserData().scaleX;
+				heroBody.GetUserData().arm.weapon.beffect.visible = true;
+				heroBody.GetUserData().arm.weapon.beffect.play();
+				bul.ApplyImpulse(new b2Vec2(sxx* Math.cos(weaponAngle) * power, sxx* Math.sin(weaponAngle) * power), body.GetPosition());
 				}*/
 				addArrow(); //added for arrow bala
 				//SoundM.me.playSound(SoundM.SHOOT);

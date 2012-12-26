@@ -23,8 +23,8 @@
 	public class BikeBox2d extends MovieClip{
 		
 		private var worldScale:int=30;
-		
-		private var car:b2Body;
+		public static var me:BikeBox2d;
+		public var bikeBody:b2Body;
 		private var leftWheelRevoluteJoint:b2RevoluteJoint;
 		private var rightWheelRevoluteJoint:b2RevoluteJoint;
 		private var left:Boolean=false;
@@ -53,6 +53,7 @@
 		private var bikeBluePrint:MovieClip = new BikeBluePrint();
 		public function BikeBox2d(_passWorld:b2World) {
 			// Bala constructor code to setup dynamic values..
+			me = this;
 			passWorld = _passWorld;
 			worldScale = BaseWorld.ptm_ratio;
 			axleContainerDistance_Wb = Point.distance(new Point(bikeBluePrint.wb.x,0),new Point(bikeBluePrint.body.x,0))
@@ -104,10 +105,10 @@
 			rightAxleContainerFixture.filter.groupIndex=-1;
 			rightAxleContainerFixture.shape=rightAxleContainerShape;
 			// ************************ MERGING ALL TOGETHER ************************ //
-			car=passWorld.CreateBody(carBodyDef);
-			car.CreateFixture(carFixture);
-			car.CreateFixture(leftAxleContainerFixture);
-			car.CreateFixture(rightAxleContainerFixture);
+			bikeBody=passWorld.CreateBody(carBodyDef);
+			bikeBody.CreateFixture(carFixture);
+			bikeBody.CreateFixture(leftAxleContainerFixture);
+			bikeBody.CreateFixture(rightAxleContainerFixture);
 			// ************************ THE AXLES ************************ //
 			var leftAxleShape:b2PolygonShape = new b2PolygonShape();
 			leftAxleShape.SetAsOrientedBox(axleContainerWidth/worldScale/2,axleContainerHeight/worldScale,new b2Vec2(0,0),axleAngle*degreesToRadians);
@@ -176,7 +177,7 @@
 			leftAxlePrismaticJointDef.upperTranslation=axleContainerDepth/worldScale;
 			leftAxlePrismaticJointDef.enableLimit=true;
 			leftAxlePrismaticJointDef.enableMotor=true;
-			leftAxlePrismaticJointDef.Initialize(car,leftAxle,leftAxle.GetWorldCenter(), new b2Vec2(-Math.cos((90-axleAngle)*degreesToRadians),Math.sin((90-axleAngle)*degreesToRadians)));
+			leftAxlePrismaticJointDef.Initialize(bikeBody,leftAxle,leftAxle.GetWorldCenter(), new b2Vec2(-Math.cos((90-axleAngle)*degreesToRadians),Math.sin((90-axleAngle)*degreesToRadians)));
 			leftAxlePrismaticJoint=passWorld.CreateJoint(leftAxlePrismaticJointDef) as b2PrismaticJoint;
 			leftAxlePrismaticJoint.SetMaxMotorForce(motorPower);                         
 			leftAxlePrismaticJoint.SetMotorSpeed(10);                         			
@@ -185,7 +186,7 @@
 			rightAxlePrismaticJointDef.upperTranslation=axleContainerDepth/worldScale;
 			rightAxlePrismaticJointDef.enableLimit=true;
 			rightAxlePrismaticJointDef.enableMotor=true;
-			rightAxlePrismaticJointDef.Initialize(car,rightAxle,rightAxle.GetWorldCenter(), new b2Vec2(Math.cos((90-axleAngle)*degreesToRadians),Math.sin((90-axleAngle)*degreesToRadians)));
+			rightAxlePrismaticJointDef.Initialize(bikeBody,rightAxle,rightAxle.GetWorldCenter(), new b2Vec2(Math.cos((90-axleAngle)*degreesToRadians),Math.sin((90-axleAngle)*degreesToRadians)));
 			rightAxlePrismaticJoint=passWorld.CreateJoint(rightAxlePrismaticJointDef) as b2PrismaticJoint;
 			rightAxlePrismaticJoint.SetMaxMotorForce(motorPower);                         
 			rightAxlePrismaticJoint.SetMotorSpeed(10);      
@@ -230,6 +231,7 @@
 			leftWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
 			rightWheelRevoluteJoint.SetMotorSpeed(motorSpeed);
 		}
+		
 		
 	}
 	
