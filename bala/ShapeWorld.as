@@ -503,20 +503,20 @@
 		//for arrows bala
 		public var arrowVector:Vector.<b2Body>=new Vector.<b2Body>();
 		
-		protected function addArrow():void {
-			var angle:Number=Math.atan2(mouseY-240,mouseX-50);
+		protected function addArrow(xx:Number,yy:Number,camfallow:Boolean = false):b2Body {
+			var angle:Number=Math.atan2(mouseY-yy,mouseX-xx);
 			var vertices:Vector.<b2Vec2>=new Vector.<b2Vec2>();
 			vertices.push(new b2Vec2(-1.4,0));
 			vertices.push(new b2Vec2(0,-0.1));
 			vertices.push(new b2Vec2(0.6,0));
 			vertices.push(new b2Vec2(0,0.1));
 			var bodyDef:b2BodyDef= new b2BodyDef();
-			bodyDef.position.Set(50/ptm_ratio,240/ptm_ratio);
+			bodyDef.position.Set(xx/ptm_ratio,yy/ptm_ratio);
 			bodyDef.type=b2Body.b2_dynamicBody;
 			var udata:MovieClip = new MovieClip();
 			udata.name = "arrow";
 			udata.freeFlight = false;
-			udata.follow = true;
+			udata.follow = camfallow;
 			bodyDef.userData = udata; //{name:"arrow",freeFlight:false,follow:true};
 			bodyDef.bullet=true;
 			var polygonShape:b2PolygonShape = new b2PolygonShape();
@@ -530,10 +530,11 @@
 			body.CreateFixture(fixtureDef);
 			body.SetLinearVelocity(new b2Vec2(30*Math.cos(angle),30*Math.sin(angle)));
 			body.SetAngle(angle);
-			for (var i:Number=0; i<arrowVector.length; i++) {
+			/*for (var i:Number=0; i<arrowVector.length; i++) {
 				arrowVector[i].GetUserData().follow=false;
-			}
+			}*/
 			arrowVector.push(body);
+			return body;
 		}
 	}
 }

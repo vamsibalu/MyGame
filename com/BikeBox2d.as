@@ -84,6 +84,7 @@
 			carBodyDef.position.Set(carPosX/worldScale,carPosY/worldScale);
 			carBodyDef.type=b2Body.b2_dynamicBody;
 			carBodyDef.userData = new BikeBody_MC();
+			Game.me.currentWeponMC = carBodyDef.userData.hand.currentWepon
 			carBodyDef.userData.alpha = .5
 			Game.me.addChild(carBodyDef.userData);
 			// ************************ LEFT AXLE CONTAINER ************************ //
