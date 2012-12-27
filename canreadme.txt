@@ -27,4 +27,4 @@ git reset --hard origin/master    (to reset uncommited and commited changes and 
 
 
 note..
- avoid multiple developers working on same .fla file  (no problem for any other files)
+ avoid multiple developers working on same .fla file  (no problem for any other files)..arjun
