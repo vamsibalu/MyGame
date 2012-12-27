@@ -59,7 +59,7 @@ package bala
 		
 		private function bg():void{
 			var sp:Sprite = new Sprite();
-			sp.graphics.beginFill(0xA8DCFF,0);
+			sp.graphics.beginFill(0xff00cc,0);
 			sp.graphics.drawRect(-100,-100,840,680);
 			addChild(sp);
 			
@@ -84,27 +84,27 @@ package bala
 			removeEventListener(Event.ENTER_FRAME,renderGame);
 		}
 		
-		public var wallT:b2Body;
-		public var wallR:b2Body;
-		public var wallL:b2Body;
+		//public var wallT:b2Body;
+		//public var wallR:b2Body;
+		//public var wallL:b2Body;
 		//for reloading levels and walls bala
 		public function setUpWalls()
 		{
-			wallL = createBox("border1",-3, 500/2, 5, 500); //left
+			//wallL = createBox("border1",-3, 500/2, 5, 500); //left
 			
-			wallR = createBox("border2",643, 500/2, 5,  500); //right
+			//wallR = createBox("border2",643, 500/2, 5,  500); //right
 			
 			
-			wallT =	createBox("border3",640/2, -3, 700, 5);
+			//wallT =	createBox("border3",640/2, -3, 700, 5);
 			
 			//bottom
-			createBox("border4",640/2, 484, 700, 5);
+			//createBox("border4",640/2, 484, 700, 5);
 		}
 		
 		private function resetWalls():void{
-			wallT.SetPosition(new b2Vec2(320/ptm_ratio,-3/ptm_ratio));
-			wallR.SetPosition(new b2Vec2(643/ptm_ratio,250/ptm_ratio));
-			wallL.SetPosition(new b2Vec2(-3/ptm_ratio,250/ptm_ratio));
+			//wallT.SetPosition(new b2Vec2(320/ptm_ratio,-3/ptm_ratio));
+			//wallR.SetPosition(new b2Vec2(643/ptm_ratio,250/ptm_ratio));
+			//wallL.SetPosition(new b2Vec2(-3/ptm_ratio,250/ptm_ratio));
 		}
 		// this function runs the world simulation
 		// and adjusts the sprites according to the positions

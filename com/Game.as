@@ -40,6 +40,7 @@ package com
 		
 		public static const canTryUpto:int = 3;
 		private static var _trying:int = 0;
+		public static var currentBikeSpeed:Number = 1;
 		
 		//[Embed(source="../bala/LevelBg.swf")]
 		//private var BGG:Class;
@@ -102,6 +103,7 @@ package com
 			}
 			
 			forArrowsCheck() //bala added for arrows
+			cameraMovement();
 		}
 		
 		public override function loadMyLevelForPreview(_levelAry:Array):void{
@@ -229,7 +231,7 @@ package com
 				
 				if(currentWeponType == Weponse.Javelin && currentWeponMC){
 					
-					addArrow(pointBlock.x,pointBlock.y,true);
+					addArrow(pointBlock.x,pointBlock.y,false);
 					
 				}else if(currentWeponType == Weponse.GUN){
 					//var bul:b2Body = createBullet();
@@ -326,14 +328,14 @@ package com
 			var pos_x:Number;
 			var pos_y:Number;
 			
-			if (heroBody) {
-				pos_x=heroBody.GetWorldCenter().x*ptm_ratio;
-				pos_y=heroBody.GetWorldCenter().y*ptm_ratio;
+			if (BikeBox2d.me && BikeBox2d.me.bikeBody) {
+				pos_x=BikeBox2d.me.bikeBody.GetWorldCenter().x*ptm_ratio;
+				pos_y=BikeBox2d.me.bikeBody.GetWorldCenter().y*ptm_ratio;
 			} else {
 				//pos_x=the_cannonball_itself.GetWorldCenter().x*world_scale;
 				//pos_y=the_cannonball_itself.GetWorldCenter().y*world_scale;
 			}
-			pos_x=stage.stageWidth/2-pos_x;
+			pos_x=640/2-pos_x;
 			if (pos_x<0-4500) {
 				pos_x=-4500;
 			}
@@ -341,14 +343,14 @@ package com
 				pos_x=0;
 			}
 			x=pos_x;
-			pos_y=stage.stageHeight/2-pos_y;
+			pos_y=480/2-pos_y;
 			if (pos_y<0-15) {
 				pos_y=-15;
 			}
 			if (pos_y>285) {
 				pos_y=285;
 			}
-			y=pos_y;
+			//y=pos_y;
 		}
 		
 	}

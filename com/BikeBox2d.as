@@ -138,7 +138,7 @@
 			rightAxle.CreateFixture(rightAxleFixture);
 			rightAxle.SetPosition(new b2Vec2(carPosX/worldScale+axleContainerDistance/worldScale+axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians)));
 			// ************************ THE WHEELS ************************ //;
-			var wheelShape:b2CircleShape=new b2CircleShape(wheelRadius/worldScale);
+			var wheelShape:b2CircleShape=new b2CircleShape((bikeBluePrint.wb.width/2)/worldScale);
 			var wheelFixture:b2FixtureDef = new b2FixtureDef();
 			wheelFixture.density=1;
 			wheelFixture.friction=15;
@@ -155,6 +155,7 @@
 			var leftWheel:b2Body=passWorld.CreateBody(wheelBodyDef);
 			leftWheel.CreateFixture(wheelFixture);
 			//bala 2nd wheel..wheelfront-wf
+			wheelFixture.shape=new b2CircleShape((bikeBluePrint.wf.width/2)/worldScale); 
 			wheelBodyDef.position.Set(carPosX/worldScale+axleContainerDistance/worldScale+2*axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+2*axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians));
 			wheelBodyDef.userData =bikeBluePrint.wf;
 			Game.me.addChild(wheelBodyDef.userData);
@@ -193,7 +194,7 @@
 			rightAxlePrismaticJoint.SetMotorSpeed(10);      
 			//addEventListener(Event.ENTER_FRAME,updateWorld);
 			//addEventListener(Event.ADDED_TO_STAGE,added);
-			trace("bike added..")
+			trace("bike added..");
 		}
 		
 		public function keyDown(e:KeyboardEvent):void {
@@ -220,10 +221,12 @@
 		}
 		public function updateBike(e:Event=null):void {
 			if (left) {
-				motorSpeed+=0.5;
+				motorSpeed+=Game.currentBikeSpeed;
+				trace("lefting..")
 			}
 			if (right) {
-				motorSpeed-=0.5;
+				motorSpeed-=Game.currentBikeSpeed;
+				trace("righting...")
 			}
 			motorSpeed*=0.99;
 			if (motorSpeed>10) {
