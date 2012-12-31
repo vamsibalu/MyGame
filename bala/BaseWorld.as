@@ -337,6 +337,21 @@ package bala
 				enterPointsVec = new Vector.<b2Vec2>(numEnterPoints);
 				mouseReleased = false;
 			}
+			
+			/*
+			//usefull to kill enemy half of the body with nife..bala
+			// retrieving sphere velocity
+			var sphereVelocity:b2Vec2=b.GetLinearVelocity();
+			// getting direction according to velocity
+			var sphereDirection:Number=Math.atan2(sphereVelocity.y,sphereVelocity.x);
+			// getting sphere position
+			var colX:Number=b.GetPosition().x;
+			var colY:Number=b.GetPosition().y;
+			// clone the sphere
+			addSphere(colX*worldScale,colY*worldScale,15,sphereVelocity.x,sphereVelocity.y);
+			// perform the raycast
+			world.RayCast(intersection, new b2Vec2(colX,colY), new b2Vec2(colX+5*Math.cos(sphereDirection),colY+5*Math.sin(sphereDirection)));
+			world.RayCast(intersection, new b2Vec2(colX+5*Math.cos(sphereDirection),colY+5*Math.sin(sphereDirection)), new b2Vec2(colX,colY));*/
 		}
 		
 		private function intersection(fixture:b2Fixture, point:b2Vec2, normal:b2Vec2, fraction:Number):Number
