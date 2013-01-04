@@ -73,7 +73,9 @@
 			trace("axleContainerHeight=",axleContainerHeight,carPosY,bikeBluePrint.wb.y)
 			// ************************ THE CAR ************************ //
 			var carShape:b2PolygonShape = new b2PolygonShape();
-			carShape.SetAsBox(carWidth/worldScale,carHeight/worldScale);
+		//	trace(bikeBluePrint.body.width/2,bikeBluePrint.body.height/4,"arj")
+			//carShape.SetAsBox(carWidth/worldScale,carHeight/worldScale);
+			carShape.SetAsBox((bikeBluePrint.body.width/3.5)/worldScale,(bikeBluePrint.body.height/9)/worldScale);
 			var carFixture:b2FixtureDef = new b2FixtureDef();
 			carFixture.density=5;
 			carFixture.friction=3;
@@ -82,34 +84,17 @@
 			carFixture.shape=carShape;
 			var carBodyDef:b2BodyDef = new b2BodyDef();
 			carBodyDef.position.Set(carPosX/worldScale,carPosY/worldScale);
-			carBodyDef.type=b2Body.b2_dynamicBody;
+		//	carBodyDef.type=b2Body.b2_dynamicBody;
 			carBodyDef.userData = new BikeBody_MC();
 			Game.me.currentWeponMC = carBodyDef.userData.hand.currentWepon
 			carBodyDef.userData.alpha = .5
 			Game.me.addChild(carBodyDef.userData);
-			// ************************ LEFT AXLE CONTAINER ************************ //
-			var leftAxleContainerShape:b2PolygonShape = new b2PolygonShape();
-			leftAxleContainerShape.SetAsOrientedBox(axleContainerWidth/worldScale,axleContainerHeight/worldScale,new b2Vec2(-axleContainerDistance/worldScale,axleContainerDepth/worldScale),axleAngle*degreesToRadians);
-			var leftAxleContainerFixture:b2FixtureDef = new b2FixtureDef();
-			leftAxleContainerFixture.density=3;
-			leftAxleContainerFixture.friction=3;
-			leftAxleContainerFixture.restitution=0.3;
-			leftAxleContainerFixture.filter.groupIndex=-1;
-			leftAxleContainerFixture.shape=leftAxleContainerShape;
-			// ************************ RIGHT AXLE CONTAINER ************************ //
-			var rightAxleContainerShape:b2PolygonShape = new b2PolygonShape();
-			rightAxleContainerShape.SetAsOrientedBox(axleContainerWidth/worldScale,axleContainerHeight/worldScale,new b2Vec2(axleContainerDistance/worldScale,axleContainerDepth/worldScale),-axleAngle*degreesToRadians);
-			var rightAxleContainerFixture:b2FixtureDef = new b2FixtureDef();
-			rightAxleContainerFixture.density=3;
-			rightAxleContainerFixture.friction=3;
-			rightAxleContainerFixture.restitution=0.3;
-			rightAxleContainerFixture.filter.groupIndex=-1;
-			rightAxleContainerFixture.shape=rightAxleContainerShape;
+			
 			// ************************ MERGING ALL TOGETHER ************************ //
 			bikeBody=passWorld.CreateBody(carBodyDef);
 			bikeBody.CreateFixture(carFixture);
-			bikeBody.CreateFixture(leftAxleContainerFixture);
-			bikeBody.CreateFixture(rightAxleContainerFixture);
+		//	bikeBody.CreateFixture(leftAxleContainerFixture);
+			//bikeBody.CreateFixture(rightAxleContainerFixture);
 			// ************************ THE AXLES ************************ //
 			var leftAxleShape:b2PolygonShape = new b2PolygonShape();
 			leftAxleShape.SetAsOrientedBox(axleContainerWidth/worldScale/2,axleContainerHeight/worldScale,new b2Vec2(0,0),axleAngle*degreesToRadians);
@@ -120,12 +105,15 @@
 			leftAxleFixture.shape=leftAxleShape;
 			leftAxleFixture.filter.groupIndex=-1;
 			var leftAxleBodyDef:b2BodyDef = new b2BodyDef();
-			leftAxleBodyDef.type=b2Body.b2_dynamicBody;
+		//	leftAxleBodyDef.type=b2Body.b2_dynamicBody;
 			var leftAxle:b2Body=passWorld.CreateBody(leftAxleBodyDef);
 			leftAxle.CreateFixture(leftAxleFixture);
 			leftAxle.SetPosition(new b2Vec2(carPosX/worldScale-axleContainerDistance/worldScale-axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians)));
+			
 			var rightAxleShape:b2PolygonShape = new b2PolygonShape();
-			rightAxleShape.SetAsOrientedBox(axleContainerWidth/worldScale/2,axleContainerHeight/worldScale,new b2Vec2(0,0),-axleAngle*degreesToRadians);
+			//rightAxleShape.position.Set()
+			rightAxleShape.SetAsBox((bikeBluePrint.axelright.width/4)/worldScale,(bikeBluePrint.axelright.height/2)/worldScale)
+			//rightAxleShape.SetAsOrientedBox((bikeBluePrint.axelright.width/2)/worldScale/2,(bikeBluePrint.axelright.height/2)/worldScale,new b2Vec2(0,0),-axleAngle*degreesToRadians);
 			var rightAxleFixture:b2FixtureDef = new b2FixtureDef();
 			rightAxleFixture.density=0.5;
 			rightAxleFixture.friction=3;
@@ -133,10 +121,12 @@
 			rightAxleFixture.shape=rightAxleShape;
 			rightAxleFixture.filter.groupIndex=-1;
 			var rightAxleBodyDef:b2BodyDef = new b2BodyDef();
-			rightAxleBodyDef.type=b2Body.b2_dynamicBody;
+			rightAxleBodyDef.angle=bikeBluePrint.axelright.rotation*(Math.PI/180);
+			rightAxleBodyDef.position.Set((bikeBluePrint.axelright.x)/worldScale,(bikeBluePrint.axelright.y)/worldScale)
+			//rightAxleBodyDef.type=b2Body.b2_dynamicBody;
 			var rightAxle:b2Body=passWorld.CreateBody(rightAxleBodyDef);
 			rightAxle.CreateFixture(rightAxleFixture);
-			rightAxle.SetPosition(new b2Vec2(carPosX/worldScale+axleContainerDistance/worldScale+axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians)));
+			//rightAxle.SetPosition(new b2Vec2(carPosX/worldScale+axleContainerDistance/worldScale+axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians)));
 			// ************************ THE WHEELS ************************ //;
 			var wheelShape:b2CircleShape=new b2CircleShape((bikeBluePrint.wb.width/2)/worldScale);
 			var wheelFixture:b2FixtureDef = new b2FixtureDef();
@@ -146,7 +136,7 @@
 			wheelFixture.filter.groupIndex=-1;
 			wheelFixture.shape=wheelShape;
 			var wheelBodyDef:b2BodyDef = new b2BodyDef();
-			wheelBodyDef.type=b2Body.b2_dynamicBody;
+		//	wheelBodyDef.type=b2Body.b2_dynamicBody;
 			//bala 1st wheel..wheelback-wb
 			wheelBodyDef.position.Set(carPosX/worldScale-axleContainerDistance/worldScale-2*axleContainerHeight/worldScale*Math.cos((90-axleAngle)*degreesToRadians),carPosY/worldScale+axleContainerDepth/worldScale+2*axleContainerHeight/worldScale*Math.sin((90-axleAngle)*degreesToRadians));
 			wheelBodyDef.userData = bikeBluePrint.wb;

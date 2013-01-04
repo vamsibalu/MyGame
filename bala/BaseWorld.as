@@ -243,7 +243,7 @@ package bala
 			var db:b2DebugDraw=new b2DebugDraw();
 			db.SetSprite(sp);
 			db.SetDrawScale(ptm_ratio);
-			db.SetFillAlpha(1);
+			db.SetFillAlpha(0.2);
 			db.SetLineThickness(2);
 			db.SetFlags(b2DebugDraw.e_jointBit | b2DebugDraw.e_shapeBit) // | b2DebugDraw.e_centerOfMassBit//b2DebugDraw.e_shapeBit//t|b2DebugDraw.e_shapeBit
 			world.SetDebugDraw(db);
