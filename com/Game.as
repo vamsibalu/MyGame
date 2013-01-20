@@ -231,18 +231,10 @@
 				}else if(currentWeponType == Weponse.GUN){
 					//do gun requirement
 				}
-				
-				trace(currentWeponType,"                        arj")
-				//heroBody.GetUserData().arm.rotation = (this.weaponAngle * RadtoDeg -  heroBody.GetUserData().rotation) *  heroBody.GetUserData().scaleX;
-				//heroBody.GetUserData().hamboHead.rotation = (this.weaponAngle * RadtoDeg -  heroBody.GetUserData().rotation) *  heroBody.GetUserData().scaleX / 2;
-				
-				//trace("hero rotation=",heroBody.GetAngle(),heroBody.GetAngularVelocity(),heroBody.GetAngularDamping())
-				/*if(heroBody.GetAngle()>2 || heroBody.GetAngle()<-2){
-				heroBody.SetAngle(0);
-				//trace("setting hero angle to 0",heroBody.GetAngle());
-				}*/
 			}
 		}// end function
+		
+		
 		private var pointBlock:Point;
 		public function shootEnemy(e:MouseEvent):void{
 			if(e.target is SimpleButton || e.target is sndbtn || e.target is FooterMC){
