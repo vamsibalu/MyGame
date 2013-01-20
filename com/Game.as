@@ -202,7 +202,7 @@
 		{
 			if(BikeBox2d.player_body)
 			{
-				trace(BikeBox2d.player_body.GetUserData().hand,"aeshjshkjdhajsk")
+				//trace(BikeBox2d.player_body.GetUserData().hand,"aeshjshkjdhajsk")
 			}
 			
 			

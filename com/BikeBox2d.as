@@ -126,7 +126,7 @@
 				//frent axel;
 				trace("rotation6  "+ player_body.GetAngle())
 				bodyDef=new b2BodyDef();
-				trace(axleContainerDistance_Wb,axleContainerDistance_Wf,"arj")
+				//trace(axleContainerDistance_Wb,axleContainerDistance_Wf,"arj")
 				bodyDef.position.Set(bikeBluePrint.wf.x/30,(bikeBluePrint.wf.y-12)/30);
 				//bodyDef.position.Set(_xx+26/r2p,_yy+12/r2p);
 				//bodyDef.position.Set(bikeBluePrint.wf.x/r2p,bikeBluePrint.wf.y/r2p);
