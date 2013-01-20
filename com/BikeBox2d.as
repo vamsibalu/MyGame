@@ -1,23 +1,25 @@
 ﻿package com
 {
-	import flash.display.MovieClip;
+	import Box2D.Collision.Shapes.b2CircleShape;
+	import Box2D.Collision.Shapes.b2PolygonShape;
+	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.Joints.b2PrismaticJoint;
+	import Box2D.Dynamics.Joints.b2PrismaticJointDef;
+	import Box2D.Dynamics.Joints.b2RevoluteJoint;
+	import Box2D.Dynamics.Joints.b2RevoluteJointDef;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2BodyDef;
-	import Box2D.Collision.Shapes.b2PolygonShape;
-	import Box2D.Collision.Shapes.b2CircleShape;
 	import Box2D.Dynamics.b2FixtureDef;
-	import Box2D.Dynamics.Joints.b2PrismaticJointDef;
-	import Box2D.Dynamics.Joints.b2RevoluteJointDef;
-	import Box2D.Common.Math.b2Vec2;
-	import Box2D.Dynamics.Joints.b2RevoluteJoint;
-	import Box2D.Dynamics.Joints.b2PrismaticJoint;
-	import flash.events.KeyboardEvent;
-	import flash.events.Event;
-	import flash.ui.Keyboard;
-	import flash.geom.Point;
 	import Box2D.Dynamics.b2World;
+	
 	import bala.BaseWorld;
-
+	
+	import flash.display.MovieClip;
+	import flash.events.Event;
+	import flash.events.KeyboardEvent;
+	import flash.geom.Point;
+	import flash.ui.Keyboard;
+	
 	public class BikeBox2d extends MovieClip
 	{
 		private var bodyDef:b2BodyDef;
@@ -101,142 +103,144 @@
 			
 			
 			
-				bodyDef=new b2BodyDef();
-				bodyDef.position.Set(bikeBluePrint.bikemainbody.x/30,bikeBluePrint.bikemainbody.y/30);
-				//trace(_xx,_yy,bikeBluePrint.body.x,bikeBluePrint.body.x/30,bikeBluePrint.body.x/17,"arjj")
-				bodyDef.type = b2Body.b2_dynamicBody;
-				bodyDef.userData=new BikeBody_MC();
-				bodyDef.userData.alpha=1
-				Game.me.addChild(bodyDef.userData);
-				body_skin=bodyDef.userData
-				boxDef=new b2PolygonShape();
-				boxDef.SetAsBox((bikeBluePrint.bikemainbody.width/2)/worldScale,(bikeBluePrint.bikemainbody.height/2)/worldScale);
-				fixtureDef=new b2FixtureDef();
-				fixtureDef.density = 0;
-				fixtureDef.friction = 1;
-				fixtureDef.restitution = 0.2;
-				fixtureDef.shape = boxDef;
-				fixtureDef.filter.groupIndex = -1;
-				player_body = passWorld.CreateBody(bodyDef);
-				player_body.CreateFixture(fixtureDef);
-				boxDef.SetAsOrientedBox(5/r2p,5/r2p,new b2Vec2(0,10/r2p),0)
-				fixtureDef.shape=boxDef
-				player_body.CreateFixture(fixtureDef)
-				
-				//frent axel;
-				trace("rotation6  "+ player_body.GetAngle())
-				bodyDef=new b2BodyDef();
-				//trace(axleContainerDistance_Wb,axleContainerDistance_Wf,"arj")
-				bodyDef.position.Set(bikeBluePrint.wf.x/30,(bikeBluePrint.wf.y-12)/30);
-				//bodyDef.position.Set(_xx+26/r2p,_yy+12/r2p);
-				//bodyDef.position.Set(bikeBluePrint.wf.x/r2p,bikeBluePrint.wf.y/r2p);
-				bodyDef.type = b2Body.b2_dynamicBody;
-				boxDef=new b2PolygonShape();
-				boxDef.SetAsBox(3/r2p,5/r2p);
-				fixtureDef=new b2FixtureDef();
-				fixtureDef.density = 0.5;
-				fixtureDef.friction = 0.5;
-				fixtureDef.restitution = 0.2;
-				fixtureDef.shape = boxDef;
-				fixtureDef.filter.groupIndex = -1;
-				frent_axel = passWorld.CreateBody(bodyDef);
-				frent_axel.CreateFixture(fixtureDef);
-				//back axel;
-				bodyDef=new b2BodyDef();
-				bodyDef.position.Set(bikeBluePrint.wb.x/30,(bikeBluePrint.wb.y-12)/30);
-				//bodyDef.position.Set(_xx-39/r2p,_yy+8/r2p);
-				bodyDef.type = b2Body.b2_dynamicBody;
-				boxDef=new b2PolygonShape();
-				boxDef.SetAsBox(3/r2p,5/r2p);
-				fixtureDef=new b2FixtureDef();
-				fixtureDef.density = 0.5;
-				fixtureDef.friction = 0.5;
-				fixtureDef.restitution = 0.2;
-				fixtureDef.shape = boxDef;
-				fixtureDef.filter.groupIndex = -1;
-				back_axel = passWorld.CreateBody(bodyDef);
-				back_axel.CreateFixture(fixtureDef);
-				
-				//frent wheel;
-				bodyDef=new b2BodyDef();
-				bodyDef.position.Set(frent_axel.GetWorldCenter().x,frent_axel.GetWorldCenter().y+5/r2p);
-				bodyDef.type = b2Body.b2_dynamicBody;
-				bodyDef.userData=new Wheel_MC();
-				bodyDef.userData.width = (bikeBluePrint.wf.width)
-				//bodyDef.userData.width = bikeBluePrint.wf.width
-				bodyDef.userData.height = (bikeBluePrint.wf.width)
-				Game.me.addChild(bodyDef.userData);
-				//Physics.frent_wheel_skin=bodyDef.userData
-				//circleDef = new b2CircleShape(13 / r2p);
-				trace(13 / r2p,"jhjjhjkk", bikeBluePrint.wf.width/worldScale)
-				circleDef = new b2CircleShape( (bikeBluePrint.wf.width/2)/worldScale);
-				fixtureDef=new b2FixtureDef();
-				fixtureDef.density = 1;
-				fixtureDef.friction = 0.5;
-				fixtureDef.restitution = 0.5;
-				fixtureDef.filter.groupIndex = -1;
-				fixtureDef.shape = circleDef;
-				frent_wheel = passWorld.CreateBody(bodyDef);
-				frent_wheel.CreateFixture(fixtureDef);
-				//back wheel;
-				bodyDef=new b2BodyDef();
-				bodyDef.position.Set(back_axel.GetWorldCenter().x,back_axel.GetWorldCenter().y+5/r2p);
-				bodyDef.type = b2Body.b2_dynamicBody;
-				bodyDef.userData=new Wheel_MC();
-				bodyDef.userData.width = bikeBluePrint.wb.width
-				bodyDef.userData.height = bikeBluePrint.wb.width
-				Game.me.addChild(bodyDef.userData);
-				back_wheel_skin=bodyDef.userData
-				//circleDef = new b2CircleShape(13 / r2p);
-				circleDef = new b2CircleShape( (bikeBluePrint.wb.width/2)/worldScale);
-				fixtureDef=new b2FixtureDef();
-				fixtureDef.density = 1;
-				fixtureDef.friction = 0.5;
-				fixtureDef.restitution = 0.5;
-				fixtureDef.filter.groupIndex = -1;
-				fixtureDef.shape = circleDef;
-				back_wheel = passWorld.CreateBody(bodyDef);
-				back_wheel.CreateFixture(fixtureDef);
-				rjd=new b2RevoluteJointDef();
-				rjd.enableMotor = true;
-				//rjd.maxMotorTorque=10
-				rjd.Initialize(frent_wheel,frent_axel,new b2Vec2(frent_axel.GetWorldCenter().x,frent_axel.GetWorldCenter().y+5/r2p));
-				rightWheelRevoluteJoint=passWorld.CreateJoint(rjd) as b2RevoluteJoint;
-				rjd=new b2RevoluteJointDef();
-				rjd.enableMotor = true;
-				//rjd.maxMotorTorque=10
-				rjd.Initialize(back_wheel,back_axel,new b2Vec2(back_axel.GetWorldCenter().x,back_axel.GetWorldCenter().y+5/r2p));
-				leftWheelRevoluteJoint=passWorld.CreateJoint(rjd) as b2RevoluteJoint;
-				pjd=new b2PrismaticJointDef();
-				pjd.lowerTranslation = -0.1;
-				pjd.upperTranslation = 0.1;
-				pjd.enableMotor = true;
-				pjd.enableLimit = true;
-				pjd.Initialize(player_body,frent_axel,frent_axel.GetWorldCenter(),new b2Vec2(0,1));
-				rightAxlePrismaticJoint=passWorld.CreateJoint(pjd) as b2PrismaticJoint;
-				pjd=new b2PrismaticJointDef();
-				pjd.lowerTranslation = -0.1;
-				pjd.upperTranslation = 0.1;
-				pjd.enableMotor = true;
-				pjd.enableLimit = true;
-				pjd.Initialize(player_body,back_axel,back_axel.GetWorldCenter(),new b2Vec2(0,1));
-				leftAxlePrismaticJoint = passWorld.CreateJoint(pjd) as b2PrismaticJoint;
-				
-				//Physics.frente_wheel=frent_wheel
-				trace(_xx,"centerrr ",_yy)
-				//character(_xx,_yy)
-				character(bikeBluePrint.bikemainbody.x/30,(bikeBluePrint.bikemainbody.y-10)/30)
+			bodyDef=new b2BodyDef();
+			bodyDef.position.Set(bikeBluePrint.bikemainbody.x/30,bikeBluePrint.bikemainbody.y/30);
+			//trace(_xx,_yy,bikeBluePrint.body.x,bikeBluePrint.body.x/30,bikeBluePrint.body.x/17,"arjj")
+			bodyDef.type = b2Body.b2_dynamicBody;
+			bodyDef.userData=new BikeBody_MC();
+			Game.me.currentWeponMC = bodyDef.userData.hand.currentWepon;
+			Game.me.handMC = bodyDef.userData.hand;
+			bodyDef.userData.alpha=1
+			Game.me.addChild(bodyDef.userData);
+			body_skin=bodyDef.userData
+			boxDef=new b2PolygonShape();
+			boxDef.SetAsBox((bikeBluePrint.bikemainbody.width/2)/worldScale,(bikeBluePrint.bikemainbody.height/2)/worldScale);
+			fixtureDef=new b2FixtureDef();
+			fixtureDef.density = 0;
+			fixtureDef.friction = 1;
+			fixtureDef.restitution = 0.2;
+			fixtureDef.shape = boxDef;
+			fixtureDef.filter.groupIndex = -1;
+			player_body = passWorld.CreateBody(bodyDef);
+			player_body.CreateFixture(fixtureDef);
+			boxDef.SetAsOrientedBox(5/r2p,5/r2p,new b2Vec2(0,10/r2p),0)
+			fixtureDef.shape=boxDef
+			player_body.CreateFixture(fixtureDef)
+			
+			//frent axel;
+			trace("rotation6  "+ player_body.GetAngle())
+			bodyDef=new b2BodyDef();
+			//trace(axleContainerDistance_Wb,axleContainerDistance_Wf,"arj")
+			bodyDef.position.Set(bikeBluePrint.wf.x/30,(bikeBluePrint.wf.y-12)/30);
+			//bodyDef.position.Set(_xx+26/r2p,_yy+12/r2p);
+			//bodyDef.position.Set(bikeBluePrint.wf.x/r2p,bikeBluePrint.wf.y/r2p);
+			bodyDef.type = b2Body.b2_dynamicBody;
+			boxDef=new b2PolygonShape();
+			boxDef.SetAsBox(3/r2p,5/r2p);
+			fixtureDef=new b2FixtureDef();
+			fixtureDef.density = 0.5;
+			fixtureDef.friction = 0.5;
+			fixtureDef.restitution = 0.2;
+			fixtureDef.shape = boxDef;
+			fixtureDef.filter.groupIndex = -1;
+			frent_axel = passWorld.CreateBody(bodyDef);
+			frent_axel.CreateFixture(fixtureDef);
+			//back axel;
+			bodyDef=new b2BodyDef();
+			bodyDef.position.Set(bikeBluePrint.wb.x/30,(bikeBluePrint.wb.y-12)/30);
+			//bodyDef.position.Set(_xx-39/r2p,_yy+8/r2p);
+			bodyDef.type = b2Body.b2_dynamicBody;
+			boxDef=new b2PolygonShape();
+			boxDef.SetAsBox(3/r2p,5/r2p);
+			fixtureDef=new b2FixtureDef();
+			fixtureDef.density = 0.5;
+			fixtureDef.friction = 0.5;
+			fixtureDef.restitution = 0.2;
+			fixtureDef.shape = boxDef;
+			fixtureDef.filter.groupIndex = -1;
+			back_axel = passWorld.CreateBody(bodyDef);
+			back_axel.CreateFixture(fixtureDef);
+			
+			//frent wheel;
+			bodyDef=new b2BodyDef();
+			bodyDef.position.Set(frent_axel.GetWorldCenter().x,frent_axel.GetWorldCenter().y+5/r2p);
+			bodyDef.type = b2Body.b2_dynamicBody;
+			bodyDef.userData=new Wheel_MC();
+			bodyDef.userData.width = (bikeBluePrint.wf.width)
+			//bodyDef.userData.width = bikeBluePrint.wf.width
+			bodyDef.userData.height = (bikeBluePrint.wf.width)
+			Game.me.addChild(bodyDef.userData);
+			//Physics.frent_wheel_skin=bodyDef.userData
+			//circleDef = new b2CircleShape(13 / r2p);
+			trace(13 / r2p,"jhjjhjkk", bikeBluePrint.wf.width/worldScale)
+			circleDef = new b2CircleShape( (bikeBluePrint.wf.width/2)/worldScale);
+			fixtureDef=new b2FixtureDef();
+			fixtureDef.density = 1;
+			fixtureDef.friction = 0.5;
+			fixtureDef.restitution = 0.5;
+			fixtureDef.filter.groupIndex = -1;
+			fixtureDef.shape = circleDef;
+			frent_wheel = passWorld.CreateBody(bodyDef);
+			frent_wheel.CreateFixture(fixtureDef);
+			//back wheel;
+			bodyDef=new b2BodyDef();
+			bodyDef.position.Set(back_axel.GetWorldCenter().x,back_axel.GetWorldCenter().y+5/r2p);
+			bodyDef.type = b2Body.b2_dynamicBody;
+			bodyDef.userData=new Wheel_MC();
+			bodyDef.userData.width = bikeBluePrint.wb.width
+			bodyDef.userData.height = bikeBluePrint.wb.width
+			Game.me.addChild(bodyDef.userData);
+			back_wheel_skin=bodyDef.userData
+			//circleDef = new b2CircleShape(13 / r2p);
+			circleDef = new b2CircleShape( (bikeBluePrint.wb.width/2)/worldScale);
+			fixtureDef=new b2FixtureDef();
+			fixtureDef.density = 1;
+			fixtureDef.friction = 0.5;
+			fixtureDef.restitution = 0.5;
+			fixtureDef.filter.groupIndex = -1;
+			fixtureDef.shape = circleDef;
+			back_wheel = passWorld.CreateBody(bodyDef);
+			back_wheel.CreateFixture(fixtureDef);
+			rjd=new b2RevoluteJointDef();
+			rjd.enableMotor = true;
+			//rjd.maxMotorTorque=10
+			rjd.Initialize(frent_wheel,frent_axel,new b2Vec2(frent_axel.GetWorldCenter().x,frent_axel.GetWorldCenter().y+5/r2p));
+			rightWheelRevoluteJoint=passWorld.CreateJoint(rjd) as b2RevoluteJoint;
+			rjd=new b2RevoluteJointDef();
+			rjd.enableMotor = true;
+			//rjd.maxMotorTorque=10
+			rjd.Initialize(back_wheel,back_axel,new b2Vec2(back_axel.GetWorldCenter().x,back_axel.GetWorldCenter().y+5/r2p));
+			leftWheelRevoluteJoint=passWorld.CreateJoint(rjd) as b2RevoluteJoint;
+			pjd=new b2PrismaticJointDef();
+			pjd.lowerTranslation = -0.1;
+			pjd.upperTranslation = 0.1;
+			pjd.enableMotor = true;
+			pjd.enableLimit = true;
+			pjd.Initialize(player_body,frent_axel,frent_axel.GetWorldCenter(),new b2Vec2(0,1));
+			rightAxlePrismaticJoint=passWorld.CreateJoint(pjd) as b2PrismaticJoint;
+			pjd=new b2PrismaticJointDef();
+			pjd.lowerTranslation = -0.1;
+			pjd.upperTranslation = 0.1;
+			pjd.enableMotor = true;
+			pjd.enableLimit = true;
+			pjd.Initialize(player_body,back_axel,back_axel.GetWorldCenter(),new b2Vec2(0,1));
+			leftAxlePrismaticJoint = passWorld.CreateJoint(pjd) as b2PrismaticJoint;
+			
+			//Physics.frente_wheel=frent_wheel
+			trace(_xx,"centerrr ",_yy)
+			//character(_xx,_yy)
+			character(bikeBluePrint.bikemainbody.x/30,(bikeBluePrint.bikemainbody.y-10)/30)
 		}
 		
-			var uprhandBody:b2Body
-			var lwrhandBody:b2Body
-			
-			
-			var headbody:b2Body
-			var body7:b2Body
-			var body8:b2Body
-			var body9:b2Body			
-			var rjd1:b2RevoluteJointDef
+		var uprhandBody:b2Body
+		var lwrhandBody:b2Body
+		
+		
+		var headbody:b2Body
+		var body7:b2Body
+		var body8:b2Body
+		var body9:b2Body			
+		var rjd1:b2RevoluteJointDef
 		private function character(_x1:Number,_y1:Number){
 			
 			var bodyDef:b2BodyDef
@@ -289,7 +293,7 @@
 			bodyDef.angle=Math.PI/5
 			bodyDef.userData=new leg1();
 			//bodyDef.userData.alpha=0.1
-				Game.me.addChild(bodyDef.userData);
+			Game.me.addChild(bodyDef.userData);
 			boxDef=new b2PolygonShape()
 			boxDef.SetAsBox(6/r2p,3/r2p)
 			fixtureDef=new b2FixtureDef()
@@ -429,13 +433,13 @@
 					
 					break;
 				case Keyboard.RIGHT :
-				
+					
 					right=true;
 					break;
-					case Keyboard.UP :
+				case Keyboard.UP :
 					up_key=true;
 					break;
-					case Keyboard.DOWN :
+				case Keyboard.DOWN :
 					down_key=true;
 					break;
 			}
@@ -449,13 +453,18 @@
 				case Keyboard.RIGHT :
 					right=false;
 					break;
-					case Keyboard.UP :
+				case Keyboard.UP :
 					up_key=false;
 					break;
-					case Keyboard.DOWN :
+				case Keyboard.DOWN :
 					down_key=false;
 					break;
-					
+				case Keyboard.NUMBER_1 :
+					Game.currentWeponType = Game.Javelin;
+					break;
+				case Keyboard.NUMBER_2 :
+					Game.currentWeponType = Game.GUN;
+					break;
 			}
 		}
 		public function updateBike(e:Event=null):void 
@@ -493,19 +502,24 @@
 				wheel_rotation=10
 			}else{
 				wheel_rotation=0.5
-				}
-				
+			}
+			
 			rightWheelRevoluteJoint.SetMotorSpeed(speed);
 			rightWheelRevoluteJoint.SetMaxMotorTorque(wheel_rotation);
 			leftWheelRevoluteJoint.SetMotorSpeed(speed);
 			leftWheelRevoluteJoint.SetMaxMotorTorque(wheel_rotation);
 			//trace(((-Physics.m2p*player_body.GetWorldCenter().x+SCREEN_WIDTH/2-player_body.GetLinearVelocity().x*5))/3+" screen")
-		//screen.x-=30+(screen.x-(-Physics.m2p*player_body.GetWorldCenter().x+SCREEN_WIDTH/2-player_body.GetLinearVelocity().x*5))/3;
-//screen.y -= (screen.y - (-Physics.m2p*player_body.GetWorldCenter().y + 2*SCREEN_HEIGHT/4 + player_body.GetLinearVelocity().y*6))/3;
-
+			//screen.x-=30+(screen.x-(-Physics.m2p*player_body.GetWorldCenter().x+SCREEN_WIDTH/2-player_body.GetLinearVelocity().x*5))/3;
+			//screen.y -= (screen.y - (-Physics.m2p*player_body.GetWorldCenter().y + 2*SCREEN_HEIGHT/4 + player_body.GetLinearVelocity().y*6))/3;
 			
-			}
-
+			
+		}
+		
 	}
+	
+}
 
+internal class Weponse{
+	public static const GUN:int = 2;
+	public static const Javelin:int = 3;
 }

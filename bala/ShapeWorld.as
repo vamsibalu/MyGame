@@ -239,7 +239,7 @@
 		}// end function
 		
 		public var power:Number = .8;
-		public function createBullet() : b2Body
+		public function createBullet(hand:MovieClip) : b2Body
 		{
 			bodyDef = new b2BodyDef();
 			bodyDef.userData = new Bullet();
@@ -261,14 +261,14 @@
 			bodies.push(body);
 			body.CreateFixture(fixtureDef);
 			//var pp:Point =  heroBody.GetUserData().localToGlobal(new Point(heroBody.GetUserData().arm.weapon.gunpoint.x,heroBody.GetUserData().arm.weapon.gunpoint.y));
-			if(heroBody){
-				var pp:Point = BalaUtils.localToLocal(heroBody.GetUserData().arm.weapon.gunpoint,this);
+			if(hand){
+				var pp:Point = BalaUtils.localToLocal(hand.pp1,this);
 				//addChild(MainGame.me.dummymc);
 				//MainGame.me.dummymc.x = pp.x;
 				//MainGame.me.dummymc.y = pp.y;
 				//trace("PP =", pp);
 				body.SetPositionAndAngle(new b2Vec2(pp.x/ptm_ratio,pp.y/ptm_ratio),weaponAngle);
-				body.GetUserData().scaleX = heroBody.GetUserData().scaleX;
+				//body.GetUserData().scaleX = heroBody.GetUserData().scaleX;
 			}
 			body.GetUserData().rotation = weaponAngle;
 			body.GetUserData().x = pp.x;

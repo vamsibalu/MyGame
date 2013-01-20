@@ -18,8 +18,8 @@
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.utils.Timer;
 	import flash.geom.Point;
+	import flash.utils.Timer;
 
 	//import com.data.Bike;
 	
@@ -49,6 +49,9 @@
 		//private var bgMC:MovieClip;
 		public var tweenBox:TweenBox2d;
 		public var bike:BikeBox2d;
+		public static const GUN:int = 2;
+		public static const Javelin:int = 3;
+		
 		//public var bike:Bike
 		public function Game(_dummyXML:XML = null)
 		{
@@ -192,12 +195,15 @@
 			if(exmc){
 				exmc.x = ptm_ratio * bbb.GetPosition().x;
 				exmc.y = ptm_ratio * bbb.GetPosition().y;
-				exmc.ballTypemc.gotoAndPlay(1);
+				//exmc.ballTypemc.gotoAndPlay(1);  //erro
 				addChild(exmc);
 			}
 		}
-		public var currentWeponType:int = Weponse.Javelin;
+		public static var currentWeponType:int = GUN;
 		public var currentWeponMC:MovieClip;
+		public var handMC:MovieClip;
+		
+		
 		public function updateHand() : void
 		{
 			if(BikeBox2d.player_body)
@@ -225,10 +231,11 @@
 				}
 				BikeBox2d.player_body.GetUserData().hand.rotation = (weaponAngle * RadtoDeg -  BikeBox2d.player_body.GetUserData().rotation) * BikeBox2d.player_body.GetUserData().scaleX;
 				pointBlock = BalaUtils.localToLocal(BikeBox2d.player_body.GetUserData().hand,this,new Point(BikeBox2d.player_body.GetUserData().hand.pp1.x,BikeBox2d.player_body.GetUserData().hand.pp1.y));
-				if(currentWeponType == Weponse.Javelin){
-					//currentWeponMC.gotoAndStop(Weponse.Javelin);
-					BikeBox2d.player_body.GetUserData().hand.currentWepon.gotoAndStop(Weponse.Javelin);
-				}else if(currentWeponType == Weponse.GUN){
+				if(currentWeponType == Javelin){
+					currentWeponMC.gotoAndStop("Javelin");
+					BikeBox2d.player_body.GetUserData().hand.currentWepon.gotoAndStop(Javelin);
+				}else if(currentWeponType == GUN){
+					currentWeponMC.gotoAndStop("GUN");
 					//do gun requirement
 				}
 			}
@@ -241,19 +248,19 @@
 				trace("don't shoot..");
 			}else{
 				
-				if(currentWeponType == Weponse.Javelin && BikeBox2d.player_body.GetUserData().hand.currentWepon){
+				if(currentWeponType == Javelin && BikeBox2d.player_body.GetUserData().hand.currentWepon){
 					
 					addArrow(pointBlock.x,pointBlock.y,false);
 					
-				}else if(currentWeponType == Weponse.GUN){
-					//var bul:b2Body = createBullet();
+				}else if(currentWeponType == GUN){
+					var bul:b2Body = createBullet(handMC);
 					//addChild(new BulletTracer(bul));
-					//if(currentWeponMC){
-					//var sxx:Number = 1;//heroBody.GetUserData().scaleX;
+					if(currentWeponMC){
+					var sxx:Number = 1;//heroBody.GetUserData().scaleX;
 					//heroBody.GetUserData().arm.weapon.beffect.visible = true;
 					//heroBody.GetUserData().arm.weapon.beffect.play();
-					//bul.ApplyImpulse(new b2Vec2(sxx* Math.cos(weaponAngle) * power, sxx* Math.sin(weaponAngle) * power), bul.GetPosition());
-					//}
+					bul.ApplyImpulse(new b2Vec2(sxx* Math.cos(weaponAngle) * power, sxx* Math.sin(weaponAngle) * power), bul.GetPosition());
+					}
 				}
 				//SoundM.me.playSound(SoundM.SHOOT);
 			}
@@ -366,9 +373,4 @@
 		}
 		
 	}
-}
-
-internal class Weponse{
-	public static const GUN:int = 2;
-	public static const Javelin:int = 3;
 }
