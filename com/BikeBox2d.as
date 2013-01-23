@@ -213,14 +213,14 @@
 			leftWheelRevoluteJoint=passWorld.CreateJoint(rjd) as b2RevoluteJoint;
 			pjd=new b2PrismaticJointDef();
 			pjd.lowerTranslation = -0.1;
-			pjd.upperTranslation = 0.1;
+			pjd.upperTranslation = 0.15;
 			pjd.enableMotor = true;
 			pjd.enableLimit = true;
 			pjd.Initialize(player_body,frent_axel,frent_axel.GetWorldCenter(),new b2Vec2(0,1));
 			rightAxlePrismaticJoint=passWorld.CreateJoint(pjd) as b2PrismaticJoint;
 			pjd=new b2PrismaticJointDef();
 			pjd.lowerTranslation = -0.1;
-			pjd.upperTranslation = 0.1;
+			pjd.upperTranslation = 0.15;
 			pjd.enableMotor = true;
 			pjd.enableLimit = true;
 			pjd.Initialize(player_body,back_axel,back_axel.GetWorldCenter(),new b2Vec2(0,1));
@@ -471,19 +471,20 @@
 		{
 			
 			if (left) {
-				player_body.ApplyTorque(20);
-				player_move_body.ApplyImpulse(new b2Vec2(-1.50,0.50),player_move_body.GetWorldCenter())
-				middliebody.ApplyImpulse(new b2Vec2(-2.8,0.5),middliebody.GetWorldCenter())
-				middliebody.SetLinearVelocity(new b2Vec2(-2,0))
-				headbody.ApplyImpulse(new b2Vec2(0.1,-0.1),headbody.GetWorldCenter())
+				player_body.ApplyTorque(-10);
+				player_move_body.ApplyImpulse(new b2Vec2(-0.50,0.50),player_move_body.GetWorldCenter())
+				middliebody.ApplyImpulse(new b2Vec2(-0.5,-1.0),middliebody.GetWorldCenter())
+				
+				//middliebody.SetLinearVelocity(new b2Vec2(-2,0))
+				//headbody.ApplyImpulse(new b2Vec2(0.1,-0.1),headbody.GetWorldCenter())
 				//legup.ApplyImpulse(new b2Vec2(-1,-0.50),legup.GetWorldCenter())
-				middliebody.SetAngularVelocity(30)
+				middliebody.SetAngularVelocity(-5)
 				
 			} else if (right) {
 				player_body.ApplyTorque(20);
 				player_move_body.ApplyImpulse(new b2Vec2(-0.50,0.50),player_move_body.GetWorldCenter())
-				middliebody.ApplyImpulse(new b2Vec2(1.3,0.2),middliebody.GetWorldCenter())
-				headbody.ApplyImpulse(new b2Vec2(0.0,-0.1),headbody.GetWorldCenter())
+				middliebody.ApplyImpulse(new b2Vec2(0.8,0.2),middliebody.GetWorldCenter())
+				//headbody.ApplyImpulse(new b2Vec2(1.2,0.1),headbody.GetWorldCenter())
 				//middliebody.ApplyTorque(-5)
 				middliebody.SetAngularVelocity(10)
 			} else {
@@ -496,10 +497,10 @@
 			}
 			if (up_key) {
 				speed -=  acceleration;
-				wheel_rotation=10
+				wheel_rotation=20
 			} else if (down_key) {
 				speed +=  acceleration ;
-				wheel_rotation=10
+				wheel_rotation=20
 			}else{
 				wheel_rotation=0.5
 			}

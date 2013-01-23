@@ -59,6 +59,7 @@
 			me = this;
 			myWorld = world;
 			addChild(sp);
+			
 			this.addEventListener(MouseEvent.CLICK,shootEnemy);  //we will add this for hero hand..
 			createDummyNext();
 			tweenBox = new TweenBox2d(this);
