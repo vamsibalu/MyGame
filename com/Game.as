@@ -55,7 +55,7 @@
 		//public var bike:Bike
 		public function Game(_dummyXML:XML = null)
 		{
-			super(_dummyXML);
+			super(_dummyXML,9000); //important assumes path width.. for shootEnemy event
 			me = this;
 			myWorld = world;
 			addChild(sp);

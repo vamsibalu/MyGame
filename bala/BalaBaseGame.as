@@ -31,9 +31,9 @@ package bala
 		//for game logics..
 		public var totalEnemys:int = 0;
 		
-		public function BalaBaseGame(_dummyXML:XML)
+		public function BalaBaseGame(_dummyXML:XML,ww:Number)
 		{
-			super();
+			super(ww);
 			
 			debugDraw = sp;
 			addChild(sp);
