@@ -180,11 +180,11 @@
 		}
 		public var heroIsDead:Boolean = false;
 		private function checkHeroPos():void{
-			if(heroBody && heroIsDead == false && (heroBody.GetWorldCenter().y*ptm_ratio) >= 400){
+			if(BikeBox2d.player_body && heroIsDead == false && (BikeBox2d.player_body.GetWorldCenter().y*ptm_ratio) >= 400){
 				trace("hero Down..")
 				dispatchEvent(new Event(LEVEL_FAIL));
 				heroIsDead = true;
-				deleteBodyAndData(heroBody);
+				deleteBodyAndData(BikeBox2d.player_body);
 				//stopRender();
 				SoundM.me.playSound(SoundM.HDIE);
 			}
@@ -214,7 +214,7 @@
 			
 			
 			if(BikeBox2d.player_body && BikeBox2d.player_body.GetUserData().hand){
-				
+				cameraMovement();
 				
 				var handPP:Point = BalaUtils.localToLocal(BikeBox2d.player_body.GetUserData(),this,new Point(BikeBox2d.player_body.GetUserData().hand.x,BikeBox2d.player_body.GetUserData().hand.y));
 				var diffx:Number =  handPP.x - mouseX;
@@ -348,7 +348,7 @@
 			var pos_x:Number;
 			var pos_y:Number;
 			
-			if (heroBody) {
+			if (BikeBox2d.player_body) {
 				pos_x=BikeBox2d.player_body.GetWorldCenter().x*ptm_ratio;
 				pos_y=BikeBox2d.player_body.GetWorldCenter().y*ptm_ratio;
 			} else {

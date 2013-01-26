@@ -66,7 +66,7 @@ package bala
 					case "hero":
 						ary = _levelAry[obj];
 						//trace("hero=",_levelAry[obj]);
-						createHero(ary[1],ary[2],ary[3],0);
+						//createHero(ary[1],ary[2],ary[3],0);
 						break;
 					case "enemy":
 						ary = _levelAry[obj];

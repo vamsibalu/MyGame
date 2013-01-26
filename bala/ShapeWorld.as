@@ -33,7 +33,7 @@
 	public class ShapeWorld extends BaseWorld
 	{
 		public var bodies:Vector.<b2Body> = new Vector.<b2Body>();
-		public var heroBody:b2Body;
+		//private var heroBody:b2Body;
 		//
 		public var ammoArray:Array = [];
 		public var currentWeapon:int;
@@ -68,7 +68,7 @@
 			
 		}
 		
-		public function createHero(bodyID:String,_xx:Number,_yy:Number,angle:Number){
+		/*public function createHero(bodyID:String,_xx:Number,_yy:Number,angle:Number){
 			bodyDef=new b2BodyDef()
 			bodyDef.type=b2Body.b2_dynamicBody;
 			bodyDef.position.Set(_xx/ptm_ratio,_yy/ptm_ratio)
@@ -92,7 +92,7 @@
 			heroBody = body;
 			bodies.push(body);
 			body.CreateFixture(fixtureDef);
-		}
+		}*/
 		
 		
 		public var enemyCount:int = 0;
