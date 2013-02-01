@@ -212,15 +212,15 @@
 			rjd.Initialize(back_wheel,back_axel,new b2Vec2(back_axel.GetWorldCenter().x,back_axel.GetWorldCenter().y+5/r2p));
 			leftWheelRevoluteJoint=passWorld.CreateJoint(rjd) as b2RevoluteJoint;
 			pjd=new b2PrismaticJointDef();
-			pjd.lowerTranslation = -0.1;
-			pjd.upperTranslation = 0.15;
+			pjd.lowerTranslation = -0.3;
+			pjd.upperTranslation = 0.5;
 			pjd.enableMotor = true;
 			pjd.enableLimit = true;
 			pjd.Initialize(player_body,frent_axel,frent_axel.GetWorldCenter(),new b2Vec2(0,1));
 			rightAxlePrismaticJoint=passWorld.CreateJoint(pjd) as b2PrismaticJoint;
 			pjd=new b2PrismaticJointDef();
-			pjd.lowerTranslation = -0.1;
-			pjd.upperTranslation = 0.15;
+			pjd.lowerTranslation = -0.3;
+			pjd.upperTranslation = 0.35;
 			pjd.enableMotor = true;
 			pjd.enableLimit = true;
 			pjd.Initialize(player_body,back_axel,back_axel.GetWorldCenter(),new b2Vec2(0,1));
@@ -472,8 +472,8 @@
 			
 			if (left) {
 				player_body.ApplyTorque(-10);
-				player_move_body.ApplyImpulse(new b2Vec2(-0.50,0.50),player_move_body.GetWorldCenter())
-				middliebody.ApplyImpulse(new b2Vec2(-0.5,-1.0),middliebody.GetWorldCenter())
+				player_move_body.ApplyImpulse(new b2Vec2(-0.50,-0.10),player_move_body.GetWorldCenter())
+				middliebody.ApplyImpulse(new b2Vec2(-0.5,-0.25),middliebody.GetWorldCenter())
 				
 				//middliebody.SetLinearVelocity(new b2Vec2(-2,0))
 				//headbody.ApplyImpulse(new b2Vec2(0.1,-0.1),headbody.GetWorldCenter())
