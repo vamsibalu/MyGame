@@ -128,6 +128,7 @@
 			tweenBox.addExtraEffectsIfAny();
 			bike = new BikeBox2d(world);
 			bike.create(100/30,300/30);
+			createRoad();
 		}
 		
 		private var dispatched:Boolean =  false;
@@ -182,11 +183,11 @@
 		private function checkHeroPos():void{
 			if(BikeBox2d.player_body && heroIsDead == false && (BikeBox2d.player_body.GetWorldCenter().y*ptm_ratio) >= 400){
 				trace("hero Down..")
-				dispatchEvent(new Event(LEVEL_FAIL));
-				heroIsDead = true;
-				deleteBodyAndData(BikeBox2d.player_body);
+				//dispatchEvent(new Event(LEVEL_FAIL));
+				//heroIsDead = true;
+				//deleteBodyAndData(BikeBox2d.player_body);
 				//stopRender();
-				SoundM.me.playSound(SoundM.HDIE);
+				//SoundM.me.playSound(SoundM.HDIE);
 			}
 		}
 		

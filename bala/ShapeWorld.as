@@ -13,6 +13,8 @@
 	import bala.Utils.BalaUtils;
 	import bala.vo.PlatFormType;
 	
+	import com.RoadPath;
+	import com.gamePathFile;
 	import com.greensock.TweenLite;
 	
 	import flash.display.BitmapData;
@@ -66,33 +68,18 @@
 			enemyMCS.push(new EN1(),new EN2(),new EN3(),new EN4(),new EN5(),new EN6(),new EN1(),new EN2(),new EN3(),new EN4(),new EN5(),new EN6(),new EN1(),new EN2(),new EN3(),new EN4(),new EN5(),new EN6());
 			trace("have enms=",enemyMCS.length);
 			
+		//	createRoad();
 		}
 		
-		/*public function createHero(bodyID:String,_xx:Number,_yy:Number,angle:Number){
-			bodyDef=new b2BodyDef()
-			bodyDef.type=b2Body.b2_dynamicBody;
-			bodyDef.position.Set(_xx/ptm_ratio,_yy/ptm_ratio)
-			bodyDef.userData=new HeroMC();
-			bodyDef.userData.arm.weapon.beffect.visible = false;
-			bodyDef.userData.name = "hero";
-			bodyDef.userData.bodyID = bodyID;
-			debugging==false?addChildAt(bodyDef.userData,1):"";
-			if(angle!=0){
-				bodyDef.angle=Math.PI/angle
-			}
-			boxDef=new b2PolygonShape()
-			boxDef.SetAsBox(realPixels(30),realPixels(40))
-			fixtureDef=new b2FixtureDef();
-			fixtureDef.density=5;
-			fixtureDef.friction=0.1;
-			fixtureDef.restitution=0;
-			fixtureDef.shape=boxDef
-			fixtureDef.filter.groupIndex = -5;
-			body=world.CreateBody(bodyDef)
-			heroBody = body;
-			bodies.push(body);
-			body.CreateFixture(fixtureDef);
-		}*/
+		var roadPath:gamePathFile=new gamePathFile()
+		//var roadPath:RoadPath=new RoadPath()	
+		public function createRoad():void
+		{
+		var bodyroad:b2Body=roadPath.creates(world)
+			//var bodyroad:b2Body=roadPath.createBody("wholepath2",world,0,new MovieClip());
+			//trace(bodyroad.GetWorldCenter().x," road positionn.........")
+		}
+		
 		
 		
 		public var enemyCount:int = 0;
