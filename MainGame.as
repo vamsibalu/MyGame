@@ -101,8 +101,8 @@ package
 			trace("selected level=",Game.currentLevel )
 			removeAllPagesButNotOne(gg);
 			gg.loadMyLevelForPreview(gg.allLevels[Game.currentLevel]);
-			gg.addChild(footer);
-			addChild(gg);
+			addChild(footer);
+			//addChild(gg);
 		}
 		
 		private function showMenu(e:MouseEvent):void{
@@ -136,7 +136,7 @@ package
 			//balautils.remove(menu_mc);
 			removeAllPagesButNotOne(gg);
 			gg.loadMyLevelForPreview(gg.allLevels[Game.currentLevel]);
-			gg.addChild(footer);
+			addChild(footer);
 			var popup11:PopUpmc2 = new PopUpmc2();
 			popup11.x = 129.95;
 			popup11.y = 199.25;
@@ -179,8 +179,8 @@ package
 			if(Game.trying<Game.canTryUpto){
 				removeAllPagesButNotOne(gg);
 				gg.loadMyLevelForPreview(gg.allLevels[Game.currentLevel]);
-				gg.addChild(footer);
-				addChild(gg);
+				addChild(footer);
+				//addChild(gg);
 			}else{
 				removeAllPagesButNotOne(gameOver_mc);
 				SoundM.me.playSound(SoundM.GAME_OVER,true);
@@ -194,8 +194,8 @@ package
 			trace("selected level=",Game.currentLevel)
 			removeAllPagesButNotOne(gg);
 			gg.loadMyLevelForPreview(gg.allLevels[Game.currentLevel]);
-			gg.addChild(footer);
-			addChild(gg);
+			addChild(footer);
+			//addChild(gg);
 		}
 		
 		private function showhelpfun(e:MouseEvent):void{
