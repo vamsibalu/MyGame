@@ -107,10 +107,10 @@
 			bodyDef.position.Set(bikeBluePrint.bikemainbody.x/30,bikeBluePrint.bikemainbody.y/30);
 			//trace(_xx,_yy,bikeBluePrint.body.x,bikeBluePrint.body.x/30,bikeBluePrint.body.x/17,"arjj")
 			bodyDef.type = b2Body.b2_dynamicBody;
-			bodyDef.userData=new BikeBody_MC();
+			bodyDef.userData=bikeBluePrint.body;//new BikeBody_MC();
 			Game.me.currentWeponMC = bodyDef.userData.hand.currentWepon;
 			Game.me.handMC = bodyDef.userData.hand;
-			bodyDef.userData.alpha=1
+			//bodyDef.userData.alpha=1
 			Game.me.addChild(bodyDef.userData);
 			body_skin=bodyDef.userData
 			boxDef=new b2PolygonShape();
@@ -165,7 +165,7 @@
 			bodyDef=new b2BodyDef();
 			bodyDef.position.Set(frent_axel.GetWorldCenter().x,frent_axel.GetWorldCenter().y+5/r2p);
 			bodyDef.type = b2Body.b2_dynamicBody;
-			bodyDef.userData=new Wheel_MC();
+			bodyDef.userData = bikeBluePrint.wf;//new Wheel_MC();
 			bodyDef.userData.width = (bikeBluePrint.wf.width)
 			//bodyDef.userData.width = bikeBluePrint.wf.width
 			bodyDef.userData.height = (bikeBluePrint.wf.width)
@@ -186,7 +186,7 @@
 			bodyDef=new b2BodyDef();
 			bodyDef.position.Set(back_axel.GetWorldCenter().x,back_axel.GetWorldCenter().y+5/r2p);
 			bodyDef.type = b2Body.b2_dynamicBody;
-			bodyDef.userData=new Wheel_MC();
+			bodyDef.userData= bikeBluePrint.wb;//new Wheel_MC();
 			bodyDef.userData.width = bikeBluePrint.wb.width
 			bodyDef.userData.height = bikeBluePrint.wb.width
 			Game.me.addChild(bodyDef.userData);
