@@ -1,5 +1,7 @@
 ﻿package com
 {
+	import Assets.Main;
+	
 	import Box2D.Collision.Shapes.b2CircleShape;
 	import Box2D.Collision.Shapes.b2PolygonShape;
 	import Box2D.Common.Math.b2Vec2;
@@ -89,6 +91,33 @@
 		private var passWorld:b2World;
 		public var motorPower:Number = 10;
 		
+		//// Object vals ////////////////	
+		////density//////////
+		private var density:Number = 0.5
+		private var cardenstiy:Number
+		private var FaxelDenstiy:Number
+		private var BaxelDenstiy:Number
+		private var FwheelDenstiy:Number
+		private var BwheelDenstiy:Number
+		private var AllBpartsDensity:Number	= 0.1	
+		//Frictions///////////
+		private var friction:Number = 0.5
+		private var carfriction:Number
+		private var FaxelFriction:Number
+		private var BaxelFriction:Number
+		private var FwheelFriction:Number
+		private var BwheelFriction:Number
+		private var AllBpartsFriction:Number = 0.5
+		///Restitution////////
+		private var restitution:Number = 0.5
+		private var carRestitution:Number
+		private var FaxelRestitution:Number
+		private var BaxelRestitution:Number
+		private var FwheelRestitution:Number
+		private var BwheelRestitution:Number
+		private var AllBpartsRestitution:Number = 0.1
+		///////End ObjectVals////////////////	
+		
 		
 		public function BikeBox2d(_passWorld:b2World)
 		{
@@ -116,7 +145,7 @@
 			boxDef=new b2PolygonShape();
 			boxDef.SetAsBox((bikeBluePrint.bikemainbody.width/2)/worldScale,(bikeBluePrint.bikemainbody.height/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = 0;
+			fixtureDef.density = 6;
 			fixtureDef.friction = 1;
 			fixtureDef.restitution = 0.2;
 			fixtureDef.shape = boxDef;
@@ -127,7 +156,7 @@
 			fixtureDef.shape=boxDef
 			player_body.CreateFixture(fixtureDef)
 			
-			//frent axel;
+			////// frent axel;
 			trace("rotation6  "+ player_body.GetAngle())
 			bodyDef=new b2BodyDef();
 			//trace(axleContainerDistance_Wb,axleContainerDistance_Wf,"arj")
@@ -138,14 +167,16 @@
 			boxDef=new b2PolygonShape();
 			boxDef.SetAsBox(3/r2p,5/r2p);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = 0.5;
-			fixtureDef.friction = 0.5;
+			fixtureDef.density = 3;
+			fixtureDef.friction = friction;
 			fixtureDef.restitution = 0.2;
 			fixtureDef.shape = boxDef;
 			fixtureDef.filter.groupIndex = -1;
 			frent_axel = passWorld.CreateBody(bodyDef);
 			frent_axel.CreateFixture(fixtureDef);
-			//back axel;
+			
+			////// back axel;
+			
 			bodyDef=new b2BodyDef();
 			bodyDef.position.Set(bikeBluePrint.wb.x/30,(bikeBluePrint.wb.y-12)/30);
 			//bodyDef.position.Set(_xx-39/r2p,_yy+8/r2p);
@@ -153,8 +184,8 @@
 			boxDef=new b2PolygonShape();
 			boxDef.SetAsBox(3/r2p,5/r2p);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = 0.5;
-			fixtureDef.friction = 0.5;
+			fixtureDef.density = 3;
+			fixtureDef.friction = friction;
 			fixtureDef.restitution = 0.2;
 			fixtureDef.shape = boxDef;
 			fixtureDef.filter.groupIndex = -1;
@@ -175,14 +206,14 @@
 			trace(13 / r2p,"jhjjhjkk", bikeBluePrint.wf.width/worldScale)
 			circleDef = new b2CircleShape( (bikeBluePrint.wf.width/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = 1;
-			fixtureDef.friction = 0.5;
+			fixtureDef.density = 0.5;
+			fixtureDef.friction = friction+1;
 			fixtureDef.restitution = 0.5;
 			fixtureDef.filter.groupIndex = -1;
 			fixtureDef.shape = circleDef;
 			frent_wheel = passWorld.CreateBody(bodyDef);
 			frent_wheel.CreateFixture(fixtureDef);
-			//back wheel;
+			////// back wheel;
 			bodyDef=new b2BodyDef();
 			bodyDef.position.Set(back_axel.GetWorldCenter().x,back_axel.GetWorldCenter().y+5/r2p);
 			bodyDef.type = b2Body.b2_dynamicBody;
@@ -194,8 +225,8 @@
 			//circleDef = new b2CircleShape(13 / r2p);
 			circleDef = new b2CircleShape( (bikeBluePrint.wb.width/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = 1;
-			fixtureDef.friction = 0.5;
+			fixtureDef.density = 0.5;
+			fixtureDef.friction = friction+1;
 			fixtureDef.restitution = 0.5;
 			fixtureDef.filter.groupIndex = -1;
 			fixtureDef.shape = circleDef;
@@ -212,15 +243,15 @@
 			rjd.Initialize(back_wheel,back_axel,new b2Vec2(back_axel.GetWorldCenter().x,back_axel.GetWorldCenter().y+5/r2p));
 			leftWheelRevoluteJoint=passWorld.CreateJoint(rjd) as b2RevoluteJoint;
 			pjd=new b2PrismaticJointDef();
-			pjd.lowerTranslation = -0.3;
+			pjd.lowerTranslation = -0.1;
 			pjd.upperTranslation = 0.5;
 			pjd.enableMotor = true;
 			pjd.enableLimit = true;
 			pjd.Initialize(player_body,frent_axel,frent_axel.GetWorldCenter(),new b2Vec2(0,1));
 			rightAxlePrismaticJoint=passWorld.CreateJoint(pjd) as b2PrismaticJoint;
 			pjd=new b2PrismaticJointDef();
-			pjd.lowerTranslation = -0.3;
-			pjd.upperTranslation = 0.35;
+			pjd.lowerTranslation = -0.1;
+			pjd.upperTranslation = 0.5 ;
 			pjd.enableMotor = true;
 			pjd.enableLimit = true;
 			pjd.Initialize(player_body,back_axel,back_axel.GetWorldCenter(),new b2Vec2(0,1));
@@ -273,7 +304,7 @@
 			boxDef=new b2PolygonShape()
 			boxDef.SetAsBox(4/r2p,7/r2p)
 			fixtureDef=new b2FixtureDef()
-			fixtureDef.density=0.1
+			fixtureDef.density=AllBpartsDensity
 			fixtureDef.friction=0.4
 			fixtureDef.restitution=0.1
 			fixtureDef.shape=boxDef
@@ -297,7 +328,7 @@
 			boxDef=new b2PolygonShape()
 			boxDef.SetAsBox(6/r2p,3/r2p)
 			fixtureDef=new b2FixtureDef()
-			fixtureDef.density=0.1
+			fixtureDef.density=AllBpartsDensity
 			fixtureDef.friction=0.4
 			fixtureDef.restitution=0.1
 			fixtureDef.shape=boxDef
@@ -320,8 +351,8 @@
 			boxDef=new b2PolygonShape()
 			boxDef.SetAsBox(3/r2p,6/r2p)
 			fixtureDef=new b2FixtureDef()
-			fixtureDef.density=0.1
-			fixtureDef.friction=0.4
+			fixtureDef.density=AllBpartsDensity
+			fixtureDef.friction=AllBpartsFriction
 			fixtureDef.restitution=0.1
 			fixtureDef.shape=boxDef
 			fixtureDef.filter.groupIndex=-1
@@ -344,9 +375,9 @@
 			boxDef=new b2PolygonShape()
 			boxDef.SetAsBox(5/r2p,2/r2p)
 			fixtureDef=new b2FixtureDef()
-			fixtureDef.density=0.1
-			fixtureDef.friction=0.4
-			fixtureDef.restitution=0.1
+			fixtureDef.density=AllBpartsDensity
+			fixtureDef.friction=AllBpartsFriction
+			fixtureDef.restitution=AllBpartsRestitution
 			fixtureDef.shape=boxDef
 			//fixtureDef.filter.groupIndex=-1
 			uprhandBody=passWorld.CreateBody(bodyDef)
@@ -368,9 +399,9 @@
 			boxDef=new b2PolygonShape()
 			boxDef.SetAsBox(4/r2p,2/r2p)
 			fixtureDef=new b2FixtureDef()
-			fixtureDef.density=0.1
-			fixtureDef.friction=0.4
-			fixtureDef.restitution=0.1
+			fixtureDef.density=AllBpartsDensity
+			fixtureDef.friction=AllBpartsFriction
+			fixtureDef.restitution=AllBpartsRestitution
 			fixtureDef.shape=boxDef
 			//fixtureDef.filter.groupIndex=-1
 			lwrhandBody=passWorld.CreateBody(bodyDef)
@@ -391,9 +422,9 @@
 			Game.me.addChild(bodyDef.userData);
 			circleDef=new b2CircleShape(4/r2p)
 			fixtureDef=new b2FixtureDef()
-			fixtureDef.density=0.1
-			fixtureDef.friction=0.4
-			fixtureDef.restitution=0.1
+			fixtureDef.density=AllBpartsDensity
+			fixtureDef.friction=AllBpartsFriction
+			fixtureDef.restitution=AllBpartsRestitution
 			fixtureDef.shape=circleDef
 			//fixtureDef.filter.groupIndex=-1
 			headbody=passWorld.CreateBody(bodyDef)
@@ -471,22 +502,24 @@
 		{
 			
 			if (left) {
-				player_body.ApplyTorque(-10);
+				player_body.ApplyTorque(-50);
 				player_move_body.ApplyImpulse(new b2Vec2(-0.50,-0.10),player_move_body.GetWorldCenter())
 				middliebody.ApplyImpulse(new b2Vec2(-0.5,-0.25),middliebody.GetWorldCenter())
 				
 				//middliebody.SetLinearVelocity(new b2Vec2(-2,0))
 				//headbody.ApplyImpulse(new b2Vec2(0.1,-0.1),headbody.GetWorldCenter())
 				//legup.ApplyImpulse(new b2Vec2(-1,-0.50),legup.GetWorldCenter())
-				middliebody.SetAngularVelocity(-5)
+				//middliebody.SetAngularVelocity(-5)
+				//player_body.SetAngularVelocity(-5)	
 				
 			} else if (right) {
-				player_body.ApplyTorque(20);
+				player_body.ApplyTorque(70);
 				player_move_body.ApplyImpulse(new b2Vec2(-0.50,0.50),player_move_body.GetWorldCenter())
 				middliebody.ApplyImpulse(new b2Vec2(0.8,0.2),middliebody.GetWorldCenter())
 				//headbody.ApplyImpulse(new b2Vec2(1.2,0.1),headbody.GetWorldCenter())
-				//middliebody.ApplyTorque(-5)
-				middliebody.SetAngularVelocity(10)
+				middliebody.ApplyTorque(-5)
+				
+				
 			} else {
 				player_body.ApplyTorque(0);
 			}
@@ -495,23 +528,23 @@
 			} else {
 				speed = 0;
 			}
+			//trace("speed:",speed)
 			if (up_key) {
-				speed -=  acceleration;
-				wheel_rotation=20
+				speed -=  50
+				wheel_rotation=30
+				
 			} else if (down_key) {
-				speed +=  acceleration ;
-				wheel_rotation=20
+				speed +=  50
+				wheel_rotation=30
 			}else{
-				wheel_rotation=0.5
+				wheel_rotation=0
 			}
+			
 			
 			rightWheelRevoluteJoint.SetMotorSpeed(speed);
 			rightWheelRevoluteJoint.SetMaxMotorTorque(wheel_rotation);
 			leftWheelRevoluteJoint.SetMotorSpeed(speed);
 			leftWheelRevoluteJoint.SetMaxMotorTorque(wheel_rotation);
-			//trace(((-Physics.m2p*player_body.GetWorldCenter().x+SCREEN_WIDTH/2-player_body.GetLinearVelocity().x*5))/3+" screen")
-			//screen.x-=30+(screen.x-(-Physics.m2p*player_body.GetWorldCenter().x+SCREEN_WIDTH/2-player_body.GetLinearVelocity().x*5))/3;
-			//screen.y -= (screen.y - (-Physics.m2p*player_body.GetWorldCenter().y + 2*SCREEN_HEIGHT/4 + player_body.GetLinearVelocity().y*6))/3;
 			
 			
 		}
