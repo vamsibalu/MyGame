@@ -6,6 +6,7 @@ package
 	import bala.Utils.BalaUtils;
 	
 	import com.Game;
+	import com.Stats;
 	
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
@@ -79,6 +80,8 @@ package
 			stage.addEventListener(KeyboardEvent.KEY_UP,keyUpf);
 			BodyContacts.setGame(gg);
 			sndManager = new SoundM();
+			var sts:Stats = new Stats();
+			addChild(sts);
 		}
 		
 		private function levelFail(e:Event):void{
