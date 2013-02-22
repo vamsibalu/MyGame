@@ -54,7 +54,7 @@
 		public static const Javelin:int = 3;
 		public var bykeOnFloor:Boolean;
 		
-		public var maxCamMoveX:Number = 10000;
+		public var maxCamMoveX:Number = 15000;
 		public var maxCamMoveY:Number = 680;
 		//public var bike:Bike
 		public function Game(_dummyXML:XML = null)
@@ -152,7 +152,7 @@
 			}
 			
 			
-			//createRoad();
+			createRoad();
 		}
 		
 		private var dispatched:Boolean =  false;
@@ -218,8 +218,8 @@
 				}
 				
 				if(plyPos.x>=destinationPoint.x && dispatched == false){
-					dispatchEvent(new Event(Game.NEXT_LEVEL));
-					dispatched = true;
+					//dispatchEvent(new Event(Game.NEXT_LEVEL));
+					//dispatched = true;
 					trace("You done it..")
 				}
 			}

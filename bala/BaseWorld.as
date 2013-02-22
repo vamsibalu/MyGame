@@ -131,7 +131,11 @@
 					mcc.y=Body.GetPosition().y*ptm_ratio;
 					
 					// set the rotation of the sprite
-					mcc.rotation = Body.GetAngle() * RadtoDeg ;
+					if(mcc.name == "wf" || mcc.name == "wb"){
+						mcc.rotation = Body.GetAngle() * RadtoDeg;
+					}else{
+						mcc.rotation = Body.GetAngle() * RadtoDeg ;
+					}
 					//fallower(Body);
 				}
 			}
