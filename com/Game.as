@@ -119,7 +119,7 @@
 			
 			forArrowsCheck() //bala added for arrows
 		}
-		
+		public var destinationPoint:b2Vec2;
 		public override function loadMyLevelForPreview(_levelAry:Array):void{
 			dispatched = false;
 			heroIsDead = false;
@@ -137,6 +137,21 @@
 			tweenBox.addExtraEffectsIfAny();
 			bike = new BikeBox2d(world);
 			bike.create(100/30,300/30);
+			switch(currentLevel)
+			{
+				case 1:
+				{
+					destinationPoint = getBodyByID("ID_23").GetPosition();
+					break;
+				}
+					
+				default:
+				{
+					break;
+				}
+			}
+			
+			
 			//createRoad();
 		}
 		
@@ -190,13 +205,23 @@
 		}
 		public var heroIsDead:Boolean = false;
 		private function checkHeroPos():void{
-			if(BikeBox2d.player_body && heroIsDead == false && (BikeBox2d.player_body.GetWorldCenter().y*ptm_ratio) >= 400){
-				trace("hero Down..")
-				//dispatchEvent(new Event(LEVEL_FAIL));
-				//heroIsDead = true;
-				//deleteBodyAndData(BikeBox2d.player_body);
-				//stopRender();
-				//SoundM.me.playSound(SoundM.HDIE);
+			if(BikeBox2d.player_body){
+				var plyPos:b2Vec2 = BikeBox2d.player_body.GetWorldCenter();
+				var plyAng:Number = BikeBox2d.player_body.GetAngle();
+				if(heroIsDead == false && plyAng>180){
+					trace("hero Down..")
+					//dispatchEvent(new Event(LEVEL_FAIL));
+					//heroIsDead = true;
+					//deleteBodyAndData(BikeBox2d.player_body);
+					//stopRender();
+					//SoundM.me.playSound(SoundM.HDIE);
+				}
+				
+				if(plyPos.x>=destinationPoint.x && dispatched == false){
+					dispatchEvent(new Event(Game.NEXT_LEVEL));
+					dispatched = true;
+					trace("You done it..")
+				}
 			}
 		}
 		
