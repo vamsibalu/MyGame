@@ -217,7 +217,7 @@
 			circleDef = new b2CircleShape( (bikeBluePrint.wf.width/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
 			fixtureDef.density = 0.5;
-			fixtureDef.friction = friction+1;
+			fixtureDef.friction = friction;
 			fixtureDef.restitution = 0.5;
 			fixtureDef.filter.groupIndex = -1;
 			fixtureDef.shape = circleDef;
@@ -239,7 +239,7 @@
 			circleDef = new b2CircleShape( (bikeBluePrint.wb.width/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
 			fixtureDef.density = 0.5;
-			fixtureDef.friction = friction+1;
+			fixtureDef.friction = friction;
 			fixtureDef.restitution = 0.5;
 			fixtureDef.filter.groupIndex = -1;
 			fixtureDef.shape = circleDef;

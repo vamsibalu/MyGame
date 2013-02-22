@@ -14,13 +14,14 @@
 	import com.vo.PlatFormType;
 	
 	import flash.display.MovieClip;
+	import flash.display.Shape;
 	import flash.display.SimpleButton;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.utils.Timer;
-
+	
 	//import com.data.Bike;
 	
 	public class Game extends BalaBaseGame
@@ -53,6 +54,8 @@
 		public static const Javelin:int = 3;
 		public var bykeOnFloor:Boolean;
 		
+		public var maxCamMoveX:Number = 10000;
+		public var maxCamMoveY:Number = 680;
 		//public var bike:Bike
 		public function Game(_dummyXML:XML = null)
 		{
@@ -74,6 +77,11 @@
 			trying = 0;
 			
 			addEventListener(Event.ADDED_TO_STAGE,added);
+			//testing..
+			
+			var bg:Shape = new Shape();
+			graphics.beginFill(0xcccccc,.5);
+			graphics.drawRect(0,0,640,480);
 		}
 		
 		private function added(e:Event):void{
@@ -259,10 +267,10 @@
 					var bul:b2Body = createBullet(handMC);
 					//addChild(new BulletTracer(bul));
 					if(currentWeponMC){
-					var sxx:Number = 1;//heroBody.GetUserData().scaleX;
-					//heroBody.GetUserData().arm.weapon.beffect.visible = true;
-					//heroBody.GetUserData().arm.weapon.beffect.play();
-					bul.ApplyImpulse(new b2Vec2(sxx* Math.cos(weaponAngle) * power, sxx* Math.sin(weaponAngle) * power), bul.GetPosition());
+						var sxx:Number = 1;//heroBody.GetUserData().scaleX;
+						//heroBody.GetUserData().arm.weapon.beffect.visible = true;
+						//heroBody.GetUserData().arm.weapon.beffect.play();
+						bul.ApplyImpulse(new b2Vec2(sxx* Math.cos(weaponAngle) * power, sxx* Math.sin(weaponAngle) * power), bul.GetPosition());
 					}
 				}
 				//SoundM.me.playSound(SoundM.SHOOT);
@@ -355,26 +363,27 @@
 				pos_y=BikeBox2d.player_body.GetWorldCenter().y*ptm_ratio;
 			} else {
 				//pos_x=the_cannonball_itself.GetWorldCenter().x*world_scale;
-				//pos_y=the_cannonball_itself.GetWorldCenter().y*world_scale;
+				//pos_y=the_cannonball_itself.GetWorldCenter().y*world_scale; what is
 			}
-			pos_x=stage.stageWidth/2-pos_x;
-			if (pos_x<0-width) {
-				pos_x=-width;
+			pos_x=320-pos_x;
+			if (pos_x<-maxCamMoveX) {
+				pos_x=-(maxCamMoveX-640);
 			}
 			if (pos_x>0) {
 				pos_x=0;
 			}
 			x=pos_x;
-			pos_y=stage.stageHeight/2-pos_y;
-			if (pos_y<0-15) {
-				pos_y=-15;
+			pos_y=240-pos_y;
+			if (pos_y<-200) {
+				pos_y=-200;
 			}
-			if (pos_y>285) {
-				pos_y=285;
+			if (pos_y>0) {
+				pos_y=0;
 			}
-			//y=pos_y;
+			y=(pos_y+100);
 			
 			MainGame.me.BGG.x = x;
+			MainGame.me.BGG.y = pos_y;
 		}
 		
 	}
