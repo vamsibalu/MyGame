@@ -51,6 +51,7 @@
 		public var bike:BikeBox2d;
 		public static const GUN:int = 2;
 		public static const Javelin:int = 3;
+		public var bykeOnFloor:Boolean;
 		
 		//public var bike:Bike
 		public function Game(_dummyXML:XML = null)
@@ -128,7 +129,7 @@
 			tweenBox.addExtraEffectsIfAny();
 			bike = new BikeBox2d(world);
 			bike.create(100/30,300/30);
-			createRoad();
+			//createRoad();
 		}
 		
 		private var dispatched:Boolean =  false;
@@ -357,8 +358,8 @@
 				//pos_y=the_cannonball_itself.GetWorldCenter().y*world_scale;
 			}
 			pos_x=stage.stageWidth/2-pos_x;
-			if (pos_x<0-4500) {
-				pos_x=-4500;
+			if (pos_x<0-width) {
+				pos_x=-width;
 			}
 			if (pos_x>0) {
 				pos_x=0;
@@ -371,7 +372,9 @@
 			if (pos_y>285) {
 				pos_y=285;
 			}
-			y=pos_y;
+			//y=pos_y;
+			
+			MainGame.me.BGG.x = x;
 		}
 		
 	}

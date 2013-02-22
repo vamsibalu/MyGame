@@ -1,8 +1,11 @@
 ﻿package bala
 {
+	import Box2D.Collision.b2ContactPoint;
 	import Box2D.Collision.b2Manifold;
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.Contacts.b2Contact;
+	import Box2D.Dynamics.Contacts.b2ContactResult;
 	import Box2D.Dynamics.Joints.b2JointEdge;
 	import Box2D.Dynamics.Joints.b2WeldJointDef;
 	import Box2D.Dynamics.b2Body;
@@ -36,6 +39,7 @@
 			var b2:b2Body = contact.GetFixtureB().GetBody();
 			var mc1:MovieClip = b1.GetUserData();
 			var mc2:MovieClip = b2.GetUserData();
+			//trace(contact.GetManifold().m_localPoint);
 			
 			if(mc1 && mc2 && game){
 				if(mc1.name == "bullet" && (mc2.name == "notmoving" || mc2.name == "glass" || mc2.name == "block" || mc2.name == "rock"||mc2.name == "nife")){
@@ -93,9 +97,21 @@
 					SoundM.me.playSound(SoundM.STEEL);
 				}
 				
+				
+				//for track and wheel detection.
+				if(mc1.name == "notmoving" && (mc2.name == "wb" || mc2.name == "wf")){
+					game.bykeOnFloor = true;
+					trace("touched=",contact.IsContinuous(),game.bykeOnFloor);
+				}else if(mc2.name == "notmoving" && (mc1.name == "wb" || mc1.name == "wf")){
+					game.bykeOnFloor = true;
+					trace("touched=",contact.IsContinuous(),game.bykeOnFloor);
+				}else{
+					game.bykeOnFloor = false;
+				}
+				
+				//trace("touched=",contact.IsContinuous(),game.bykeOnFloor);
 			}
 		}
-		
 		
 		
 		//for arrow Hit Bala

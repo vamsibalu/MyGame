@@ -210,6 +210,7 @@
 			//bodyDef.userData.width = bikeBluePrint.wf.width
 			bodyDef.userData.height = (bikeBluePrint.wf.width)
 			Game.me.addChild(bodyDef.userData);
+			Game.me.addChild(bikeBluePrint.wfshadow);//its wheel shadow
 			//Physics.frent_wheel_skin=bodyDef.userData
 			//circleDef = new b2CircleShape(13 / r2p);
 			trace(13 / r2p,"jhjjhjkk", bikeBluePrint.wf.width/worldScale)
@@ -221,6 +222,8 @@
 			fixtureDef.filter.groupIndex = -1;
 			fixtureDef.shape = circleDef;
 			frent_wheel = passWorld.CreateBody(bodyDef);
+			//frent_wheel.SetBullet(true);
+			//frent_wheel.GetUserData().name2 = "wheelf";
 			frent_wheel.CreateFixture(fixtureDef);
 			////// back wheel;
 			bodyDef=new b2BodyDef();
@@ -230,6 +233,7 @@
 			bodyDef.userData.width = bikeBluePrint.wb.width
 			bodyDef.userData.height = bikeBluePrint.wb.width
 			Game.me.addChild(bodyDef.userData);
+			Game.me.addChild(bikeBluePrint.wbshadow);//its wheel shadow
 			back_wheel_skin=bodyDef.userData
 			//circleDef = new b2CircleShape(13 / r2p);
 			circleDef = new b2CircleShape( (bikeBluePrint.wb.width/2)/worldScale);
@@ -460,7 +464,7 @@
 			rjd1.Initialize(lwrhandBody,player_body,new b2Vec2(_x1+8/r2p,_y1-8/r2p))
 			b_and_c_joint2=passWorld.CreateJoint(rjd1) as b2RevoluteJoint
 			
-			heroDead(true,true)
+			//heroDead(true,true)
 			
 		}
 		public function bikeRotation()
@@ -547,7 +551,7 @@
 				//headbody.ApplyImpulse(new b2Vec2(0.1,-0.1),headbody.GetWorldCenter())
 				//legup.ApplyImpulse(new b2Vec2(-1,-0.50),legup.GetWorldCenter())
 				//middliebody.SetAngularVelocity(-5)
-				//player_body.SetAngularVelocity(-5)	
+				//player_body.SetAngularVelocity(-5)
 				
 			} else if (right) {
 				player_body.ApplyTorque(70);
@@ -601,6 +605,10 @@
 			spring_2.SetMaxMotorForce(5+Math.abs(springIncrementor*Math.pow(spring_2.GetJointTranslation(), 2)));
 			spring_2.SetMotorSpeed(-4*Math.pow(spring_2.GetJointTranslation(), 1));
 			
+			bikeBluePrint.wfshadow.x = bikeBluePrint.wf.x;
+			bikeBluePrint.wfshadow.y = bikeBluePrint.wf.y;
+			bikeBluePrint.wbshadow.x = bikeBluePrint.wb.x;
+			bikeBluePrint.wbshadow.y = bikeBluePrint.wb.y;
 			
 		}
 		

@@ -3,11 +3,16 @@
 	import com.ExplosionMc;
 	import com.greensock.TweenLite;
 	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	import flash.filters.DropShadowFilter;
+	import flash.geom.ColorTransform;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.text.AntiAliasType;
 	import flash.text.Font;
 	import flash.text.StaticText;
@@ -233,5 +238,106 @@
 			
 			return Math.round(value * p) / p;
 		}
+		
+		
+		/*
+		method:formatTime
+		Parameters:
+		time:Number
+		returns: String
+		*/
+		private function formatTime (time:Number):String
+		{
+			var remainder:Number;
+			var hours:Number = time / ( 60 * 60 );
+			remainder = hours - (Math.floor ( hours ));
+			hours = Math.floor ( hours );
+			var minutes = remainder * 60;
+			remainder = minutes - (Math.floor ( minutes ));
+			minutes = Math.floor ( minutes );
+			var seconds = remainder * 60;
+			remainder = seconds - (Math.floor ( seconds ));
+			seconds = Math.floor ( seconds );
+			var hString:String = hours < 10 ? "0" + hours : "" + hours;
+			var mString:String = minutes < 10 ? "0" + minutes : "" + minutes;
+			var sString:String = seconds < 10 ? "0" + seconds : "" + seconds;
+			if ( time < 0 || isNaN(time)) return "00:00";
+			if ( hours > 0 )
+			{          
+				return hString + ":" + mString + ":" + sString;
+			}else{
+				return mString + ":" + sString;
+			}
+		}
+		
+		/*
+		Method: createHyperLink
+		Parameters:
+		inTField:TextField
+		inUrl:String
+		inColor:uint
+		Returns:
+		*/
+		private function createHyperLink(inTField:TextField,inUrl:String,inColor:uint=0x0000FF):void
+		{
+			var tFormat:TextFormat = new TextFormat();
+			tFormat.color = inColor;
+			tFormat.underline = true;
+			tFormat.url = inUrl;
+			inTField.setTextFormat(tFormat);
+		}
+		
+		/*
+		Method:changeDisplayObjectColor
+		Parameters:
+		inSrc:*
+		inColor:uint
+		Return:
+		*/
+		private function changeDisplayObjectColor(inSrc:*,inColor:uint= 0x000000):void
+		{      
+			var colorTrans:ColorTransform = inSrc.transform.colorTransform;
+			colorTrans.color = inColor;
+			inSrc.transform.colorTransform = colorTrans;
+		}
+		
+		
+		/*Group and cache items in a display object.
+		Method: groupAndCache
+		Parameters:
+		src:*
+		Return:
+		*/
+		public function groupAndCache(src:*):void{
+			
+			src.cacheAsBitmap = true;
+			var bmData:BitmapData = new BitmapData(src.width, src.height, true, 0x000000);
+			bmData.draw(src);          
+			var bm:Bitmap = new Bitmap(bmData, "auto", true);          
+			while(src.numChildren > 0){
+				src.removeChildAt(0);
+			}      
+			src.addChild(bm);
+		}
+		
+		
+		/*Take a snap shot of a Dispaly Object and returns a bitmap.
+		Method:snapClip
+		Parameters:
+		src:*
+		Return:
+		Bitmap
+		*/
+		public function snapClip( src:* ):Bitmap
+		{
+			var bmp:Bitmap;
+			var bounds:Rectangle = src.getBounds( src );
+			var bmpData:BitmapData = new BitmapData( int( bounds.width + 0.5 ), int( bounds.height + 0.5 ), true, 0 );
+			bmpData.draw( src, new Matrix(1,0,0,1,-bounds.x,-bounds.y) );
+			bmp = new Bitmap(bmpData,"auto",true);
+			return bmp;
+		}
+		
+		
 	}
 }

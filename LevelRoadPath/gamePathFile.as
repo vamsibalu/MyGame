@@ -718,7 +718,7 @@
 			bodyDef.position.Set(0, 12);
 			bodyDef.userData=new MovieClip();
 			bodyDef.userData.alpha=0
-			bodyDef.userData.name="gronddddddddddddddd"
+			bodyDef.userData.name="notmoving";
 			//this_parent.addChildAt(bodyDef.userData,0);
 			body = world.CreateBody(bodyDef);
 			my_arr=new Array(arr1)
