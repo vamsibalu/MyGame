@@ -226,7 +226,7 @@
 			fixtureDef.filter.groupIndex = -1;
 			fixtureDef.shape = circleDef;
 			frent_wheel = passWorld.CreateBody(bodyDef);
-			//frent_wheel.SetBullet(true);
+			frent_wheel.SetBullet(true);
 			//frent_wheel.GetUserData().name2 = "wheelf";
 			frent_wheel.CreateFixture(fixtureDef);
 			////// back wheel;
@@ -278,6 +278,9 @@
 			trace(_xx,"centerrr ",_yy)
 			//character(_xx,_yy)
 			character(bikeBluePrint.bikemainbody.x/30,(bikeBluePrint.bikemainbody.y-10)/30)
+			
+			Game.me.addChild(springClip);
+			Game.me.addChild(springClip2);
 		}
 		
 		var uprhandBody:b2Body
@@ -618,7 +621,7 @@
 				bikeBluePrint.wbshadow.y = bikeBluePrint.wb.y;
 				
 				if(player_body){
-					trace("player_body.GetAngle()=",player_body.GetAngle().toFixed(1))
+					//trace("player_body.GetAngle()=",player_body.GetAngle().toFixed(1))
 					if(player_body.GetAngle()>2 || player_body.GetAngle()<-1){
 						heroDead(true,true);
 					}
@@ -660,7 +663,7 @@
 			wh1sp.y = frent_wheel.GetUserData().y;
 			springClip.x = wh1sp.x
 			springClip.y = wh1sp.y;
-			Game.me.addChild(springClip);
+			//Game.me.addChild(springClip);
 			springClip.rotation = 0;
 			springClip.width = Math.sqrt((origX - wh1sp.x) * (origX - wh1sp.x) + (origY - wh1sp.y) * (origY - wh1sp.y));
 			springClip.rotation = 180 + Math.atan2(origY - wh1sp.y,origX - wh1sp.x) * (180 / Math.PI);
@@ -670,7 +673,7 @@
 			wh2sp.y = back_wheel.GetUserData().y;
 			springClip2.x = wh2sp.x;
 			springClip2.y = wh2sp.y;
-			Game.me.addChild(springClip2);
+			//Game.me.addChild(springClip2);
 			springClip2.rotation = 0;
 			springClip2.width = Math.sqrt((origX2 - wh2sp.x) * (origX2 - wh2sp.x) + (origY2 - wh2sp.y) * (origY2 - wh2sp.y));
 			springClip2.rotation = 180 + Math.atan2(origY2 - wh2sp.y,origX2 - wh2sp.x) * (180 / Math.PI);

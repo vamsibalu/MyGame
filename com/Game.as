@@ -84,7 +84,9 @@
 		}
 		
 		private function added(e:Event):void{
-			
+			trace("aaddShadowAT=",MainGame.me.getChildIndex(MainGame.me.BGG_shadow),MainGame.me.getChildIndex(this))
+			MainGame.me.addChild(MainGame.me.BGG_shadow);
+			trace("aaddShadowAT=",MainGame.me.getChildIndex(MainGame.me.BGG_shadow),MainGame.me.getChildIndex(this))
 		}
 		public static function get trying():int
 		{
@@ -118,12 +120,13 @@
 			
 			forArrowsCheck() //bala added for arrows
 		}
-		public var destinationPoint:b2Vec2;
+		public var destinationPointXX:Number;
 		public override function loadMyLevelForPreview(_levelAry:Array):void{
 			dispatched = false;
 			heroIsDead = false;
 			enemysDied = 0;
 			enemyCount = 0;
+			tempShadowDepthSetup = false;
 			super.loadMyLevelForPreview(_levelAry);
 			levelScore = (enemyCount * SCOREPERENEMY);
 			MainGame.me.gotoAndStop(Game.currentLevel+2);
@@ -140,7 +143,7 @@
 			{
 				case 1:
 				{
-					destinationPoint = getBodyByID("ID_23").GetPosition();
+					destinationPointXX = 14900;
 					break;
 				}
 					
@@ -205,7 +208,7 @@
 		public var heroIsDead:Boolean = false;
 		private function checkHeroPos():void{
 			if(BikeBox2d.player_body){
-				var plyPos:b2Vec2 = BikeBox2d.player_body.GetWorldCenter();
+				var plyPosXX = BikeBox2d.player_body.GetUserData().x;
 				var plyAng:Number = BikeBox2d.player_body.GetAngle();
 				if(heroIsDead == false && plyAng>180){
 					trace("hero Down..")
@@ -216,9 +219,9 @@
 					//SoundM.me.playSound(SoundM.HDIE);
 				}
 				
-				if(plyPos.x>=destinationPoint.x && dispatched == false){
-					//dispatchEvent(new Event(Game.NEXT_LEVEL));
-					//dispatched = true;
+				if(plyPosXX>=destinationPointXX && dispatched == false){
+					dispatchEvent(new Event(Game.NEXT_LEVEL));
+					dispatched = true;
 					trace("You done it..")
 				}
 			}
@@ -378,6 +381,7 @@
 			}
 		}
 		
+		var tempShadowDepthSetup:Boolean = false;
 		private function cameraMovement():void{
 			var pos_x:Number;
 			var pos_y:Number;
@@ -408,6 +412,14 @@
 			
 			MainGame.me.BGG.x = x;
 			MainGame.me.BGG.y = pos_y;
+			
+			MainGame.me.BGG_shadow.x = x;
+			MainGame.me.BGG_shadow.y = pos_y;
+			//to make sure 3D Top layer having top depth..
+			if(tempShadowDepthSetup == false){
+				MainGame.me.addChild(MainGame.me.BGG_shadow);
+				tempShadowDepthSetup = true;
+			}
 		}
 		
 	}

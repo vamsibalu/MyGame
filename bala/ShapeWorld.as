@@ -467,6 +467,7 @@
 		//remove all from the box2d world..
 		public function removeEverything() : void
 		{
+			trace("removing everthing...")
 			//trace("Removing Everything");
 			var _loc_1:b2Body = world.GetBodyList();
 			while (_loc_1)

@@ -35,7 +35,7 @@ package bala
 		{
 			super(ww);
 			
-			debugDraw = sp;
+			//debugDraw = sp;
 			addChild(sp);
 			
 			if(_dummyXML){
@@ -97,6 +97,7 @@ package bala
 				}
 			}
 			
+			trace("creating joints..")
 			//for joints..
 			for(var jjj:Object in _levelAry){
 				switch(_levelAry[jjj][0])
