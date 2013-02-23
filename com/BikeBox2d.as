@@ -15,6 +15,7 @@
 	import Box2D.Dynamics.b2World;
 	
 	import bala.BaseWorld;
+	import bala.Utils.BalaUtils;
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
@@ -133,6 +134,8 @@
 			// constructor code
 			passWorld = _passWorld;
 			worldScale = BaseWorld.ptm_ratio;
+			springClip = new Springs();
+			springClip2 = new Springs();
 		}
 		public function create(_xx:Number,_yy:Number)
 		{
@@ -140,7 +143,7 @@
 			axleContainerDistance_Wf = Point.distance(new Point(bikeBluePrint.wf.x,0),new Point(bikeBluePrint.body.x,0))
 			
 			
-			
+			trace("BP1",bikeBluePrint.bikemainbody)
 			bodyDef=new b2BodyDef();
 			bodyDef.position.Set(bikeBluePrint.bikemainbody.x/30,bikeBluePrint.bikemainbody.y/30);
 			//trace(_xx,_yy,bikeBluePrint.body.x,bikeBluePrint.body.x/30,bikeBluePrint.body.x/17,"arjj")
@@ -149,6 +152,7 @@
 			Game.me.currentWeponMC = bodyDef.userData.hand.currentWepon;
 			Game.me.handMC = bodyDef.userData.hand;
 			//bodyDef.userData.alpha=1
+			trace("BP1.1")
 			Game.me.addChild(bodyDef.userData);
 			body_skin=bodyDef.userData
 			boxDef=new b2PolygonShape();
@@ -164,7 +168,7 @@
 			boxDef.SetAsOrientedBox(5/r2p,5/r2p,new b2Vec2(0,10/r2p),0)
 			fixtureDef.shape=boxDef
 			player_body.CreateFixture(fixtureDef)
-			
+			trace("BP1.5")
 			////// frent axel;
 			trace("rotation6  "+ player_body.GetAngle())
 			bodyDef=new b2BodyDef();
@@ -183,7 +187,7 @@
 			fixtureDef.filter.groupIndex = -1;
 			frent_axel = passWorld.CreateBody(bodyDef);
 			frent_axel.CreateFixture(fixtureDef);
-			
+			trace("BP2")
 			////// back axel;
 			
 			bodyDef=new b2BodyDef();
@@ -269,7 +273,7 @@
 			pjd.enableLimit = true;
 			pjd.Initialize(player_body,back_axel,back_axel.GetWorldCenter(),new b2Vec2(0,1));
 			spring_2 = passWorld.CreateJoint(pjd) as b2PrismaticJoint;
-			
+			trace("BP3")
 			//Physics.frente_wheel=frent_wheel
 			trace(_xx,"centerrr ",_yy)
 			//character(_xx,_yy)
@@ -431,7 +435,6 @@
 			bodyDef.angle=Math.PI/6
 			bodyDef.type=b2Body.b2_dynamicBody
 			bodyDef.userData=new head();
-			bodyDef.userData.alpha=0.2
 			Game.me.addChild(bodyDef.userData);
 			circleDef=new b2CircleShape(4/r2p)
 			fixtureDef=new b2FixtureDef()
@@ -537,78 +540,140 @@
 				passWorld.DestroyJoint(spring_1)
 				passWorld.DestroyJoint(spring_2)
 			}
+			
+			Game.me.removeChild(springClip);
+			Game.me.removeChild(springClip2);
+			Game.me.heroIsDead = true;
 		}
 		
 		public function updateBike(e:Event=null):void 
 		{
-			
-			if (left) {
-				player_body.ApplyTorque(-50);
-				player_move_body.ApplyImpulse(new b2Vec2(-0.50,-0.10),player_move_body.GetWorldCenter())
-				middliebody.ApplyImpulse(new b2Vec2(-0.5,-0.25),middliebody.GetWorldCenter())
-				
-				//middliebody.SetLinearVelocity(new b2Vec2(-2,0))
-				//headbody.ApplyImpulse(new b2Vec2(0.1,-0.1),headbody.GetWorldCenter())
-				//legup.ApplyImpulse(new b2Vec2(-1,-0.50),legup.GetWorldCenter())
-				//middliebody.SetAngularVelocity(-5)
-				//player_body.SetAngularVelocity(-5)
-				
-			} else if (right) {
-				player_body.ApplyTorque(70);
-				player_move_body.ApplyImpulse(new b2Vec2(-0.50,0.50),player_move_body.GetWorldCenter())
-				middliebody.ApplyImpulse(new b2Vec2(0.8,0.2),middliebody.GetWorldCenter())
-				//headbody.ApplyImpulse(new b2Vec2(1.2,0.1),headbody.GetWorldCenter())
-				middliebody.ApplyTorque(-5)
-				
-				
-			} else {
-				player_body.ApplyTorque(0);
-			}
-			/*if (Math.abs(speed) > 0.98) {
-			speed *=  speed_decay;
-			} else {
-			speed = 0;
-			}*/
-			//trace("speed:",speed)
-			//	trace("Velocity().x=",player_body.GetLinearVelocity().x.toFixed(2))
-			if (up_key) {
-				speed -=  speedIncrementor;
-				maxTorque = maxTourqueIncrementor;
-				player_body.ApplyTorque(speedIncrementor*10);
-				if(player_body.GetLinearVelocity().x<10){
-					trace("push front..")
-					player_body.ApplyImpulse(new b2Vec2(5,-0.3),player_body.GetWorldCenter());
+			if(Game.me.heroIsDead == false){
+				if (left) {
+					player_body.ApplyTorque(-50);
+					player_move_body.ApplyImpulse(new b2Vec2(-0.50,-0.10),player_move_body.GetWorldCenter())
+					middliebody.ApplyImpulse(new b2Vec2(-0.5,-0.25),middliebody.GetWorldCenter())
+					
+					//middliebody.SetLinearVelocity(new b2Vec2(-2,0))
+					//headbody.ApplyImpulse(new b2Vec2(0.1,-0.1),headbody.GetWorldCenter())
+					//legup.ApplyImpulse(new b2Vec2(-1,-0.50),legup.GetWorldCenter())
+					//middliebody.SetAngularVelocity(-5)
+					//player_body.SetAngularVelocity(-5)
+					
+				} else if (right) {
+					player_body.ApplyTorque(70);
+					player_move_body.ApplyImpulse(new b2Vec2(-0.50,0.50),player_move_body.GetWorldCenter())
+					middliebody.ApplyImpulse(new b2Vec2(0.8,0.2),middliebody.GetWorldCenter())
+					//headbody.ApplyImpulse(new b2Vec2(1.2,0.1),headbody.GetWorldCenter())
+					middliebody.ApplyTorque(-5)
+					
+					
+				} else {
+					player_body.ApplyTorque(0);
 				}
-			} else if (down_key) {
-				speed +=  speedIncrementor;
-				maxTorque = maxTourqueIncrementor;
-				player_body.ApplyTorque(-speedIncrementor*10);
-				if(player_body.GetLinearVelocity().x>-5){
-					trace("push back..")
-					player_body.ApplyImpulse(new b2Vec2(-5,0.3),player_body.GetWorldCenter());
-				}
-			}else{
-				maxTorque=0;
+				/*if (Math.abs(speed) > 0.98) {
+				speed *=  speed_decay;
+				} else {
 				speed = 0;
+				}*/
+				//trace("speed:",speed)
+				//	trace("Velocity().x=",player_body.GetLinearVelocity().x.toFixed(2))
+				if (up_key) {
+					speed -=  speedIncrementor;
+					maxTorque = maxTourqueIncrementor;
+					player_body.ApplyTorque(speedIncrementor*2);
+					if(player_body.GetLinearVelocity().x<10){
+						trace("push front..")
+						player_body.ApplyImpulse(new b2Vec2(5,-0.3),player_body.GetWorldCenter());
+					}
+				} else if (down_key) {
+					speed +=  speedIncrementor;
+					maxTorque = maxTourqueIncrementor;
+					player_body.ApplyTorque(-speedIncrementor*2);
+					if(player_body.GetLinearVelocity().x>-5){
+						trace("push back..")
+						player_body.ApplyImpulse(new b2Vec2(-5,0.3),player_body.GetWorldCenter());
+					}
+				}else{
+					maxTorque=0;
+					speed = 0;
+				}
+				
+				
+				rightWheelRevoluteJoint.SetMotorSpeed(speed);
+				rightWheelRevoluteJoint.SetMaxMotorTorque(maxTorque);
+				
+				leftWheelRevoluteJoint.SetMotorSpeed(speed);
+				leftWheelRevoluteJoint.SetMaxMotorTorque(maxTorque);
+				
+				spring_1.SetMaxMotorForce(5+Math.abs(springIncrementor*Math.pow(spring_1.GetJointTranslation(),2)));
+				spring_1.SetMotorSpeed(-4*Math.pow(spring_1.GetJointTranslation(), 1));
+				
+				spring_2.SetMaxMotorForce(5+Math.abs(springIncrementor*Math.pow(spring_2.GetJointTranslation(), 2)));
+				spring_2.SetMotorSpeed(-4*Math.pow(spring_2.GetJointTranslation(), 1));
+				
+				bikeBluePrint.wfshadow.x = bikeBluePrint.wf.x;
+				bikeBluePrint.wfshadow.y = bikeBluePrint.wf.y;
+				bikeBluePrint.wbshadow.x = bikeBluePrint.wb.x;
+				bikeBluePrint.wbshadow.y = bikeBluePrint.wb.y;
+				
+				if(player_body){
+					trace("player_body.GetAngle()=",player_body.GetAngle().toFixed(1))
+					if(player_body.GetAngle()>2 || player_body.GetAngle()<-1){
+						heroDead(true,true);
+					}
+					//trace("getr spring..",player_body.GetUserData().Springp1)
+					ppTemp.x = player_body.GetUserData().Springp1.x;
+					ppTemp.y = player_body.GetUserData().Springp1.y;
+					ppTemp = BalaUtils.localToLocal(player_body.GetUserData(),Game.me,ppTemp)
+					origX =  ppTemp.x;
+					origY = ppTemp.y;
+					
+					ppTemp2.x = player_body.GetUserData().Springp2.x;
+					ppTemp2.y = player_body.GetUserData().Springp2.y;
+					ppTemp2 = BalaUtils.localToLocal(player_body.GetUserData(),Game.me,ppTemp2)
+					origX2 =  ppTemp2.x;
+					origY2 = ppTemp2.y;
+					springMove();
+				}
 			}
+		}
+		
+		private var ppTemp:Point = new Point();
+		private var ppTemp2:Point = new Point();
+		
+		private var springClip:MovieClip;
+		private var springClip2:MovieClip;
+		
+		private var origX:Number = 0;
+		private var origY:Number = 0;
+		
+		private var origX2:Number = 0;
+		private var origY2:Number = 0;
+		
+		private var wh1sp:Point = new Point();
+		private var wh2sp:Point = new Point();
+		
+		private function springMove():void{
+			
+			wh1sp.x = frent_wheel.GetUserData().x;
+			wh1sp.y = frent_wheel.GetUserData().y;
+			springClip.x = wh1sp.x
+			springClip.y = wh1sp.y;
+			Game.me.addChild(springClip);
+			springClip.rotation = 0;
+			springClip.width = Math.sqrt((origX - wh1sp.x) * (origX - wh1sp.x) + (origY - wh1sp.y) * (origY - wh1sp.y));
+			springClip.rotation = 180 + Math.atan2(origY - wh1sp.y,origX - wh1sp.x) * (180 / Math.PI);
 			
 			
-			rightWheelRevoluteJoint.SetMotorSpeed(speed);
-			rightWheelRevoluteJoint.SetMaxMotorTorque(maxTorque);
-			
-			leftWheelRevoluteJoint.SetMotorSpeed(speed);
-			leftWheelRevoluteJoint.SetMaxMotorTorque(maxTorque);
-			
-			spring_1.SetMaxMotorForce(5+Math.abs(springIncrementor*Math.pow(spring_1.GetJointTranslation(),2)));
-			spring_1.SetMotorSpeed(-4*Math.pow(spring_1.GetJointTranslation(), 1));
-			
-			spring_2.SetMaxMotorForce(5+Math.abs(springIncrementor*Math.pow(spring_2.GetJointTranslation(), 2)));
-			spring_2.SetMotorSpeed(-4*Math.pow(spring_2.GetJointTranslation(), 1));
-			
-			bikeBluePrint.wfshadow.x = bikeBluePrint.wf.x;
-			bikeBluePrint.wfshadow.y = bikeBluePrint.wf.y;
-			bikeBluePrint.wbshadow.x = bikeBluePrint.wb.x;
-			bikeBluePrint.wbshadow.y = bikeBluePrint.wb.y;
+			wh2sp.x = back_wheel.GetUserData().x;
+			wh2sp.y = back_wheel.GetUserData().y;
+			springClip2.x = wh2sp.x;
+			springClip2.y = wh2sp.y;
+			Game.me.addChild(springClip2);
+			springClip2.rotation = 0;
+			springClip2.width = Math.sqrt((origX2 - wh2sp.x) * (origX2 - wh2sp.x) + (origY2 - wh2sp.y) * (origY2 - wh2sp.y));
+			springClip2.rotation = 180 + Math.atan2(origY2 - wh2sp.y,origX2 - wh2sp.x) * (180 / Math.PI);
 			
 		}
 		

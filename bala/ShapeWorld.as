@@ -62,8 +62,8 @@
 			tempSpr.graphics.lineStyle(2, 0x00FF00);
 			tempSpr.graphics.beginFill(0x00FF00, 0);
 			tempSpr.graphics.drawRect(0,0,ww , 480);
-			tempSpr.graphics.endFill();
-			addChild(tempSpr);
+			//tempSpr.graphics.endFill();
+			//addChild(tempSpr);
 			
 			enemyMCS.push(new EN1(),new EN2(),new EN3(),new EN4(),new EN5(),new EN6(),new EN1(),new EN2(),new EN3(),new EN4(),new EN5(),new EN6(),new EN1(),new EN2(),new EN3(),new EN4(),new EN5(),new EN6());
 			trace("have enms=",enemyMCS.length);

@@ -81,7 +81,7 @@ package
 			BodyContacts.setGame(gg);
 			sndManager = new SoundM();
 			var sts:Stats = new Stats();
-			addChild(sts);
+			//addChild(sts);
 		}
 		
 		private function levelFail(e:Event):void{
@@ -104,7 +104,7 @@ package
 			trace("selected level=",Game.currentLevel )
 			removeAllPagesButNotOne(gg);
 			gg.loadMyLevelForPreview(gg.allLevels[Game.currentLevel]);
-			addChild(footer);
+			//addChild(footer); //testing..
 			//addChild(gg);
 		}
 		
@@ -139,7 +139,7 @@ package
 			//balautils.remove(menu_mc);
 			removeAllPagesButNotOne(gg);
 			gg.loadMyLevelForPreview(gg.allLevels[Game.currentLevel]);
-			addChild(footer);
+			//addChild(footer);
 			var popup11:PopUpmc2 = new PopUpmc2();
 			popup11.x = 129.95;
 			popup11.y = 199.25;
@@ -182,7 +182,7 @@ package
 			if(Game.trying<Game.canTryUpto){
 				removeAllPagesButNotOne(gg);
 				gg.loadMyLevelForPreview(gg.allLevels[Game.currentLevel]);
-				addChild(footer);
+				//addChild(footer);
 				//addChild(gg);
 			}else{
 				removeAllPagesButNotOne(gameOver_mc);
@@ -197,7 +197,7 @@ package
 			trace("selected level=",Game.currentLevel)
 			removeAllPagesButNotOne(gg);
 			gg.loadMyLevelForPreview(gg.allLevels[Game.currentLevel]);
-			addChild(footer);
+			//addChild(footer);
 			//addChild(gg);
 		}
 		

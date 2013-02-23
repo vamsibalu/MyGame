@@ -79,9 +79,8 @@
 			addEventListener(Event.ADDED_TO_STAGE,added);
 			//testing..
 			
-			var bg:Shape = new Shape();
-			graphics.beginFill(0xcccccc,.5);
-			graphics.drawRect(0,0,640,480);
+			//graphics.beginFill(0xcccccc,.5);
+			//graphics.drawRect(0,0,640,480);
 		}
 		
 		private function added(e:Event):void{
