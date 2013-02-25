@@ -23,7 +23,7 @@
 	import flash.geom.Point;
 	import flash.ui.Keyboard;
 	
-	public class BikeBox2d extends MovieClip
+	public class BikeBox2d extends MovieClip implements IBike
 	{
 		private var bodyDef:b2BodyDef;
 		private var boxDef:b2PolygonShape;
@@ -55,7 +55,7 @@
 		private var axleContainerDistance_Wb:Number=0;
 		private var axleContainerDistance_Wf:Number=0;
 		
-		public static var player_body:b2Body
+		public var player_body:b2Body;
 		private var player_move_body:b2Body
 		private var middliebody:b2Body
 		private var legup:b2Body
@@ -77,7 +77,6 @@
 		
 		//
 		private var worldScale:int=30;
-		public static var me:BikeBox2d;
 		
 		private var car:b2Body;
 		private var leftWheelRevoluteJoint:b2RevoluteJoint;
@@ -128,7 +127,7 @@
 		private var AllBpartsRestitution:Number = 0.1
 		///////End ObjectVals////////////////	
 		
-		
+		//ok good
 		public function BikeBox2d(_passWorld:b2World)
 		{
 			// constructor code
@@ -137,7 +136,7 @@
 			springClip = new Springs();
 			springClip2 = new Springs();
 		}
-		public function create(_xx:Number,_yy:Number)
+		public function create(_xx:Number,_yy:Number):void
 		{
 			axleContainerDistance_Wb = Point.distance(new Point(bikeBluePrint.wb.x,0),new Point(bikeBluePrint.body.x,0))
 			axleContainerDistance_Wf = Point.distance(new Point(bikeBluePrint.wf.x,0),new Point(bikeBluePrint.body.x,0))
@@ -328,7 +327,7 @@
 			fixtureDef.friction=0.4
 			fixtureDef.restitution=0.1
 			fixtureDef.shape=boxDef
-			//fixtureDef.filter.groupIndex=-1
+			fixtureDef.filter.groupIndex=-3;  //added bala for multiplayer bikes
 			middliebody=passWorld.CreateBody(bodyDef)
 			middliebody.CreateFixture(fixtureDef)
 			rjd=new b2RevoluteJointDef()
@@ -399,7 +398,7 @@
 			fixtureDef.friction=AllBpartsFriction
 			fixtureDef.restitution=AllBpartsRestitution
 			fixtureDef.shape=boxDef
-			//fixtureDef.filter.groupIndex=-1
+			fixtureDef.filter.groupIndex=-3;  //added bala for multiplayer bikes
 			uprhandBody=passWorld.CreateBody(bodyDef)
 			uprhandBody.CreateFixture(fixtureDef)
 			rjd=new b2RevoluteJointDef()
@@ -423,7 +422,7 @@
 			fixtureDef.friction=AllBpartsFriction
 			fixtureDef.restitution=AllBpartsRestitution
 			fixtureDef.shape=boxDef
-			//fixtureDef.filter.groupIndex=-1
+			fixtureDef.filter.groupIndex=-3;  //added bala for multiplayer bikes
 			lwrhandBody=passWorld.CreateBody(bodyDef)
 			lwrhandBody.CreateFixture(fixtureDef)
 			rjd=new b2RevoluteJointDef()
@@ -445,7 +444,7 @@
 			fixtureDef.friction=AllBpartsFriction
 			fixtureDef.restitution=AllBpartsRestitution
 			fixtureDef.shape=circleDef
-			//fixtureDef.filter.groupIndex=-1
+			fixtureDef.filter.groupIndex=-3;  //added bala for multiplayer bikes
 			headbody=passWorld.CreateBody(bodyDef)
 			headbody.CreateFixture(fixtureDef)
 			rjd=new b2RevoluteJointDef()
@@ -480,10 +479,8 @@
 			switch (e.keyCode) {
 				case Keyboard.LEFT :
 					left=true;
-					
 					break;
 				case Keyboard.RIGHT :
-					
 					right=true;
 					break;
 				case Keyboard.UP :
@@ -527,7 +524,7 @@
 			springIncrementor = _springIncrementor;
 		}
 		
-		public function heroDead(moreEffect:Boolean = false,bikeAlso:Boolean = false):void{
+		public function bikeDestroy(moreEffect:Boolean = false,bikeAlso:Boolean = false):void{
 			passWorld.DestroyJoint(b_and_c_joint1)
 			passWorld.DestroyJoint(b_and_c_joint2)
 			if(moreEffect==true){
@@ -623,7 +620,7 @@
 				if(player_body){
 					//trace("player_body.GetAngle()=",player_body.GetAngle().toFixed(1))
 					if(player_body.GetAngle()>2 || player_body.GetAngle()<-1){
-						heroDead(true,true);
+						bikeDestroy(true,true);
 					}
 					//trace("getr spring..",player_body.GetUserData().Springp1)
 					ppTemp.x = player_body.GetUserData().Springp1.x;

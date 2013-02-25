@@ -51,6 +51,7 @@
 		public function BaseWorld()
 		{
 			//TODO: implement function
+			trace("BaseWorld created.")
 			super();
 			bg();
 			addEventListener(Event.ADDED_TO_STAGE,addedToStage);

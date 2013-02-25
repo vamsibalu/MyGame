@@ -66,9 +66,7 @@ package
 			allPages.push(menu_mc,tryAgain_mc,levelComplete_mc,selectLevel_mc,help_mc,gameOver_mc,gameWin_mc);
 			stage.addEventListener(MouseEvent.CLICK,clickOnStage);
 			
-			
 			///___________
-			
 			
 			loading_mc.start_btn.addEventListener(MouseEvent.CLICK,showMenu);
 			menu_mc.addFrameScript(menu_mc.totalFrames-1,addListeners);
@@ -81,7 +79,7 @@ package
 			BodyContacts.setGame(gg);
 			sndManager = new SoundM();
 			var sts:Stats = new Stats();
-			//addChild(sts);
+			addChild(sts);
 		}
 		
 		private function levelFail(e:Event):void{
@@ -273,14 +271,14 @@ package
 					break;
 			}
 			
-			if(gg && gg.bike){
-				gg.bike.keyDown(e);
+			if(gg && gg.heroBike){
+				gg.heroBike.keyDown(e);
 			}
 		}
 		
 		private function keyUpf(e:KeyboardEvent):void{
-			if(gg && gg.bike){
-				gg.bike.keyUp(e);
+			if(gg && gg.heroBike){
+				gg.heroBike.keyUp(e);
 			}
 		}
 		

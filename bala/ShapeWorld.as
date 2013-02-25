@@ -44,7 +44,7 @@
 		public var joints:Dictionary = new Dictionary();
 		public function ShapeWorld(ww:Number)
 		{
-			trace("shape world created.")
+			trace("ShapeWorld initialized1..")
 			//TODO: implement function
 			super();
 			//addChild(heroMC);
@@ -66,7 +66,7 @@
 			//addChild(tempSpr);
 			
 			enemyMCS.push(new EN1(),new EN2(),new EN3(),new EN4(),new EN5(),new EN6(),new EN1(),new EN2(),new EN3(),new EN4(),new EN5(),new EN6(),new EN1(),new EN2(),new EN3(),new EN4(),new EN5(),new EN6());
-			trace("have enms=",enemyMCS.length);
+			trace("ShapeWorld initialized2..")
 			
 		//	createRoad();
 		}

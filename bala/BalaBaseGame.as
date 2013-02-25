@@ -33,6 +33,7 @@ package bala
 		
 		public function BalaBaseGame(_dummyXML:XML,ww:Number)
 		{
+			trace("BalaBaseGame initialized1..")
 			super(ww);
 			
 			//debugDraw = sp;
@@ -48,6 +49,7 @@ package bala
 			//loadMyLevelForPreview(allLevels[1]);
 			trace("got all levels=",allLevels.length)
 			startRender();
+			trace("BalaBaseGame initialized2..")
 		}
 		
 		public function loadMyLevelForPreview(_levelAry:Array):void{

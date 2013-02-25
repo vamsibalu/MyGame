@@ -5,6 +5,7 @@
 	import Box2D.Dynamics.b2World;
 	
 	import bala.BalaBaseGame;
+	import bala.BaseWorld;
 	import bala.ShapeWorld;
 	import bala.SoundM;
 	import bala.Utils.BalaUtils;
@@ -49,7 +50,7 @@
 		
 		//private var bgMC:MovieClip;
 		public var tweenBox:TweenBox2d;
-		public var bike:BikeBox2d;
+		public var heroBike:BikeBox2d;
 		public static const GUN:int = 2;
 		public static const Javelin:int = 3;
 		public var bykeOnFloor:Boolean;
@@ -59,6 +60,7 @@
 		//public var bike:Bike
 		public function Game(_dummyXML:XML = null)
 		{
+			trace("GAme initialized1..")
 			super(_dummyXML,9000); //important assumes path width.. for shootEnemy event
 			me = this;
 			myWorld = world;
@@ -81,6 +83,7 @@
 			
 			//graphics.beginFill(0xcccccc,.5);
 			//graphics.drawRect(0,0,640,480);
+			trace("GAme initialized2..")
 		}
 		
 		private function added(e:Event):void{
@@ -114,13 +117,15 @@
 			traceAllbullets();
 			checkHeroPos();
 			removeWasteBodies();
-			if(bike){
-				bike.updateBike();
+			//render all bikes..
+			for(var i:int = 0; i<allBikes.length; i++){
+				allBikes[i].updateBike();
 			}
 			
 			forArrowsCheck() //bala added for arrows
 		}
 		public var destinationPointXX:Number;
+		public var allBikes:Vector.<BikeBox2d> = new Vector.<BikeBox2d>();
 		public override function loadMyLevelForPreview(_levelAry:Array):void{
 			dispatched = false;
 			heroIsDead = false;
@@ -135,10 +140,19 @@
 			if(MainGame.testing==true){
 				addChild(testingnext);
 			}
-			SoundM.me.playSound(SoundM.BG1,true);
+			SoundM.me.playSound(SoundM.BG1);
 			tweenBox.addExtraEffectsIfAny();
-			bike = new BikeBox2d(world);
-			bike.create(100/30,300/30);
+			
+			heroBike = new HeroBike(world);
+			heroBike.create(100/30,300/30);
+			allBikes.push(heroBike);
+			heroUdata = heroBike.player_body.GetUserData();
+			
+			//one bike..
+			var _oponentBike:BikeBox2d = new OponentBike(world);
+			_oponentBike.create(300/BaseWorld.ptm_ratio,300/BaseWorld.ptm_ratio);
+			allBikes.push(_oponentBike);
+			
 			switch(currentLevel)
 			{
 				case 1:
@@ -207,9 +221,9 @@
 		}
 		public var heroIsDead:Boolean = false;
 		private function checkHeroPos():void{
-			if(BikeBox2d.player_body){
-				var plyPosXX = BikeBox2d.player_body.GetUserData().x;
-				var plyAng:Number = BikeBox2d.player_body.GetAngle();
+			if(heroBike && heroBike.player_body){
+				var plyPosXX = heroBike.player_body.GetUserData().x;
+				var plyAng:Number = heroBike.player_body.GetAngle();
 				if(heroIsDead == false && plyAng>180){
 					trace("hero Down..")
 					//dispatchEvent(new Event(LEVEL_FAIL));
@@ -240,25 +254,20 @@
 		public static var currentWeponType:int = GUN;
 		public var currentWeponMC:MovieClip;
 		public var handMC:MovieClip;
-		
+		private var heroUdata:MovieClip;
 		
 		public function updateHand() : void
 		{
-			if(BikeBox2d.player_body)
-			{
-				//trace(BikeBox2d.player_body.GetUserData().hand,"aeshjshkjdhajsk")
-			}
 			
-			
-			if(BikeBox2d.player_body && BikeBox2d.player_body.GetUserData().hand){
+			if(heroBike && heroBike.player_body && heroUdata && heroUdata.hand){
 				cameraMovement();
 				
-				var handPP:Point = BalaUtils.localToLocal(BikeBox2d.player_body.GetUserData(),this,new Point(BikeBox2d.player_body.GetUserData().hand.x,BikeBox2d.player_body.GetUserData().hand.y));
+				var handPP:Point = BalaUtils.localToLocal(heroUdata,this,new Point(heroUdata.hand.x,heroUdata.hand.y));
 				var diffx:Number =  handPP.x - mouseX;
 				var diffy:Number =  handPP.y - mouseY;
 				weaponAngle = Math.atan2(-diffy, -diffx);
 				//this.weaponAngle = Math.atan2(-diffy, -diffx);
-				if (mouseX <  BikeBox2d.player_body.GetUserData().x)
+				if (mouseX <  heroUdata.x)
 				{
 					//BikeBox2d.player_body.GetUserData().scaleX = -1;
 					//this.weaponAngle = Math.atan2(diffy, diffx);
@@ -267,11 +276,11 @@
 				{
 					//BikeBox2d.player_body.GetUserData().scaleX = 1;
 				}
-				BikeBox2d.player_body.GetUserData().hand.rotation = (weaponAngle * RadtoDeg -  BikeBox2d.player_body.GetUserData().rotation) * BikeBox2d.player_body.GetUserData().scaleX;
-				pointBlock = BalaUtils.localToLocal(BikeBox2d.player_body.GetUserData().hand,this,new Point(BikeBox2d.player_body.GetUserData().hand.pp1.x,BikeBox2d.player_body.GetUserData().hand.pp1.y));
+				heroUdata.hand.rotation = (weaponAngle * RadtoDeg -  heroUdata.rotation) * heroUdata.scaleX;
+				pointBlock = BalaUtils.localToLocal(heroUdata.hand,this,new Point(heroUdata.hand.pp1.x,heroUdata.hand.pp1.y));
 				if(currentWeponType == Javelin){
 					currentWeponMC.gotoAndStop("Javelin");
-					BikeBox2d.player_body.GetUserData().hand.currentWepon.gotoAndStop(Javelin);
+					heroUdata.hand.currentWepon.gotoAndStop(Javelin);
 				}else if(currentWeponType == GUN){
 					currentWeponMC.gotoAndStop("GUN");
 					//do gun requirement
@@ -286,7 +295,7 @@
 				trace("don't shoot..");
 			}else{
 				
-				if(currentWeponType == Javelin && BikeBox2d.player_body.GetUserData().hand.currentWepon){
+				if(currentWeponType == Javelin && heroBike.player_body.GetUserData().hand.currentWepon){
 					
 					addArrow(pointBlock.x,pointBlock.y,false);
 					
@@ -386,9 +395,9 @@
 			var pos_x:Number;
 			var pos_y:Number;
 			
-			if (BikeBox2d.player_body) {
-				pos_x=BikeBox2d.player_body.GetWorldCenter().x*ptm_ratio;
-				pos_y=BikeBox2d.player_body.GetWorldCenter().y*ptm_ratio;
+			if (heroBike.player_body) {
+				pos_x = heroUdata.x;//BikeBox2d.player_body.GetWorldCenter().x*ptm_ratio;
+				pos_y = heroUdata.y;//BikeBox2d.player_body.GetWorldCenter().y*ptm_ratio;
 			} else {
 				//pos_x=the_cannonball_itself.GetWorldCenter().x*world_scale;
 				//pos_y=the_cannonball_itself.GetWorldCenter().y*world_scale; what is
