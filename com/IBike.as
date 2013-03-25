@@ -5,7 +5,7 @@ package com
 
 	public interface IBike
 	{
-		function create(_xx:Number,_yy:Number):void
+		function create(_xx:Number,_yy:Number,needPerson:Boolean):void
 		function bikeDestroy(moreEffect:Boolean = false,bikeAlso:Boolean = false):void
 		function updateBike(e:Event=null):void
 	}

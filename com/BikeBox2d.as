@@ -150,8 +150,9 @@
 		}
 		
 		private var bikeEngnMC:MovieClip;
-		public function create(_xx:Number,_yy:Number):void
+		public function create(_xx:Number,_yy:Number,_needPerson:Boolean):void
 		{
+			needPerson = _needPerson;
 			axleContainerDistance_Wb = Point.distance(new Point(bikeBluePrint.wb.x,0),new Point(bikeBluePrint.body.x,0))
 			axleContainerDistance_Wf = Point.distance(new Point(bikeBluePrint.wf.x,0),new Point(bikeBluePrint.body.x,0))
 			
@@ -179,7 +180,10 @@
 			fixtureDef.filter.groupIndex = -1;
 			player_body = passWorld.CreateBody(bodyDef);
 			player_body.CreateFixture(fixtureDef);
-			boxDef.SetAsOrientedBox(5/r2p,5/r2p,new b2Vec2(0,10/r2p),0)
+			if(needPerson == false){
+				boxDef.SetAsOrientedBox(5/r2p,5/r2p,new b2Vec2(0,-10/r2p),0)
+				//player_body.GetUserData().name = "playerhead";
+			}
 			fixtureDef.shape=boxDef
 			player_body.CreateFixture(fixtureDef)
 			trace("BP1.5")
@@ -294,7 +298,11 @@
 			//Physics.frente_wheel=frent_wheel
 			trace(_xx,"centerrr ",_yy)
 			//character(_xx,_yy)
-			character(bikeBluePrint.bikemainbody.x/30,(bikeBluePrint.bikemainbody.y-10)/30)
+			if(needPerson == true){
+				character(bikeBluePrint.bikemainbody.x/30,(bikeBluePrint.bikemainbody.y-10)/30)
+			}else{
+				
+			}
 			
 			Game.me.addChild(springClip);
 			Game.me.addChild(springClip2);
@@ -303,7 +311,7 @@
 		var uprhandBody:b2Body
 		var lwrhandBody:b2Body
 		
-		
+		private var needPerson:Boolean;
 		var headbody:b2Body
 		var body7:b2Body
 		var body8:b2Body
@@ -551,31 +559,32 @@
 			if(oneTimeDestroy == false){
 				oneTimeDestroy = true;
 				trace("distroyed bike and joints..")
-				passWorld.DestroyJoint(b_and_c_joint1)
-				passWorld.DestroyJoint(b_and_c_joint2)
-				b_and_c_joint2 = null;
-				//lowerfootjoint.EnableLimit(false);
-				lowerfootjoint.SetLimits(-1,1);
-				//middlebodyJoint.EnableLimit(false);
-				middlebodyJoint.SetLimits(-1,1);
-				//upperfootjoint.EnableLimit(false);
-				upperfootjoint.SetLimits(-1,1);
-				//upperhandJoint.EnableLimit(false);
-				upperhandJoint.SetLimits(-1,1);
-				//lowerhandJoint.EnableLimit(false);
-				lowerhandJoint.SetLimits(-1,1);
-				//headJoint.EnableLimit(false);
-				headJoint.SetLimits(-1,1);
-				
-				if(moreEffect==true){
-					passWorld.DestroyJoint(lowerfootjoint)
-					passWorld.DestroyJoint(middlebodyJoint)
-					passWorld.DestroyJoint(upperfootjoint)
-					passWorld.DestroyJoint(upperhandJoint)
-					passWorld.DestroyJoint(lowerhandJoint)
-					passWorld.DestroyJoint(headJoint)
+				if(needPerson == true){
+					passWorld.DestroyJoint(b_and_c_joint1)
+					passWorld.DestroyJoint(b_and_c_joint2)
+					b_and_c_joint2 = null;
+					//lowerfootjoint.EnableLimit(false);
+					lowerfootjoint.SetLimits(-1,1);
+					//middlebodyJoint.EnableLimit(false);
+					middlebodyJoint.SetLimits(-1,1);
+					//upperfootjoint.EnableLimit(false);
+					upperfootjoint.SetLimits(-1,1);
+					//upperhandJoint.EnableLimit(false);
+					upperhandJoint.SetLimits(-1,1);
+					//lowerhandJoint.EnableLimit(false);
+					lowerhandJoint.SetLimits(-1,1);
+					//headJoint.EnableLimit(false);
+					headJoint.SetLimits(-1,1);
+					
+					if(moreEffect==true){
+						passWorld.DestroyJoint(lowerfootjoint)
+						passWorld.DestroyJoint(middlebodyJoint)
+						passWorld.DestroyJoint(upperfootjoint)
+						passWorld.DestroyJoint(upperhandJoint)
+						passWorld.DestroyJoint(lowerhandJoint)
+						passWorld.DestroyJoint(headJoint)
+					}
 				}
-				
 				if(bikeAlso == true){
 					passWorld.DestroyJoint(spring_1)
 					passWorld.DestroyJoint(spring_2)
@@ -590,7 +599,9 @@
 			if(headDamage == false){
 				if (left) {
 					player_body.ApplyTorque(-150);
-					player_move_body.ApplyImpulse(new b2Vec2(-0.20,-0.01),player_move_body.GetWorldCenter())
+					if(needPerson == true){
+						player_move_body.ApplyImpulse(new b2Vec2(-0.20,-0.01),player_move_body.GetWorldCenter())
+					}
 					//middliebody.ApplyImpulse(new b2Vec2(-0.5,-0.1),middliebody.GetWorldCenter())
 					
 					//middliebody.SetLinearVelocity(new b2Vec2(-2,0))
@@ -603,7 +614,9 @@
 				
 				if (right) {
 					player_body.ApplyTorque(150);
-					player_move_body.ApplyImpulse(new b2Vec2(-0.20,0.01),player_move_body.GetWorldCenter())
+					if(needPerson == true){
+						player_move_body.ApplyImpulse(new b2Vec2(-0.20,0.01),player_move_body.GetWorldCenter())
+					}
 					//middliebody.ApplyImpulse(new b2Vec2(0.5,0.1),middliebody.GetWorldCenter())
 					//headbody.ApplyImpulse(new b2Vec2(1.2,0.1),headbody.GetWorldCenter())
 					//middliebody.ApplyTorque(-5)

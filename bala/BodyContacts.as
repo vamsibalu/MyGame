@@ -43,10 +43,10 @@
 			//trace(contact.GetManifold().m_localPoint);
 			
 			if(mc1 && mc2 && game){
-				if(mc1.name == "playerhead" && (mc2.name == "notmoving" ||mc2.name == "nife" ||mc2.name == "enemy")){
+				if((mc1.name == "playerhead" || mc1.name == "body") && (mc2.name == "notmoving" ||mc2.name == "nife" ||mc2.name == "enemy")){
 				BikeBox2d.me.headDamage = true;
 				
-				}else if(mc2.name == "playerhead" && (mc1.name == "notmoving" ||mc1.name == "nife" ||mc1.name == "enemy")){
+				}else if((mc2.name == "playerhead" || mc2.name == "body") && (mc1.name == "notmoving" ||mc1.name == "nife" ||mc1.name == "enemy")){
 					BikeBox2d.me.headDamage = true;
 				}
 				

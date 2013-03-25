@@ -258,8 +258,8 @@
 			footerM.selectl.addEventListener(MouseEvent.CLICK,showlevelfun);
 			//footerM.walk.addEventListener(MouseEvent.CLICK,walkThrough);
 			
-			/*var sts:Stats = new Stats();
-			addChild(sts);*/
+			var sts:Stats = new Stats();
+			addChild(sts);
 		}
 		
 		private function resetFun(e:MouseEvent=null):void{

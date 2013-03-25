@@ -170,7 +170,7 @@
 				allBikes.shift();
 			}
 			heroBike = new HeroBike(world);
-			heroBike.create(100/30,300/30);
+			heroBike.create(100/30,300/30,false);
 			allBikes.push(heroBike);
 			heroUdata = heroBike.player_body.GetUserData();
 			trace("On new Level..heroBike.destroyed=",heroBike.headDamage)
@@ -226,7 +226,7 @@
 			
 			trace("gotoAndBGG=",currentLevel)
 			MainGame.me.BGG.gotoAndStop(currentLevel);
-			var bodyroad:b2Body=roadPath["Lvl_"+currentLevel](world);
+			//var bodyroad:b2Body=roadPath["Lvl_"+currentLevel](world);
 			
 			MainGame.me.addChildAt(BGG_FarView,0);
 			MainGame.me.addChild(MainGame.me.BGG_shadow);

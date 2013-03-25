@@ -184,7 +184,7 @@
 		
 		
 		private var prevBolt:b2Body;
-		protected function createHangingBridges(bodyID:String,pointsArray:Array,_name:String,bridgeElementUI:BitmapData,drawDistance:Number) :void{
+		protected function createHangingBridges(bodyID:String,pointsArray:Array,_name:String,bridgeElementUI:BitmapData,drawDistance:Number,allStatics:Boolean) :void{
 			trace("createHangingBridgesBox2d=",pointsArray)
 			
 			
@@ -222,44 +222,47 @@
 					bbData.ww = (drawDistance/2)/BaseWorld.ptm_ratio;
 					bbData.hh = ((drawDistance/2)/2)/BaseWorld.ptm_ratio;
 					bbData.angl =  Math.atan2(pointsArray[i+1].y - pp.y, pointsArray[i+1].x - pp.x);
-					var link:b2Body = linkElement(bbData.xx,bbData.yy,bbData.ww,bbData.hh,bbData.angl,drawDistance);
-					renderGame();
-					var mc:MovieClip = link.GetUserData();
+					var link:b2Body = linkElement(bbData.xx,bbData.yy,bbData.ww,bbData.hh,bbData.angl,drawDistance,allStatics);
 					
-					var boltPP1:Point = BalaUtils.localToLocal(mc,this,new Point(mc.bolt1.x,mc.bolt1.y));
-					var boltPP2:Point = BalaUtils.localToLocal(mc,this,new Point(mc.bolt2.x,mc.bolt2.y));
-					
-					var bolt1:b2Body = boltElement(boltPP1.x,boltPP1.y,bbData.hh,mc.bolt1.width);
-					var bolt2:b2Body = boltElement(boltPP2.x,boltPP2.y,bbData.hh,mc.bolt1.width);
-					/*link.GetUserData().bolt1b = bolt1;
-					link.GetUserData().bolt2b = bolt2;
-					allBodyLinksBodies.push(tempB2body);*/
-					
-					rv.Initialize(bolt1,link,bolt1.GetWorldCenter());
-					world.CreateJoint(rv);
-					rv.Initialize(bolt2,link,bolt2.GetWorldCenter());
-					world.CreateJoint(rv);
-					
-					
-					
-					if(prevBolt){
-						rv.Initialize(prevBolt,bolt1,prevBolt.GetWorldCenter())
+					if(allStatics == false){
+						renderGame();
+						var mc:MovieClip = link.GetUserData();
+						
+						var boltPP1:Point = BalaUtils.localToLocal(mc,this,new Point(mc.bolt1.x,mc.bolt1.y));
+						var boltPP2:Point = BalaUtils.localToLocal(mc,this,new Point(mc.bolt2.x,mc.bolt2.y));
+						
+						var bolt1:b2Body = boltElement(boltPP1.x,boltPP1.y,bbData.hh,mc.bolt1.width);
+						var bolt2:b2Body = boltElement(boltPP2.x,boltPP2.y,bbData.hh,mc.bolt1.width);
+						/*link.GetUserData().bolt1b = bolt1;
+						link.GetUserData().bolt2b = bolt2;
+						allBodyLinksBodies.push(tempB2body);*/
+						
+						rv.Initialize(bolt1,link,bolt1.GetWorldCenter());
 						world.CreateJoint(rv);
-						
-						
-					}else{
-						rv.Initialize(bolt1,world.GetGroundBody(),bolt1.GetWorldCenter())
+						rv.Initialize(bolt2,link,bolt2.GetWorldCenter());
 						world.CreateJoint(rv);
 						
 						
 						
+						if(prevBolt){
+							rv.Initialize(prevBolt,bolt1,prevBolt.GetWorldCenter())
+							world.CreateJoint(rv);
+							
+							
+						}else{
+							rv.Initialize(bolt1,world.GetGroundBody(),bolt1.GetWorldCenter())
+							world.CreateJoint(rv);
+							
+							
+							
+						}
+						
+						prevBolt = bolt2;
 					}
-					
-					prevBolt = bolt2;
 				}
 			}
 			
-			if(prevBolt){
+			if(prevBolt && allStatics == false){
 				rv.Initialize(prevBolt,world.GetGroundBody(),prevBolt.GetWorldCenter())
 				world.CreateJoint(rv);
 				
@@ -267,18 +270,24 @@
 			
 		}
 		
-		private function linkElement(xx:Number,yy:Number,wh:Number,hh:Number,ang:Number,drawDistance):b2Body{
+		private function linkElement(xx:Number,yy:Number,wh:Number,hh:Number,ang:Number,drawDistance,allStatics:Boolean):b2Body{
 			var b2bs:b2Body;
 			
 			var bodyDef:b2BodyDef = new b2BodyDef();
-			bodyDef.type = b2Body.b2_dynamicBody;
+			bodyDef.userData = new LinkElementMC();
+			bodyDef.userData.name = "brg";
+			if(allStatics == true){
+				bodyDef.type = b2Body.b2_staticBody;
+				bodyDef.userData.name = "notmoving"
+			}else{
+				bodyDef.type = b2Body.b2_dynamicBody;
+			}
 			var fixtureDef:b2FixtureDef = new b2FixtureDef();
 			bodyDef.position.Set(xx /ptm_ratio, yy / ptm_ratio);
 			bodyDef.angle = ang;
 			fixtureDef.friction = .4;
 			fixtureDef.restitution = 0.2;
-			bodyDef.userData = new LinkElementMC();
-			bodyDef.userData.name = "brg";
+			
 			bodyDef.userData.width = drawDistance;
 			bodyDef.userData.height = drawDistance/2;
 			bodyDef.userData.alpha = .6
@@ -361,25 +370,25 @@
 				bodyDef.userData = new Block();
 				bodyDef.userData.name = "block";
 				/*switch(type){
-					case PlatFormType.STANDARD:
-						bodyDef.userData.gotoAndStop("standard");
-						bodyDef.userData.name = "block";
-						break;
-					case PlatFormType.BOUNCY:
-						fixtureDef.restitution = .3;
-						bodyDef.userData.gotoAndStop("bouncy");
-						//bodyDef.userData.name = "bouncy";
-						break;
-					case PlatFormType.GLASS:
-						bodyDef.userData.gotoAndStop("glass");
-						bodyDef.userData.name = "rock";
-						//trace("created glasssss box..")
-						break;
-					case PlatFormType.ICE:
-						fixtureDef.friction = 0.1;
-						bodyDef.userData.gotoAndStop("ice");
-						//bodyDef.userData.name = "block";
-						break;
+				case PlatFormType.STANDARD:
+				bodyDef.userData.gotoAndStop("standard");
+				bodyDef.userData.name = "block";
+				break;
+				case PlatFormType.BOUNCY:
+				fixtureDef.restitution = .3;
+				bodyDef.userData.gotoAndStop("bouncy");
+				//bodyDef.userData.name = "bouncy";
+				break;
+				case PlatFormType.GLASS:
+				bodyDef.userData.gotoAndStop("glass");
+				bodyDef.userData.name = "rock";
+				//trace("created glasssss box..")
+				break;
+				case PlatFormType.ICE:
+				fixtureDef.friction = 0.1;
+				bodyDef.userData.gotoAndStop("ice");
+				//bodyDef.userData.name = "block";
+				break;
 				}*/
 			}
 			
