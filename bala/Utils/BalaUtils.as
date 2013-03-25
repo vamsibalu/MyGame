@@ -130,7 +130,7 @@
 		
 		private function complt(_obj:MovieClip):void{
 			trace("tween completed..")
-			_obj.gotoAndPlay(1);
+			_obj.gotoAndPlay(2);
 		}
 		
 		private function compltForRemove(_obj:MovieClip):void{

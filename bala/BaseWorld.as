@@ -1,8 +1,11 @@
 ﻿package bala
 {
+	import Box2D.Collision.Shapes.b2CircleShape;
 	import Box2D.Collision.Shapes.b2PolygonShape;
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.Joints.b2DistanceJointDef;
 	import Box2D.Dynamics.Joints.b2Joint;
+	import Box2D.Dynamics.Joints.b2PrismaticJointDef;
 	import Box2D.Dynamics.Joints.b2RevoluteJointDef;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2BodyDef;
@@ -13,6 +16,7 @@
 	
 	import bala.Box2DSeparator.b2Separator;
 	import bala.Utils.BalaUtils;
+	import bala.vo.BodyVO;
 	import bala.vo.PlatFormType;
 	
 	import flash.display.BitmapData;
@@ -112,7 +116,7 @@
 		// of the objects in the simulation
 		public var RadtoDeg:Number = 180/Math.PI;
 		public var DegtoRad:Number = Math.PI/180;
-		public function renderGame(e : Event):void {
+		public function renderGame(e:Event = null):void {
 			// step the world
 			world.Step(1 / 30, 10, 10);
 			
@@ -133,7 +137,13 @@
 					
 					// set the rotation of the sprite
 					if(mcc.name == "wf" || mcc.name == "wb"){
-						mcc.rotation = Body.GetAngle() * RadtoDeg;
+						mcc.rotation += Body.GetAngularVelocity(); //Body.GetAngle() * RadtoDeg;
+						//mcc.rotation = Body.GetAngle() * RadtoDeg ;
+						//mcc.rotation = newRotation % 2*Math.PI;
+						
+						if(mcc.rotation>360){
+							mcc.rotation = 0;
+						}
 					}else{
 						mcc.rotation = Body.GetAngle() * RadtoDeg ;
 					}
@@ -172,6 +182,155 @@
 			return body;
 		}
 		
+		
+		private var prevBolt:b2Body;
+		protected function createHangingBridges(bodyID:String,pointsArray:Array,_name:String,bridgeElementUI:BitmapData,drawDistance:Number) :void{
+			trace("createHangingBridgesBox2d=",pointsArray)
+			
+			
+			var rv:b2RevoluteJointDef = new b2RevoluteJointDef();
+			//rv.maxMotorTorque = 20000
+			//rv.enableMotor = true;
+			//rv.enableLimit = true;
+			//rv.lowerAngle = -1;
+			//rv.upperAngle = 1; 
+			prevBolt = null;
+			var pr:b2PrismaticJointDef = new b2PrismaticJointDef();
+			//var pr:b2PrismaticJointDef = new b2PrismaticJointDef();
+			pr.enableMotor = true;
+			pr.enableLimit = true;
+			pr.upperTranslation = 0;
+			pr.lowerTranslation = 0;
+			pr.maxMotorForce = 300;
+			
+			//strong rope 
+			var ropeJointDef:b2DistanceJointDef = new b2DistanceJointDef();
+			ropeJointDef.length = 0;
+			//ropeJointDef.dampingRatio = 0;
+			//ropeJointDef.frequencyHz = 50000;
+			ropeJointDef
+			
+			trace("DraDistance got from",drawDistance)
+			var prAxis:b2Vec2 = new b2Vec2(0,1);
+			
+			for(var i:int = 0; i<pointsArray.length; i++){
+				if(i+1<pointsArray.length){
+					var bbData:BodyVO = new BodyVO();
+					var pp:Point = pointsArray[i];
+					bbData.xx = (pp.x + pointsArray[i+1].x) / 2;
+					bbData.yy = (pp.y + pointsArray[i+1].y) / 2;
+					bbData.ww = (drawDistance/2)/BaseWorld.ptm_ratio;
+					bbData.hh = ((drawDistance/2)/2)/BaseWorld.ptm_ratio;
+					bbData.angl =  Math.atan2(pointsArray[i+1].y - pp.y, pointsArray[i+1].x - pp.x);
+					var link:b2Body = linkElement(bbData.xx,bbData.yy,bbData.ww,bbData.hh,bbData.angl,drawDistance);
+					renderGame();
+					var mc:MovieClip = link.GetUserData();
+					
+					var boltPP1:Point = BalaUtils.localToLocal(mc,this,new Point(mc.bolt1.x,mc.bolt1.y));
+					var boltPP2:Point = BalaUtils.localToLocal(mc,this,new Point(mc.bolt2.x,mc.bolt2.y));
+					
+					var bolt1:b2Body = boltElement(boltPP1.x,boltPP1.y,bbData.hh,mc.bolt1.width);
+					var bolt2:b2Body = boltElement(boltPP2.x,boltPP2.y,bbData.hh,mc.bolt1.width);
+					/*link.GetUserData().bolt1b = bolt1;
+					link.GetUserData().bolt2b = bolt2;
+					allBodyLinksBodies.push(tempB2body);*/
+					
+					rv.Initialize(bolt1,link,bolt1.GetWorldCenter());
+					world.CreateJoint(rv);
+					rv.Initialize(bolt2,link,bolt2.GetWorldCenter());
+					world.CreateJoint(rv);
+					
+					
+					
+					if(prevBolt){
+						rv.Initialize(prevBolt,bolt1,prevBolt.GetWorldCenter())
+						world.CreateJoint(rv);
+						
+						
+					}else{
+						rv.Initialize(bolt1,world.GetGroundBody(),bolt1.GetWorldCenter())
+						world.CreateJoint(rv);
+						
+						
+						
+					}
+					
+					prevBolt = bolt2;
+				}
+			}
+			
+			if(prevBolt){
+				rv.Initialize(prevBolt,world.GetGroundBody(),prevBolt.GetWorldCenter())
+				world.CreateJoint(rv);
+				
+			}
+			
+		}
+		
+		private function linkElement(xx:Number,yy:Number,wh:Number,hh:Number,ang:Number,drawDistance):b2Body{
+			var b2bs:b2Body;
+			
+			var bodyDef:b2BodyDef = new b2BodyDef();
+			bodyDef.type = b2Body.b2_dynamicBody;
+			var fixtureDef:b2FixtureDef = new b2FixtureDef();
+			bodyDef.position.Set(xx /ptm_ratio, yy / ptm_ratio);
+			bodyDef.angle = ang;
+			fixtureDef.friction = .4;
+			fixtureDef.restitution = 0.2;
+			bodyDef.userData = new LinkElementMC();
+			bodyDef.userData.name = "brg";
+			bodyDef.userData.width = drawDistance;
+			bodyDef.userData.height = drawDistance/2;
+			bodyDef.userData.alpha = .6
+			addChild(bodyDef.userData);
+			b2bs = world.CreateBody(bodyDef);
+			var dynamicBox:b2PolygonShape = new b2PolygonShape();
+			dynamicBox.SetAsBox(wh,hh);
+			fixtureDef.shape = dynamicBox;
+			fixtureDef.density = 0.2;
+			//fixtureDef.filter.groupIndex = -2;
+			b2bs.CreateFixture(fixtureDef);
+			
+			return b2bs;
+		}
+		
+		private function boltElement(xx:Number,yy:Number,radis:Number,boldMCRad:Number):b2Body{
+			var b2bs:b2Body;
+			
+			var bodyDef:b2BodyDef = new b2BodyDef();
+			bodyDef.type = b2Body.b2_dynamicBody;
+			var fixtureDef:b2FixtureDef = new b2FixtureDef();
+			trace("bolt is creating at",xx.toFixed(1),yy.toFixed(1))
+			bodyDef.position.Set(xx/ptm_ratio, yy/ptm_ratio);
+			fixtureDef.friction = .4;
+			fixtureDef.restitution = 0.2;
+			bodyDef.userData = new BoltMC();
+			bodyDef.userData.name = "brg";
+			bodyDef.userData.width = boldMCRad;
+			bodyDef.userData.height = boldMCRad;
+			addChild(bodyDef.userData);
+			b2bs = world.CreateBody(bodyDef);
+			var circl:b2CircleShape = new b2CircleShape(radis/2);
+			
+			fixtureDef.shape = circl;
+			fixtureDef.density = 0.5;
+			//fixtureDef.filter.groupIndex = -2;
+			b2bs.CreateFixture(fixtureDef);
+			
+			return b2bs;
+		}
+		
+		public static function parseXYToPoints(ary:Array):Array{
+			var vvvc:Array = [];
+			for(var i:int =0; i<ary.length; i++){
+				var k:Array = ary[i].split("+");
+				if(k && k.length>1){
+					vvvc.push(new Point(k[0],k[1]));
+				}
+			}
+			return vvvc;
+		}
+		
 		private function fallower(obj:b2Body):void{
 			if(obj.GetUserData().fallowme && obj.GetUserData().fallowme is b2Body){
 				var fallowerb2:b2Body = b2Body(obj.GetUserData().fallowme);
@@ -201,7 +360,7 @@
 				bodyDef.type = b2Body.b2_dynamicBody;
 				bodyDef.userData = new Block();
 				bodyDef.userData.name = "block";
-				switch(type){
+				/*switch(type){
 					case PlatFormType.STANDARD:
 						bodyDef.userData.gotoAndStop("standard");
 						bodyDef.userData.name = "block";
@@ -221,8 +380,7 @@
 						bodyDef.userData.gotoAndStop("ice");
 						//bodyDef.userData.name = "block";
 						break;
-				}
-				
+				}*/
 			}
 			
 			bodyDef.userData.bodyID = bodyID;
@@ -234,15 +392,21 @@
 			
 			var body:b2Body = world.CreateBody(bodyDef);
 			var dynamicBox:b2PolygonShape = new b2PolygonShape();
-			dynamicBox.SetAsBox(realPixels(ww),realPixels(hh));
+			if(bodyDef.userData.name == "block"){
+				dynamicBox.SetAsBox(realPixels(65),realPixels(80));
+				allGifts.push(body);
+			}else{
+				dynamicBox.SetAsBox(realPixels(ww),realPixels(hh));
+			}
 			fixtureDef.shape = dynamicBox;
 			fixtureDef.density = 0.5;
 			//fixtureDef.filter.groupIndex = -2;
 			body.CreateFixture(fixtureDef);
 			//trace(body.GetUserData().name);
+			
 			return body;
 		}
-		
+		public var allGifts:Vector.<b2Body> = new Vector.<b2Body>();
 		public function set debugDraw(sp:Sprite)
 		{
 			var db:b2DebugDraw=new b2DebugDraw();

@@ -5,6 +5,7 @@
 	import Box2D.Collision.Shapes.b2CircleShape;
 	import Box2D.Collision.Shapes.b2PolygonShape;
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.Joints.b2Joint;
 	import Box2D.Dynamics.Joints.b2PrismaticJoint;
 	import Box2D.Dynamics.Joints.b2PrismaticJointDef;
 	import Box2D.Dynamics.Joints.b2RevoluteJoint;
@@ -21,6 +22,7 @@
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.geom.Point;
+	import flash.geom.Vector3D;
 	import flash.ui.Keyboard;
 	
 	public class BikeBox2d extends MovieClip implements IBike
@@ -31,7 +33,7 @@
 		private var fixtureDef:b2FixtureDef;
 		private var frent_axel:b2Body;
 		private var back_axel:b2Body;
-		private var frent_wheel:b2Body
+		public var frent_wheel:b2Body
 		private var back_wheel:b2Body;
 		private var this_parent:Object;
 		private var pjd:b2PrismaticJointDef;
@@ -41,22 +43,22 @@
 		private var back_wheel_skin:MovieClip
 		private var r2p:Number=17
 		
-		private var down_key:Boolean;
-		private var up_key:Boolean;
-		private var left:Boolean=false;
-		private var right:Boolean=false;
+		protected var down_key:Boolean;
+		protected var up_key:Boolean;
+		protected var left:Boolean=false;
+		protected var right:Boolean=false;
 		private var speed:Number = 0;
 		//private var speed_decay:Number =1;
 		private var acceleration:Number = 1;
 		private var maxTorque:Number=0.5
-		private var bikeBluePrint:MovieClip = new BikeBluePrint();
+		private var bikeBluePrint:MovieClip;
 		
 		private var axleContainerDistance:Number=60;
 		private var axleContainerDistance_Wb:Number=0;
 		private var axleContainerDistance_Wf:Number=0;
 		
 		public var player_body:b2Body;
-		private var player_move_body:b2Body
+		public static var player_move_body:b2Body
 		private var middliebody:b2Body
 		private var legup:b2Body
 		private var legdown:b2Body
@@ -128,14 +130,26 @@
 		///////End ObjectVals////////////////	
 		
 		//ok good
+		public static var springMcs:Vector.<MovieClip> = new Vector.<MovieClip>();
+		public static var me:BikeBox2d;
 		public function BikeBox2d(_passWorld:b2World)
 		{
+			me = this;
 			// constructor code
+			bikeBluePrint = new BikeBluePrint();
 			passWorld = _passWorld;
 			worldScale = BaseWorld.ptm_ratio;
 			springClip = new Springs();
+			springClip.gotoAndStop(1);
 			springClip2 = new Springs();
+			springClip2.gotoAndStop(2);
+			/*bikeBluePrint.wfshadow.visible = false;
+			bikeBluePrint.wbshadow.vsibile = false;*/
+			springMcs.push(springClip,springClip2);
+			trace("new bike Createdd..")
 		}
+		
+		private var bikeEngnMC:MovieClip;
 		public function create(_xx:Number,_yy:Number):void
 		{
 			axleContainerDistance_Wb = Point.distance(new Point(bikeBluePrint.wb.x,0),new Point(bikeBluePrint.body.x,0))
@@ -153,7 +167,8 @@
 			//bodyDef.userData.alpha=1
 			trace("BP1.1")
 			Game.me.addChild(bodyDef.userData);
-			body_skin=bodyDef.userData
+			bikeEngnMC = bodyDef.userData;
+			body_skin=bodyDef.userData;
 			boxDef=new b2PolygonShape();
 			boxDef.SetAsBox((bikeBluePrint.bikemainbody.width/2)/worldScale,(bikeBluePrint.bikemainbody.height/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
@@ -204,7 +219,7 @@
 			back_axel = passWorld.CreateBody(bodyDef);
 			back_axel.CreateFixture(fixtureDef);
 			
-			//frent wheel;
+			//front wheel;
 			bodyDef=new b2BodyDef();
 			bodyDef.position.Set(frent_axel.GetWorldCenter().x,frent_axel.GetWorldCenter().y+5/r2p);
 			bodyDef.type = b2Body.b2_dynamicBody;
@@ -213,13 +228,13 @@
 			//bodyDef.userData.width = bikeBluePrint.wf.width
 			bodyDef.userData.height = (bikeBluePrint.wf.width)
 			Game.me.addChild(bodyDef.userData);
-			Game.me.addChild(bikeBluePrint.wfshadow);//its wheel shadow
+			//Game.me.addChild(bikeBluePrint.wfshadow);//its wheel shadow
 			//Physics.frent_wheel_skin=bodyDef.userData
 			//circleDef = new b2CircleShape(13 / r2p);
 			trace(13 / r2p,"jhjjhjkk", bikeBluePrint.wf.width/worldScale)
 			circleDef = new b2CircleShape( (bikeBluePrint.wf.width/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = 0.5;
+			fixtureDef.density = .5;
 			fixtureDef.friction = friction;
 			fixtureDef.restitution = 0.5;
 			fixtureDef.filter.groupIndex = -1;
@@ -236,12 +251,12 @@
 			bodyDef.userData.width = bikeBluePrint.wb.width
 			bodyDef.userData.height = bikeBluePrint.wb.width
 			Game.me.addChild(bodyDef.userData);
-			Game.me.addChild(bikeBluePrint.wbshadow);//its wheel shadow
+			//Game.me.addChild(bikeBluePrint.wbshadow);//its wheel shadow
 			back_wheel_skin=bodyDef.userData
 			//circleDef = new b2CircleShape(13 / r2p);
 			circleDef = new b2CircleShape( (bikeBluePrint.wb.width/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = 0.5;
+			fixtureDef.density = .5;
 			fixtureDef.friction = friction;
 			fixtureDef.restitution = 0.5;
 			fixtureDef.filter.groupIndex = -1;
@@ -250,6 +265,9 @@
 			back_wheel.CreateFixture(fixtureDef);
 			rjd=new b2RevoluteJointDef();
 			rjd.enableMotor = true;
+			//bala bike body should be on top..
+			Game.me.addChild(bikeEngnMC);
+			
 			//rjd.maxMotorTorque=10
 			rjd.Initialize(frent_wheel,frent_axel,new b2Vec2(frent_axel.GetWorldCenter().x,frent_axel.GetWorldCenter().y+5/r2p));
 			rightWheelRevoluteJoint=passWorld.CreateJoint(rjd) as b2RevoluteJoint;
@@ -290,7 +308,8 @@
 		var body7:b2Body
 		var body8:b2Body
 		var body9:b2Body			
-		var rjd1:b2RevoluteJointDef
+		var rjd1:b2RevoluteJointDef;
+		public static var bagMC:MovieClip = new MovieClip();
 		private function character(_x1:Number,_y1:Number){
 			
 			var bodyDef:b2BodyDef
@@ -318,7 +337,8 @@
 			bodyDef.type=b2Body.b2_dynamicBody
 			bodyDef.angle=Math.PI/9
 			bodyDef.userData=new hip();
-			//bodyDef.userData.alpha=0
+			var hipmc:MovieClip = bodyDef.userData;
+			bodyDef.userData.name = "playerhead";
 			Game.me.addChild(bodyDef.userData);
 			boxDef=new b2PolygonShape()
 			boxDef.SetAsBox(4/r2p,7/r2p)
@@ -329,7 +349,28 @@
 			fixtureDef.shape=boxDef
 			fixtureDef.filter.groupIndex=-3;  //added bala for multiplayer bikes
 			middliebody=passWorld.CreateBody(bodyDef)
-			middliebody.CreateFixture(fixtureDef)
+			middliebody.CreateFixture(fixtureDef);
+			//for bag added by bala..
+			bodyDef=new b2BodyDef()
+			bodyDef.position.Set(_x1-9/r2p,_y1-19/r2p)
+			bodyDef.type=b2Body.b2_dynamicBody
+			bodyDef.angle=Math.PI/9
+			bodyDef.userData=new bagmc();
+			bagMC = bodyDef.userData;
+			bodyDef.userData.name = "playerhead";
+			Game.me.addChild(bodyDef.userData);
+			boxDef=new b2PolygonShape()
+			boxDef.SetAsBox(3/r2p,4/r2p)
+			fixtureDef=new b2FixtureDef()
+			fixtureDef.density=AllBpartsDensity
+			fixtureDef.friction=0.4
+			fixtureDef.restitution=0.1
+			fixtureDef.shape=boxDef
+			fixtureDef.filter.groupIndex=-34;  //bag ...added bala for multiplayer bikes
+			var bagbody:b2Body=passWorld.CreateBody(bodyDef)
+			bagbody.CreateFixture(fixtureDef);
+			//bag done
+			
 			rjd=new b2RevoluteJointDef()
 			rjd.enableLimit=true
 			rjd.lowerAngle=0//(180/Math.PI)
@@ -342,8 +383,10 @@
 			bodyDef.type=b2Body.b2_dynamicBody
 			bodyDef.angle=Math.PI/5
 			bodyDef.userData=new leg1();
+			var leg1mc:MovieClip = bodyDef.userData;
 			//bodyDef.userData.alpha=0.1
 			Game.me.addChild(bodyDef.userData);
+			Game.me.addChild(hipmc);
 			boxDef=new b2PolygonShape()
 			boxDef.SetAsBox(6/r2p,3/r2p)
 			fixtureDef=new b2FixtureDef()
@@ -367,6 +410,8 @@
 			bodyDef.angle=Math.PI/6
 			bodyDef.userData=new leg();
 			Game.me.addChild(bodyDef.userData);
+			Game.me.addChild(leg1mc);
+			Game.me.addChild(hipmc);
 			boxDef=new b2PolygonShape()
 			boxDef.SetAsBox(3/r2p,6/r2p)
 			fixtureDef=new b2FixtureDef()
@@ -405,13 +450,15 @@
 			rjd.enableLimit=true
 			rjd.lowerAngle=0//(180/Math.PI)
 			rjd.upperAngle=0
+			
+			//hands joints..
 			rjd.Initialize(middliebody,uprhandBody,new b2Vec2(_x1-4/r2p,_y1-16/r2p))
 			upperhandJoint=passWorld.CreateJoint(rjd) as b2RevoluteJoint
 			//lower hand
 			bodyDef=new b2BodyDef()
-			bodyDef.position.Set(_x1+4/r2p,_y1-9/r2p)
+			bodyDef.position.Set(_x1+5/r2p,_y1-11/r2p)
 			bodyDef.type=b2Body.b2_dynamicBody
-			//bodyDef.angle=-Math.PI/4
+			bodyDef.angle=-Math.PI/5
 			bodyDef.userData=new hand2();
 			//bodyDef.userData.alpha=0.2
 			Game.me.addChild(bodyDef.userData);
@@ -427,8 +474,8 @@
 			lwrhandBody.CreateFixture(fixtureDef)
 			rjd=new b2RevoluteJointDef()
 			rjd.enableLimit=true
-			rjd.lowerAngle=0
-			rjd.upperAngle=0//(180/Math.PI)
+			rjd.lowerAngle=0.1
+			rjd.upperAngle=-0.1//(180/Math.PI)
 			rjd.Initialize(uprhandBody,lwrhandBody,new b2Vec2(_x1+0.5/r2p,_y1-7/r2p))
 			lowerhandJoint=passWorld.CreateJoint(rjd) as b2RevoluteJoint		
 			//head
@@ -437,6 +484,7 @@
 			bodyDef.angle=Math.PI/6
 			bodyDef.type=b2Body.b2_dynamicBody
 			bodyDef.userData=new head();
+			bodyDef.userData.name = "playerhead";
 			Game.me.addChild(bodyDef.userData);
 			circleDef=new b2CircleShape(4/r2p)
 			fixtureDef=new b2FixtureDef()
@@ -466,54 +514,22 @@
 			rjd1.enableLimit=true
 			rjd1.lowerAngle=-15/(180/Math.PI)
 			rjd1.upperAngle=45/(180/Math.PI)
-			rjd1.Initialize(lwrhandBody,player_body,new b2Vec2(_x1+8/r2p,_y1-8/r2p))
+			rjd1.Initialize(lwrhandBody,player_body,new b2Vec2(_x1+12.5/r2p,_y1-12/r2p))  //new b2Vec2(_x1+8/r2p,_y1-8/r2p)
 			b_and_c_joint2=passWorld.CreateJoint(rjd1) as b2RevoluteJoint
 			
 			//heroDead(true,true)
+			//bag joint to head.
+			rjd=new b2RevoluteJointDef()
+			rjd.enableLimit=true
+			rjd.lowerAngle=-.3;//(180/Math.PI)
+			rjd.upperAngle=.3;
+			rjd.Initialize(bagbody,middliebody,new b2Vec2(middliebody.GetWorldCenter().x,middliebody.GetWorldCenter().y-1))
+			var bagJoint:b2Joint=passWorld.CreateJoint(rjd)
+			Game.me.addChild(bagbody.GetUserData());
 			
 		}
 		public function bikeRotation()
 		{}
-		
-		public function keyDown(e:KeyboardEvent):void {
-			switch (e.keyCode) {
-				case Keyboard.LEFT :
-					left=true;
-					break;
-				case Keyboard.RIGHT :
-					right=true;
-					break;
-				case Keyboard.UP :
-					up_key=true;
-					break;
-				case Keyboard.DOWN :
-					down_key=true;
-					break;
-			}
-		}
-		public function keyUp(e:KeyboardEvent):void {
-			switch (e.keyCode) {
-				case Keyboard.LEFT :
-					left=false;
-					trace("left")
-					break;
-				case Keyboard.RIGHT :
-					right=false;
-					break;
-				case Keyboard.UP :
-					up_key=false;
-					break;
-				case Keyboard.DOWN :
-					down_key=false;
-					break;
-				case Keyboard.NUMBER_1 :
-					Game.currentWeponType = Game.Javelin;
-					break;
-				case Keyboard.NUMBER_2 :
-					Game.currentWeponType = Game.GUN;
-					break;
-			}
-		}
 		
 		var speedIncrementor:Number = 18;
 		var maxTourqueIncrementor:Number = 20;
@@ -523,36 +539,59 @@
 			maxTourqueIncrementor = _maxTorque;
 			springIncrementor = _springIncrementor;
 		}
-		
-		public function bikeDestroy(moreEffect:Boolean = false,bikeAlso:Boolean = false):void{
-			passWorld.DestroyJoint(b_and_c_joint1)
-			passWorld.DestroyJoint(b_and_c_joint2)
-			if(moreEffect==true){
-				passWorld.DestroyJoint(lowerfootjoint)
-				passWorld.DestroyJoint(middlebodyJoint)
-				passWorld.DestroyJoint(upperfootjoint)
-				passWorld.DestroyJoint(upperhandJoint)
-				passWorld.DestroyJoint(lowerhandJoint)
-				passWorld.DestroyJoint(headJoint)
+		public static function deleteSpringMC():void{
+			while(springMcs.length>0){
+				BalaUtils.me.remove(springMcs[0]);
+				springMcs.shift();
 			}
-			
-			if(bikeAlso == true){
-				passWorld.DestroyJoint(spring_1)
-				passWorld.DestroyJoint(spring_2)
-			}
-			
-			Game.me.removeChild(springClip);
-			Game.me.removeChild(springClip2);
-			Game.me.heroIsDead = true;
 		}
 		
+		private var oneTimeDestroy:Boolean = false;
+		public function bikeDestroy(moreEffect:Boolean = false,bikeAlso:Boolean = false):void{
+			if(oneTimeDestroy == false){
+				oneTimeDestroy = true;
+				trace("distroyed bike and joints..")
+				passWorld.DestroyJoint(b_and_c_joint1)
+				passWorld.DestroyJoint(b_and_c_joint2)
+				b_and_c_joint2 = null;
+				//lowerfootjoint.EnableLimit(false);
+				lowerfootjoint.SetLimits(-1,1);
+				//middlebodyJoint.EnableLimit(false);
+				middlebodyJoint.SetLimits(-1,1);
+				//upperfootjoint.EnableLimit(false);
+				upperfootjoint.SetLimits(-1,1);
+				//upperhandJoint.EnableLimit(false);
+				upperhandJoint.SetLimits(-1,1);
+				//lowerhandJoint.EnableLimit(false);
+				lowerhandJoint.SetLimits(-1,1);
+				//headJoint.EnableLimit(false);
+				headJoint.SetLimits(-1,1);
+				
+				if(moreEffect==true){
+					passWorld.DestroyJoint(lowerfootjoint)
+					passWorld.DestroyJoint(middlebodyJoint)
+					passWorld.DestroyJoint(upperfootjoint)
+					passWorld.DestroyJoint(upperhandJoint)
+					passWorld.DestroyJoint(lowerhandJoint)
+					passWorld.DestroyJoint(headJoint)
+				}
+				
+				if(bikeAlso == true){
+					passWorld.DestroyJoint(spring_1)
+					passWorld.DestroyJoint(spring_2)
+				}
+				deleteSpringMC();
+			}
+		}
+		
+		public var headDamage:Boolean = false;
 		public function updateBike(e:Event=null):void 
 		{
-			if(Game.me.heroIsDead == false){
+			if(headDamage == false){
 				if (left) {
-					player_body.ApplyTorque(-50);
-					player_move_body.ApplyImpulse(new b2Vec2(-0.50,-0.10),player_move_body.GetWorldCenter())
-					middliebody.ApplyImpulse(new b2Vec2(-0.5,-0.25),middliebody.GetWorldCenter())
+					player_body.ApplyTorque(-150);
+					player_move_body.ApplyImpulse(new b2Vec2(-0.20,-0.01),player_move_body.GetWorldCenter())
+					//middliebody.ApplyImpulse(new b2Vec2(-0.5,-0.1),middliebody.GetWorldCenter())
 					
 					//middliebody.SetLinearVelocity(new b2Vec2(-2,0))
 					//headbody.ApplyImpulse(new b2Vec2(0.1,-0.1),headbody.GetWorldCenter())
@@ -560,17 +599,18 @@
 					//middliebody.SetAngularVelocity(-5)
 					//player_body.SetAngularVelocity(-5)
 					
-				} else if (right) {
-					player_body.ApplyTorque(70);
-					player_move_body.ApplyImpulse(new b2Vec2(-0.50,0.50),player_move_body.GetWorldCenter())
-					middliebody.ApplyImpulse(new b2Vec2(0.8,0.2),middliebody.GetWorldCenter())
+				} 
+				
+				if (right) {
+					player_body.ApplyTorque(150);
+					player_move_body.ApplyImpulse(new b2Vec2(-0.20,0.01),player_move_body.GetWorldCenter())
+					//middliebody.ApplyImpulse(new b2Vec2(0.5,0.1),middliebody.GetWorldCenter())
 					//headbody.ApplyImpulse(new b2Vec2(1.2,0.1),headbody.GetWorldCenter())
-					middliebody.ApplyTorque(-5)
+					//middliebody.ApplyTorque(-5)
 					
 					
-				} else {
-					player_body.ApplyTorque(0);
-				}
+				} 
+				
 				/*if (Math.abs(speed) > 0.98) {
 				speed *=  speed_decay;
 				} else {
@@ -583,7 +623,7 @@
 					maxTorque = maxTourqueIncrementor;
 					player_body.ApplyTorque(speedIncrementor*2);
 					if(player_body.GetLinearVelocity().x<10){
-						trace("push front..")
+						//trace("push front..")
 						player_body.ApplyImpulse(new b2Vec2(5,-0.3),player_body.GetWorldCenter());
 					}
 				} else if (down_key) {
@@ -591,7 +631,7 @@
 					maxTorque = maxTourqueIncrementor;
 					player_body.ApplyTorque(-speedIncrementor*2);
 					if(player_body.GetLinearVelocity().x>-5){
-						trace("push back..")
+						//trace("push back..")
 						player_body.ApplyImpulse(new b2Vec2(-5,0.3),player_body.GetWorldCenter());
 					}
 				}else{
@@ -612,16 +652,13 @@
 				spring_2.SetMaxMotorForce(5+Math.abs(springIncrementor*Math.pow(spring_2.GetJointTranslation(), 2)));
 				spring_2.SetMotorSpeed(-4*Math.pow(spring_2.GetJointTranslation(), 1));
 				
-				bikeBluePrint.wfshadow.x = bikeBluePrint.wf.x;
+				/*bikeBluePrint.wfshadow.x = bikeBluePrint.wf.x;
 				bikeBluePrint.wfshadow.y = bikeBluePrint.wf.y;
 				bikeBluePrint.wbshadow.x = bikeBluePrint.wb.x;
-				bikeBluePrint.wbshadow.y = bikeBluePrint.wb.y;
+				bikeBluePrint.wbshadow.y = bikeBluePrint.wb.y;*/
 				
 				if(player_body){
-					//trace("player_body.GetAngle()=",player_body.GetAngle().toFixed(1))
-					if(player_body.GetAngle()>2 || player_body.GetAngle()<-1){
-						bikeDestroy(true,true);
-					}
+					//if((player_body.GetAngle()>3 || player_body.GetAngle()<-3) && destroyed == false){
 					//trace("getr spring..",player_body.GetUserData().Springp1)
 					ppTemp.x = player_body.GetUserData().Springp1.x;
 					ppTemp.y = player_body.GetUserData().Springp1.y;
@@ -636,6 +673,8 @@
 					origY2 = ppTemp2.y;
 					springMove();
 				}
+			}else{
+				bikeDestroy(false,false);
 			}
 		}
 		

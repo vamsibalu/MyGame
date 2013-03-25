@@ -1,4 +1,4 @@
-package bala{
+﻿package bala{
 	import com.Game;
 	
 	import flash.display.MovieClip;
@@ -33,8 +33,6 @@ package bala{
 		private var scalmodd:StageScaleMode
 		private var myroot:MainGame
 		
-		
-		public static var fromSharedObj:int = 1;
 		public function Starter(_myroot:MainGame)
 		{
 			myroot = _myroot;
@@ -54,7 +52,7 @@ package bala{
 			}
 			
 			//SharedObjectCode
-			MySharedObject = SharedObject.getLocal("ZD22");
+			MySharedObject = SharedObject.getLocal("DR3D");
 			if(MySharedObject.data.lev == undefined)
 			{
 				trace("no shared data")
@@ -67,8 +65,7 @@ package bala{
 					trace("Starter=shared data",MySharedObject.data.lev)
 					Game.currentLevel = 1;
 				}else{
-					fromSharedObj = MySharedObject.data.lev;
-					Game.currentLevel = fromSharedObj;
+					GameStatics.fromSharedObj = MySharedObject.data.lev;
 					trace("got from local saved data",Game.currentLevel);
 				}
 			}
@@ -91,14 +88,14 @@ package bala{
 					lb.addEventListener(IOErrorEvent.IO_ERROR,failLoadXML);
 					lb.load(new URLRequest("bala/BalaLevelData.xml"));
 					trace("loading local xml...");
-					MainGame.testing = true;
+					GameStatics.testing = true;
 				}else{
 					trace("Embeded XML")
 					loadingDone();
 				}
 			}else{
 				myroot.loading_mc.loader_txt.text=String((loaded+1)+"%")
-				myroot.loading_mc.loaderanim.mc.gotoAndStop(loaded+1);
+				myroot.loading_mc.bar.gotoAndStop(loaded+1);
 			}
 		}
 		
@@ -107,7 +104,7 @@ package bala{
 		}
 		
 		private function failLoadXML(e:IOErrorEvent):void{
-			MainGame.testing = false;
+			GameStatics.testing = false;
 			loadingDone();
 		}
 		
@@ -120,15 +117,19 @@ package bala{
 			morefun();
 		}
 		
-		public function HostGame(e:MouseEvent)
+		/*public function HostGame(e:MouseEvent)
 		{
 			trace("hosted")
 			var urld:URLRequest = new URLRequest("http://www.as3bala.in/");
 			navigateToURL(urld,"_blank");
-		}
+		}*/
 		
 		public function morefun(e:MouseEvent = null):void{
-			navigateToURL(new URLRequest("http://www.as3bala.in/"),"blank");
+			navigateToURL(new URLRequest("http://www.racinggames9.com/?utm_source=9games&utm_medium=ingame&utm_campaign=desertrage3d"),"blank");
+		}
+		
+		public static function morefun(e:MouseEvent = null):void{
+			navigateToURL(new URLRequest("http://www.racinggames9.com/?utm_source=9games&utm_medium=ingame&utm_campaign=desertrage3d"),"blank");
 		}
 		
 	}

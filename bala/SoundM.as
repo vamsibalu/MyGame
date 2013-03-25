@@ -4,6 +4,7 @@
 	import flash.events.IEventDispatcher;
 	import flash.media.Sound;
 	import flash.media.SoundMixer;
+	import flash.media.SoundTransform;
 	
 	public class SoundM extends EventDispatcher
 	{
@@ -27,6 +28,7 @@
 		private var snd_glass:Sound;
 		private var snd_hdie:Sound;
 		private var snd_edie:Sound;
+		private var snd_bike:Sound;
 		
 		public static const MENU:String = "menus";
 		public static const BTN:String = "btns";
@@ -44,10 +46,14 @@
 		
 		//sounm
 		private function createSounds(){
-			/*snd_menu = new menu();
-			snd_btn = new btn();
+			
+			/*snd_btn = new btn(); 
+			snd_bike = new bikeSnd();
 			snd_bg1 = new bg1();
-			snd_lComplete = new lComplete();
+			snd_lComplete = new lvlup()
+			snd_hdie = new dieSnd()
+			snd_glass = new giftSnd()*/
+			/*snd_lComplete =snd_menu = new bikesound(); new lComplete();
 			snd_lFail = new lFail();
 			snd_gameWin = new gameWin();
 			snd_gameOver = new gameOver();
@@ -60,57 +66,62 @@
 		}
 		
 		
-		
+		private var sndTrns:SoundTransform = new SoundTransform();
 		public function playSound(snd_name:String,stopAll:Boolean = false):void{
-			MainGame.canPlaySND = false;
-			if(MainGame.canPlaySND == true){
-				if(stopAll == true){
-					SoundMixer.stopAll();
-				}
-				
-				switch(snd_name)
-				{
-					case MENU:
-						snd_menu.play(0,999);
-						break;
-					case BTN:
-						snd_btn.play();
-						break;
-					case BG1:
-						snd_bg1.play(0,999);
-						break;
-					case LCOMP:
-						snd_lComplete.play(0,999);
-						break;
-					case LFail:
-						snd_lFail.play(0,999);
-						break;
-					case GAME_WIN:
-						snd_gameWin.play(0,999);
-						break;
-					case HELP:
-						snd_menu.play(0,999);   //menu sound
-						break;
-					case GAME_OVER:
-						snd_gameOver.play(0,999);
-						break;
-					case SHOOT:
-						snd_shoot.play();
-						break;
-					case STEEL:
-						snd_steel.play();
-						break;
-					case GLASS:
-						snd_glass.play();
-						break;
-					case HDIE:
-						snd_hdie.play();
-						break;
-					case EDIE:
-						snd_edie.play();
-						break;
-				}
-			}else{
+			//GameStatics.canPlaySND = false;
+			
+			if(stopAll == true){
+				SoundMixer.stopAll();
+			}
+			
+			/*switch(snd_name)
+			{
+				case MENU:
+					trace("snd_bg1=",snd_bg1)
+					snd_bg1.play(0,999);
+					break;
+				case BTN:
+					snd_btn.play();
+					break;
+				case BG1:
+					sndTrns.volume = .5;
+					snd_bg1.play(0,999).soundTransform = sndTrns;
+					snd_bike.play(0,999);
+					break;
+				case LCOMP:
+					snd_lComplete.play(0,999);
+					snd_bg1.play(0,999);
+					break;
+				case LFail:
+					snd_bg1.play(0,999);
+					break;
+				case GAME_WIN:
+					snd_bg1.play(0,999);
+					break;
+				case HELP:
+					snd_bg1.play(0,999);   //menu sound 
+					break;
+				case GAME_OVER:
+					snd_bg1.play(0,999);
+					break;
+				case SHOOT:
+				snd_shoot.play();
+				break;
+				case STEEL:
+				snd_steel.play();
+				break;
+				case GLASS:
+					snd_glass.play(0,1);
+					break;
+				case HDIE:
+					snd_hdie.play();
+					break;
+				case EDIE:
+				snd_edie.play();
+				break;
+			}*/
+			if(GameStatics.canPlaySND == false){
+				SoundMixer.soundTransform=new SoundTransform(0)
 				trace("Silence pls..");
 			}
 		}

@@ -14,12 +14,15 @@
 	import com.greensock.TweenLite;
 	import com.vo.PlatFormType;
 	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
 	import flash.display.SimpleButton;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.utils.Timer;
 	
@@ -31,10 +34,8 @@
 		
 		public var textBoxes:Array = [];
 		public static var currentLevel:int = 1;
-		public static var totalScore:Number = 0;
 		public static var levelScore = 0;
 		
-		private var sp:Sprite = new Sprite();
 		public static var myWorld:b2World;
 		public static var NEXT_LEVEL:String = "nextLevel1";
 		public static var LEVEL_FAIL:String = "levelfail1";
@@ -50,13 +51,14 @@
 		
 		//private var bgMC:MovieClip;
 		public var tweenBox:TweenBox2d;
-		public var heroBike:BikeBox2d;
+		public var heroBike:HeroBike;
 		public static const GUN:int = 2;
 		public static const Javelin:int = 3;
 		public var bykeOnFloor:Boolean;
 		
 		public var maxCamMoveX:Number = 15000;
 		public var maxCamMoveY:Number = 680;
+		private var BGG_FarView:Sprite = new Sprite();
 		//public var bike:Bike
 		public function Game(_dummyXML:XML = null)
 		{
@@ -66,7 +68,7 @@
 			myWorld = world;
 			addChild(sp);
 			
-			this.addEventListener(MouseEvent.CLICK,shootEnemy);  //we will add this for hero hand..
+			//this.addEventListener(MouseEvent.CLICK,shootEnemy);  //bala req we will add this for hero hand..
 			createDummyNext();
 			tweenBox = new TweenBox2d(this);
 			
@@ -77,19 +79,26 @@
 				//trace("explosions parnte=",explosions[explosions.length-1].parent)
 			}
 			trying = 0;
-			
+			BGG_FarView.y = -100;
 			addEventListener(Event.ADDED_TO_STAGE,added);
 			//testing..
 			
 			//graphics.beginFill(0xcccccc,.5);
 			//graphics.drawRect(0,0,640,480);
 			trace("GAme initialized2..")
+			ttm.addEventListener(TimerEvent.TIMER_COMPLETE,onTime);
+			//gtime.addEventListener(TimerEvent.TIMER_COMPLETE,deletGift)
+			stopRender();
+			currentGift = new Block();
+			currentGift2 = new Block();
 		}
 		
 		private function added(e:Event):void{
-			trace("aaddShadowAT=",MainGame.me.getChildIndex(MainGame.me.BGG_shadow),MainGame.me.getChildIndex(this))
+			/*MainGame.me.addChildAt(BGG_FarView,0);
 			MainGame.me.addChild(MainGame.me.BGG_shadow);
-			trace("aaddShadowAT=",MainGame.me.getChildIndex(MainGame.me.BGG_shadow),MainGame.me.getChildIndex(this))
+			if(testingnext){
+				MainGame.me.addChild(testingnext);
+			}*/
 		}
 		public static function get trying():int
 		{
@@ -99,22 +108,21 @@
 		public static function set trying(value:int):void
 		{
 			_trying = value;
-			MainGame.me.footer.livesTxt.text = Number(canTryUpto-_trying)+"/"+canTryUpto;
+			MainGame.me.footerM.livesTxt.text = String(canTryUpto-_trying)
 		}
 		
 		public function createDummyNext():void{
-			if(MainGame.testing==true){
+			if(GameStatics.testing==true){
 				testingnext = new nextdummy();
-				addChild(testingnext);
+				MainGame.me.addChild(testingnext);
 				testingnext.x = 640;
 				testingnext.addEventListener(MouseEvent.CLICK,MainGame.me.nextSlectLevelfun);
 			}
 		}
 		
-		public override function renderGame(e:Event):void{
+		public override function renderGame(e:Event=null):void{
 			super.renderGame(e);
-			updateHand();
-			traceAllbullets();
+			
 			checkHeroPos();
 			removeWasteBodies();
 			//render all bikes..
@@ -122,67 +130,131 @@
 				allBikes[i].updateBike();
 			}
 			
-			forArrowsCheck() //bala added for arrows
+			//shoot it.
+			updateHandAndCam();
+			//traceAllbullets();
+			//forArrowsCheck() //bala added for arrows
 		}
 		public var destinationPointXX:Number;
 		public var allBikes:Vector.<BikeBox2d> = new Vector.<BikeBox2d>();
+		private var _oponentBike:BikeBox2d;
+		
 		public override function loadMyLevelForPreview(_levelAry:Array):void{
+			stage.focus = this;
+			//stage.focusRect = false;
+			super.loadMyLevelForPreview(_levelAry);
 			dispatched = false;
 			heroIsDead = false;
 			enemysDied = 0;
 			enemyCount = 0;
+			GameStatics.currentLevelScore = 0;
 			tempShadowDepthSetup = false;
-			super.loadMyLevelForPreview(_levelAry);
+			MainGame.me.footerM.scoreTxt.text = String(GameStatics.currentLevelScore);
+			while(BGG_FarView.numChildren>0){
+				BGG_FarView.removeChildAt(0);
+			}
+			
+			BGG_FarView.y = -100;
+			BGG_FarView.x = -50;
+			BikeBox2d.deleteSpringMC();
 			levelScore = (enemyCount * SCOREPERENEMY);
 			MainGame.me.gotoAndStop(Game.currentLevel+2);
 			parent?parent.addChild(this):trace("not parent for game");
-			MainGame.me.footer.levelTxt.text = String(Game.currentLevel);
-			if(MainGame.testing==true){
-				addChild(testingnext);
-			}
-			SoundM.me.playSound(SoundM.BG1);
+			MainGame.me.footerM.levelTxt.text = String(Game.currentLevel);
+			
+			SoundM.me.playSound(SoundM.BG1,true);
 			tweenBox.addExtraEffectsIfAny();
 			
+			while(allBikes.length>0){
+				allBikes[0] = null;
+				allBikes.shift();
+			}
 			heroBike = new HeroBike(world);
 			heroBike.create(100/30,300/30);
 			allBikes.push(heroBike);
 			heroUdata = heroBike.player_body.GetUserData();
-			
-			//one bike..
-			var _oponentBike:BikeBox2d = new OponentBike(world);
+			trace("On new Level..heroBike.destroyed=",heroBike.headDamage)
+			//oponent bikes..
+			/*_oponentBike= new OponentBike(world);
 			_oponentBike.create(300/BaseWorld.ptm_ratio,300/BaseWorld.ptm_ratio);
 			allBikes.push(_oponentBike);
 			
+			_oponentBike= new OponentBike(world);
+			_oponentBike.create(300/BaseWorld.ptm_ratio,300/BaseWorld.ptm_ratio);
+			allBikes.push(_oponentBike);
+			
+			_oponentBike= new OponentBike(world);
+			_oponentBike.create(300/BaseWorld.ptm_ratio,300/BaseWorld.ptm_ratio);
+			allBikes.push(_oponentBike);*/
+			MainGame.me.waterEffect.visible = false;
+			MainGame.me.BGG_shadow.visible = false;
+			BGG_FarView.visible = false;
 			switch(currentLevel)
 			{
+				case 2:
+					destinationPointXX = 14700;
+					maxCamMoveX = destinationPointXX-1040
+					MainGame.me.BGG_shadow.visible = true;
+					break;
+				case 3:
+					destinationPointXX = 16700;
+					maxCamMoveX = destinationPointXX-840
+					//add Far Views..
+					BGG_FarView.visible = true;
+					for(var i:int = 0; i<5; i++){
+						var bt:Bitmap = new Bitmap(new far_1());
+						bt.x = bt.width * i;
+						BGG_FarView.addChild(bt);
+					}
+					break;
 				case 1:
-				{
-					destinationPointXX = 14900;
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 17100;
+					maxCamMoveX = destinationPointXX-740
 					break;
-				}
-					
-				default:
-				{
+				case 4:
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 22400;
+					maxCamMoveX = destinationPointXX-740;
 					break;
-				}
+				case 5:
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 28400;
+					maxCamMoveX = destinationPointXX-740
+					break;
 			}
 			
+			trace("gotoAndBGG=",currentLevel)
+			MainGame.me.BGG.gotoAndStop(currentLevel);
+			var bodyroad:b2Body=roadPath["Lvl_"+currentLevel](world);
 			
-			createRoad();
+			MainGame.me.addChildAt(BGG_FarView,0);
+			MainGame.me.addChild(MainGame.me.BGG_shadow);
+			if(testingnext){
+				MainGame.me.addChild(testingnext);
+			}
+			startRender();
+			//tempRefWheel = heroBike.frent_wheel.GetUserData()
+			//tempRefWheelTest2 = new dummyWheel();
+			//addChild(tempRefWheelTest2);
+			
+			//placeNearestGift()
 		}
+		//var tempRefWheel:MovieClip;
+		//var tempRefWheelTest2:MovieClip;
 		
+		var roadPath:gamePathFile=new gamePathFile();
 		private var dispatched:Boolean =  false;
 		
-		//body contacts will call these funs..
-		public function set heroX(bbb:b2Body):void{
-			dispatchEvent(new Event(LEVEL_FAIL));
-			heroIsDead = true;
-			deleteBodyAndData(bbb);
-		}
+		//body contacts will call these funs..//bala req
+		/*public function set heroX(bbb:b2Body):void{
+		dispatchEvent(new Event(LEVEL_FAIL));
+		heroIsDead = true;
+		deleteBodyAndData(bbb);
+		}*/
 		
 		private var enemysDied:int = 0;
-		public static var currentLevelScore:Number = 0;
-		public function set enemyX(bbb:b2Body):void{
+		/*public function set enemyX(bbb:b2Body):void{
 			//deleteBodisByID(bbb.GetUserData().id);
 			pinkExplosion(bbb);
 			explosionAnim(bbb);
@@ -194,9 +266,9 @@
 				//trace("b2contacts dispatched NextLevel");
 			}
 			SoundM.me.playSound(SoundM.EDIE);
-			currentLevelScore = enemysDied * SCOREPERENEMY;
-			MainGame.me.footer.scoreTxt.text = String(currentLevelScore);
-		}
+			GameStatics.currentLevelScore = enemysDied * SCOREPERENEMY;
+			MainGame.me.footer.scoreTxt.text = String(GameStatics.currentLevelScore);
+		}*/
 		
 		public function set bulletX(bbb:b2Body):void{
 			bbb.GetUserData().canTrace = false;
@@ -210,6 +282,47 @@
 			//trace("effect bulletXX")
 		}
 		
+		private var gtime:Timer = new Timer(500,1);
+		
+		public var currentGift:MovieClip;
+		public var currentGift2:MovieClip;
+		public function set giftX(bbb:b2Body):void{
+			SoundM.me.playSound(SoundM.GLASS);
+			bbb.GetUserData().anim.gotoAndPlay(2);
+			GameStatics.currentLevelScore += 100;
+			//currentGift = bbb;
+			//gtime.start();
+			tempBodiesTobeRemoved.push(bbb);
+			MainGame.me.footerM.scoreTxt.text = String(GameStatics.currentLevelScore);
+		}
+		
+		/*private function deletGift(e:TimerEvent):void{
+			tempBodiesTobeRemoved.push(currentGift);
+			currentGift = null;
+		}*/
+		
+		private var ppb1:Point = new Point();
+		private var ppg1:Point = new Point();
+		private function placeNearestGift():void{
+			var dd:Number = 50000;
+			var currentB:b2Body;
+			for(var i:int = 0; i<allGifts.length; i++){
+				ppg1.x = allGifts[i].GetUserData().x;
+				ppg1.y = allGifts[i].GetUserData().y;
+				
+				ppb1.x = BikeBox2d.bagMC.x;
+				ppb1.y = BikeBox2d.bagMC.y;
+				var curntD:Number = Point.distance(ppb1,ppg1)
+			
+				if(curntD<dd){
+					dd = curntD;
+					currentB = allGifts[i];
+				}
+			}
+			addChild(currentGift);
+			currentB.SetUserData(currentGift);
+		}
+		
 		public function set glassX(bbb:b2Body):void{
 			smashEffect(bbb);
 			deleteBodyAndData(bbb);
@@ -219,18 +332,18 @@
 			}
 			SoundM.me.playSound(SoundM.GLASS);
 		}
-		public var heroIsDead:Boolean = false;
+		private var ttm:Timer = new Timer(2000,1);
+		private var heroIsDead:Boolean = false;
 		private function checkHeroPos():void{
 			if(heroBike && heroBike.player_body){
 				var plyPosXX = heroBike.player_body.GetUserData().x;
 				var plyAng:Number = heroBike.player_body.GetAngle();
-				if(heroIsDead == false && plyAng>180){
+				//trace("checking..=",heroBike.destroyed,heroIsDead)
+				if(heroIsDead == false && heroBike.headDamage == true){
 					trace("hero Down..")
-					//dispatchEvent(new Event(LEVEL_FAIL));
-					//heroIsDead = true;
-					//deleteBodyAndData(BikeBox2d.player_body);
-					//stopRender();
-					//SoundM.me.playSound(SoundM.HDIE);
+					ttm.start();
+					heroIsDead = true;
+					SoundM.me.playSound(SoundM.HDIE);
 				}
 				
 				if(plyPosXX>=destinationPointXX && dispatched == false){
@@ -239,6 +352,13 @@
 					trace("You done it..")
 				}
 			}
+		}
+		
+		private function onTime(e:TimerEvent):void{
+			trace("OnTime LevelFail..");
+			ttm.stop();
+			dispatchEvent(new Event(LEVEL_FAIL));
+			stopRender();
 		}
 		
 		private var explosions:Vector.<ExplosionMc> = new Vector.<ExplosionMc>();
@@ -256,7 +376,7 @@
 		public var handMC:MovieClip;
 		private var heroUdata:MovieClip;
 		
-		public function updateHand() : void
+		public function updateHandAndCam() : void
 		{
 			
 			if(heroBike && heroBike.player_body && heroUdata && heroUdata.hand){
@@ -290,8 +410,8 @@
 		
 		
 		private var pointBlock:Point;
-		public function shootEnemy(e:MouseEvent):void{
-			if(e.target is SimpleButton || e.target is sndbtn || e.target is FooterMC){
+		/*public function shootEnemy(e:MouseEvent):void{
+			if(e.target is SimpleButton || e.target is footerMC){
 				trace("don't shoot..");
 			}else{
 				
@@ -311,7 +431,7 @@
 				}
 				//SoundM.me.playSound(SoundM.SHOOT);
 			}
-		}
+		}*/
 		
 		final private function traceAllbullets():void{
 			for each(var bt:BulletTracer in BulletTracer.allBTracers){
@@ -404,7 +524,7 @@
 			}
 			pos_x=320-pos_x;
 			if (pos_x<-maxCamMoveX) {
-				pos_x=-(maxCamMoveX-640);
+				pos_x=-maxCamMoveX;
 			}
 			if (pos_x>0) {
 				pos_x=0;
@@ -421,12 +541,19 @@
 			
 			MainGame.me.BGG.x = x;
 			MainGame.me.BGG.y = pos_y;
-			
+			if (heroBike.player_body && x!=0) {
+				BGG_FarView.x -= heroBike.player_body.GetLinearVelocity().x * .2;
+				BGG_FarView.y -= heroBike.player_body.GetLinearVelocity().y * .2;
+			}
 			MainGame.me.BGG_shadow.x = x;
 			MainGame.me.BGG_shadow.y = pos_y;
 			//to make sure 3D Top layer having top depth..
 			if(tempShadowDepthSetup == false){
 				MainGame.me.addChild(MainGame.me.BGG_shadow);
+				if(testingnext){
+					MainGame.me.addChild(testingnext)
+				}
+				MainGame.me.addChild(MainGame.me.footerM)
 				tempShadowDepthSetup = true;
 			}
 		}

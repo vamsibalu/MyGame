@@ -13,7 +13,6 @@
 	import bala.Utils.BalaUtils;
 	import bala.vo.PlatFormType;
 	
-	import com.RoadPath;
 	import com.gamePathFile;
 	import com.greensock.TweenLite;
 	
@@ -68,18 +67,7 @@
 			enemyMCS.push(new EN1(),new EN2(),new EN3(),new EN4(),new EN5(),new EN6(),new EN1(),new EN2(),new EN3(),new EN4(),new EN5(),new EN6(),new EN1(),new EN2(),new EN3(),new EN4(),new EN5(),new EN6());
 			trace("ShapeWorld initialized2..")
 			
-		//	createRoad();
 		}
-		
-		var roadPath:gamePathFile=new gamePathFile()
-		//var roadPath:RoadPath=new RoadPath()	
-		public function createRoad():void
-		{
-		var bodyroad:b2Body=roadPath.creates(world)
-			//var bodyroad:b2Body=roadPath.createBody("wholepath2",world,0,new MovieClip());
-			//trace(bodyroad.GetWorldCenter().x," road positionn.........")
-		}
-		
 		
 		
 		public var enemyCount:int = 0;
@@ -381,13 +369,13 @@
 		
 		public var tempBodiesTobeRemoved:Vector.<b2Body> = new Vector.<b2Body>();
 		
-		public function deleteBodyAndData(_b2b:b2Body):void{
+		public function deleteBodyAndData(_b2b:b2Body,tt:Number=0,dly:Number=0):void{
 			if (_b2b.GetUserData() && _b2b.GetUserData() is DisplayObject)
 			{
 				if(_b2b.GetUserData().name == "enemyX"){
 					_b2b.GetUserData().gotoAndStop(2);
 				}else{
-					BalaUtils.me.remove(_b2b.GetUserData());
+					BalaUtils.me.remove(_b2b.GetUserData(),tt,dly);
 				}
 			}
 			world.DestroyBody(_b2b);

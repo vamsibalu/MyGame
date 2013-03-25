@@ -26,7 +26,7 @@ package bala
 		public var levelDataXML:XML;
 		private var blUtils:BalaUtils = new BalaUtils();
 		public var allLevels:Array = [];
-		private var sp:Sprite = new Sprite();
+		public var sp:Sprite = new Sprite();
 		
 		//for game logics..
 		public var totalEnemys:int = 0;
@@ -48,12 +48,12 @@ package bala
 			blUtils.parseXMLData(levelDataXML,allLevels);
 			//loadMyLevelForPreview(allLevels[1]);
 			trace("got all levels=",allLevels.length)
-			startRender();
+			//startRender();
 			trace("BalaBaseGame initialized2..")
 		}
 		
 		public function loadMyLevelForPreview(_levelAry:Array):void{
-			trace("loadMyLevelForPreview objects no.=",_levelAry.length)
+			trace("loadMyLevelForPreview objects no.=",_levelAry)
 			removeEverything();
 			setUpWalls();
 			encc = 0;
@@ -96,6 +96,11 @@ package bala
 						//trace("Poly Data to Show parsed=",parseXY(ary));
 						createPoly(ary[1],parseXY(ary),"notmoving",null);
 						break;
+					case "Bridge":
+						ary = _levelAry[obj];
+						trace("B2Preview Bridge Data to Show=",ary);
+						createHangingBridges(ary[1],parseXYToPoints(ary),ary[0],null,Number(ary[ary.length-1]));
+						break;
 				}
 			}
 			
@@ -112,6 +117,8 @@ package bala
 						break;
 				}
 			}
+			
+			
 		}
 		
 		//test for joints..
