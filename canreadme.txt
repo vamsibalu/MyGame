@@ -30,3 +30,14 @@ note..
  avoid multiple developers working on same .fla file  (no problem for any other files)..arjun
 
 testing
+
+
+//Camera for zooming may usefull..check camera class..
+
+if (heroUdata != null)
+camera.lookAt(heroUdata, cameraPoint);
+private var cameraPoint:Point = new Point(200, 240);
+camera = Camera.getInstance(gameContainer);
+camera.easing = false;
+camera.lockWay = Camera.LOCKWAY_NORMAL;
+
