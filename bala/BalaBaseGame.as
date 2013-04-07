@@ -99,7 +99,7 @@ package bala
 					case "Bridge":
 						ary = _levelAry[obj];
 						trace("B2Preview Bridge Data to Show=",ary);
-						createHangingBridges(ary[1],parseXYToPoints(ary),ary[0],null,Number(ary[ary.length-1]),true); //all are statics
+						createHangingBridges(ary[1],parseXYToPoints(ary),ary[0],null,Number(ary[ary.length-1]),int(ary[ary.length-1])); //all are statics
 						break;
 				}
 			}

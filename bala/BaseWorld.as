@@ -184,32 +184,29 @@
 		
 		
 		private var prevBolt:b2Body;
-		protected function createHangingBridges(bodyID:String,pointsArray:Array,_name:String,bridgeElementUI:BitmapData,drawDistance:Number,allStatics:Boolean) :void{
-			trace("createHangingBridgesBox2d=",pointsArray)
+		protected function createHangingBridges(bodyID:String,pointsArray:Array,_name:String,bridgeElementUI:BitmapData,drawDistance:Number,needBridge:int) :void{
+			//trace("createHangingBridgesBox2d=",pointsArray)
 			
-			
-			var rv:b2RevoluteJointDef = new b2RevoluteJointDef();
-			//rv.maxMotorTorque = 20000
-			//rv.enableMotor = true;
-			//rv.enableLimit = true;
-			//rv.lowerAngle = -1;
-			//rv.upperAngle = 1; 
-			prevBolt = null;
-			var pr:b2PrismaticJointDef = new b2PrismaticJointDef();
-			//var pr:b2PrismaticJointDef = new b2PrismaticJointDef();
-			pr.enableMotor = true;
-			pr.enableLimit = true;
-			pr.upperTranslation = 0;
-			pr.lowerTranslation = 0;
-			pr.maxMotorForce = 300;
-			
-			//strong rope 
-			var ropeJointDef:b2DistanceJointDef = new b2DistanceJointDef();
-			ropeJointDef.length = 0;
-			//ropeJointDef.dampingRatio = 0;
-			//ropeJointDef.frequencyHz = 50000;
-			ropeJointDef
-			
+			if(needBridge == 2){
+				var rv:b2RevoluteJointDef = new b2RevoluteJointDef();
+				rv.maxMotorTorque = 20000
+				rv.enableMotor = true;
+				//rv.enableLimit = true;
+				//rv.lowerAngle = -1;
+				//rv.upperAngle = 1; 
+				prevBolt = null;
+				var pr:b2PrismaticJointDef = new b2PrismaticJointDef();
+				//var pr:b2PrismaticJointDef = new b2PrismaticJointDef();
+				pr.enableMotor = true;
+				pr.enableLimit = true;
+				pr.upperTranslation = 0;
+				pr.lowerTranslation = 0;
+				pr.maxMotorForce = 300;
+				
+				//strong rope 
+				var ropeJointDef:b2DistanceJointDef = new b2DistanceJointDef();
+				ropeJointDef.length = 0;
+			}
 			trace("DraDistance got from",drawDistance)
 			var prAxis:b2Vec2 = new b2Vec2(0,1);
 			
@@ -222,10 +219,9 @@
 					bbData.ww = (drawDistance/2)/BaseWorld.ptm_ratio;
 					bbData.hh = ((drawDistance/2)/2)/BaseWorld.ptm_ratio;
 					bbData.angl =  Math.atan2(pointsArray[i+1].y - pp.y, pointsArray[i+1].x - pp.x);
-					var link:b2Body = linkElement(bbData.xx,bbData.yy,bbData.ww,bbData.hh,bbData.angl,drawDistance,allStatics);
-					
-					if(allStatics == false){
-						renderGame();
+					var link:b2Body = linkElement(bbData.xx,bbData.yy,bbData.ww,bbData.hh,bbData.angl,drawDistance,needBridge);
+					renderGame();
+					if(needBridge == 2){
 						var mc:MovieClip = link.GetUserData();
 						
 						var boltPP1:Point = BalaUtils.localToLocal(mc,this,new Point(mc.bolt1.x,mc.bolt1.y));
@@ -242,18 +238,41 @@
 						rv.Initialize(bolt2,link,bolt2.GetWorldCenter());
 						world.CreateJoint(rv);
 						
-						
+						rv.Initialize(bolt1,link,bolt1.GetWorldCenter());
+						world.CreateJoint(rv);
+						rv.Initialize(bolt2,link,bolt2.GetWorldCenter());
+						world.CreateJoint(rv);
 						
 						if(prevBolt){
-							rv.Initialize(prevBolt,bolt1,prevBolt.GetWorldCenter())
-							world.CreateJoint(rv);
+							ropeJointDef.Initialize(prevBolt,bolt1,prevBolt.GetWorldCenter(),bolt1.GetWorldCenter())
+							world.CreateJoint(ropeJointDef);
 							
+							ropeJointDef.Initialize(prevBolt,bolt1,prevBolt.GetWorldCenter(),bolt1.GetWorldCenter())
+							world.CreateJoint(ropeJointDef);
 							
+							ropeJointDef.Initialize(prevBolt,bolt1,prevBolt.GetWorldCenter(),bolt1.GetWorldCenter())
+							world.CreateJoint(ropeJointDef);
+							
+							ropeJointDef.Initialize(prevBolt,bolt1,prevBolt.GetWorldCenter(),bolt1.GetWorldCenter())
+							world.CreateJoint(ropeJointDef);
+							
+							ropeJointDef.Initialize(prevBolt,bolt1,prevBolt.GetWorldCenter(),bolt1.GetWorldCenter())
+							world.CreateJoint(ropeJointDef);
 						}else{
-							rv.Initialize(bolt1,world.GetGroundBody(),bolt1.GetWorldCenter())
-							world.CreateJoint(rv);
+							ropeJointDef.Initialize(bolt1,world.GetGroundBody(),bolt1.GetWorldCenter(),new b2Vec2(bolt1.GetPosition().x+.1,bolt1.GetPosition().y+.1))
+							world.CreateJoint(ropeJointDef);
 							
+							ropeJointDef.Initialize(bolt1,world.GetGroundBody(),bolt1.GetWorldCenter(),new b2Vec2(bolt1.GetPosition().x+.1,bolt1.GetPosition().y+.1))
+							world.CreateJoint(ropeJointDef);
 							
+							ropeJointDef.Initialize(bolt1,world.GetGroundBody(),bolt1.GetWorldCenter(),new b2Vec2(bolt1.GetPosition().x+.1,bolt1.GetPosition().y+.1))
+							world.CreateJoint(ropeJointDef);
+							
+							ropeJointDef.Initialize(bolt1,world.GetGroundBody(),bolt1.GetWorldCenter(),new b2Vec2(bolt1.GetPosition().x+.1,bolt1.GetPosition().y+.1))
+							world.CreateJoint(ropeJointDef);
+							
+							ropeJointDef.Initialize(bolt1,world.GetGroundBody(),bolt1.GetWorldCenter(),new b2Vec2(bolt1.GetPosition().x+.1,bolt1.GetPosition().y+.1))
+							world.CreateJoint(ropeJointDef);
 							
 						}
 						
@@ -262,42 +281,45 @@
 				}
 			}
 			
-			if(prevBolt && allStatics == false){
-				rv.Initialize(prevBolt,world.GetGroundBody(),prevBolt.GetWorldCenter())
-				world.CreateJoint(rv);
-				
+			if(prevBolt && needBridge == 2){
+				ropeJointDef.Initialize(prevBolt,world.GetGroundBody(),prevBolt.GetWorldCenter(),new b2Vec2(prevBolt.GetPosition().x+.1,prevBolt.GetPosition().y+.1))
+				world.CreateJoint(ropeJointDef);
+				ropeJointDef.Initialize(prevBolt,world.GetGroundBody(),prevBolt.GetWorldCenter(),new b2Vec2(prevBolt.GetPosition().x+.1,prevBolt.GetPosition().y+.1))
+				world.CreateJoint(ropeJointDef);
+				ropeJointDef.Initialize(prevBolt,world.GetGroundBody(),prevBolt.GetWorldCenter(),new b2Vec2(prevBolt.GetPosition().x+.1,prevBolt.GetPosition().y+.1))
+				world.CreateJoint(ropeJointDef);
+				ropeJointDef.Initialize(prevBolt,world.GetGroundBody(),prevBolt.GetWorldCenter(),new b2Vec2(prevBolt.GetPosition().x+.1,prevBolt.GetPosition().y+.1))
+				world.CreateJoint(ropeJointDef);
+				ropeJointDef.Initialize(prevBolt,world.GetGroundBody(),prevBolt.GetWorldCenter(),new b2Vec2(prevBolt.GetPosition().x+.1,prevBolt.GetPosition().y+.1))
+				world.CreateJoint(ropeJointDef);
 			}
 			
 		}
 		
-		private function linkElement(xx:Number,yy:Number,wh:Number,hh:Number,ang:Number,drawDistance,allStatics:Boolean):b2Body{
+		private function linkElement(xx:Number,yy:Number,wh:Number,hh:Number,ang:Number,drawDistance,_needBridge:int):b2Body{
 			var b2bs:b2Body;
-			
 			var bodyDef:b2BodyDef = new b2BodyDef();
-			bodyDef.userData = new LinkElementMC();
-			bodyDef.userData.name = "brg";
-			if(allStatics == true){
-				bodyDef.type = b2Body.b2_staticBody;
-				bodyDef.userData.name = "notmoving"
-			}else{
+			if(_needBridge == 2){
 				bodyDef.type = b2Body.b2_dynamicBody;
+			}else{
+				bodyDef.type = b2Body.b2_staticBody;
 			}
 			var fixtureDef:b2FixtureDef = new b2FixtureDef();
 			bodyDef.position.Set(xx /ptm_ratio, yy / ptm_ratio);
 			bodyDef.angle = ang;
 			fixtureDef.friction = .4;
 			fixtureDef.restitution = 0.2;
-			
-			bodyDef.userData.width = drawDistance;
+			bodyDef.userData = new LinkElementMC();
+			bodyDef.userData.width = drawDistance*1.15;
 			bodyDef.userData.height = drawDistance/2;
 			bodyDef.userData.alpha = .6
 			addChild(bodyDef.userData);
 			b2bs = world.CreateBody(bodyDef);
 			var dynamicBox:b2PolygonShape = new b2PolygonShape();
-			dynamicBox.SetAsBox(wh,hh);
+			dynamicBox.SetAsBox(wh*1.15,hh);
 			fixtureDef.shape = dynamicBox;
 			fixtureDef.density = 0.2;
-			//fixtureDef.filter.groupIndex = -2;
+			fixtureDef.filter.groupIndex = -22;
 			b2bs.CreateFixture(fixtureDef);
 			
 			return b2bs;
@@ -309,21 +331,20 @@
 			var bodyDef:b2BodyDef = new b2BodyDef();
 			bodyDef.type = b2Body.b2_dynamicBody;
 			var fixtureDef:b2FixtureDef = new b2FixtureDef();
-			trace("bolt is creating at",xx.toFixed(1),yy.toFixed(1))
+			//trace("bolt is creating at",xx.toFixed(1),yy.toFixed(1))
 			bodyDef.position.Set(xx/ptm_ratio, yy/ptm_ratio);
 			fixtureDef.friction = .4;
 			fixtureDef.restitution = 0.2;
 			bodyDef.userData = new BoltMC();
-			bodyDef.userData.name = "brg";
 			bodyDef.userData.width = boldMCRad;
 			bodyDef.userData.height = boldMCRad;
 			addChild(bodyDef.userData);
 			b2bs = world.CreateBody(bodyDef);
-			var circl:b2CircleShape = new b2CircleShape(radis/2);
+			var circl:b2CircleShape = new b2CircleShape(radis);
 			
 			fixtureDef.shape = circl;
 			fixtureDef.density = 0.5;
-			//fixtureDef.filter.groupIndex = -2;
+			fixtureDef.filter.groupIndex = -22;
 			b2bs.CreateFixture(fixtureDef);
 			
 			return b2bs;

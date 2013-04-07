@@ -341,8 +341,8 @@
 				//trace("checking..=",heroBike.destroyed,heroIsDead)
 				if(heroIsDead == false && heroBike.headDamage == true){
 					trace("hero Down..")
-					ttm.start();
-					heroIsDead = true;
+					//ttm.start();
+					//heroIsDead = true;
 					SoundM.me.playSound(SoundM.HDIE);
 				}
 				
