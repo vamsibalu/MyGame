@@ -36,7 +36,7 @@ package bala
 			trace("BalaBaseGame initialized1..")
 			super(ww);
 			
-			debugDraw = sp;
+			//debugDraw = sp;
 			addChild(sp);
 			
 			if(_dummyXML){
@@ -99,7 +99,7 @@ package bala
 					case "Bridge":
 						ary = _levelAry[obj];
 						trace("B2Preview Bridge Data to Show=",ary);
-						createHangingBridges(ary[1],parseXYToPoints(ary),ary[0],null,Number(ary[ary.length-1]),int(ary[ary.length-1])); //all are statics
+						createHangingBridges(ary[1],parseXYToPoints(ary),ary[0],null,Number(ary[ary.length-1]),int(ary[ary.length-2])); //all are statics
 						break;
 				}
 			}

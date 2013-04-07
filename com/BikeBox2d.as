@@ -539,7 +539,7 @@
 		public function bikeRotation()
 		{}
 		
-		var speedIncrementor:Number = 18;
+		var speedIncrementor:Number = 22;
 		var maxTourqueIncrementor:Number = 20;
 		var springIncrementor:Number = 500;
 		public function changeBikeSpeed(_speed:Number,_maxTorque:Number,_springIncrementor:Number):void{
@@ -598,7 +598,7 @@
 		{
 			if(headDamage == false){
 				if (left) {
-					player_body.ApplyTorque(-150);
+					player_body.ApplyTorque(-40);
 					if(needPerson == true){
 						player_move_body.ApplyImpulse(new b2Vec2(-0.20,-0.01),player_move_body.GetWorldCenter())
 					}
@@ -613,7 +613,7 @@
 				} 
 				
 				if (right) {
-					player_body.ApplyTorque(150);
+					player_body.ApplyTorque(40);
 					if(needPerson == true){
 						player_move_body.ApplyImpulse(new b2Vec2(-0.20,0.01),player_move_body.GetWorldCenter())
 					}
@@ -634,18 +634,18 @@
 				if (up_key) {
 					speed -=  speedIncrementor;
 					maxTorque = maxTourqueIncrementor;
-					player_body.ApplyTorque(speedIncrementor*2);
+					player_body.ApplyTorque(speedIncrementor*1.2);
 					if(player_body.GetLinearVelocity().x<10){
 						//trace("push front..")
-						player_body.ApplyImpulse(new b2Vec2(5,-0.3),player_body.GetWorldCenter());
+						//player_body.ApplyImpulse(new b2Vec2(5,-0.3),player_body.GetWorldCenter());
 					}
 				} else if (down_key) {
 					speed +=  speedIncrementor;
 					maxTorque = maxTourqueIncrementor;
-					player_body.ApplyTorque(-speedIncrementor*2);
+					player_body.ApplyTorque(-speedIncrementor*1.2);
 					if(player_body.GetLinearVelocity().x>-5){
 						//trace("push back..")
-						player_body.ApplyImpulse(new b2Vec2(-5,0.3),player_body.GetWorldCenter());
+						//player_body.ApplyImpulse(new b2Vec2(-5,0.3),player_body.GetWorldCenter());
 					}
 				}else{
 					maxTorque=0;
