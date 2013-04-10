@@ -1,4 +1,4 @@
-package bala
+﻿package bala
 {
 	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Collision.b2AABB;
@@ -36,7 +36,7 @@ package bala
 			trace("BalaBaseGame initialized1..")
 			super(ww);
 			
-			//debugDraw = sp;
+			debugDraw = sp;
 			addChild(sp);
 			
 			if(_dummyXML){
