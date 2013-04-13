@@ -70,7 +70,7 @@
 		}
 		
 		
-		public var enemyCount:int = 0;
+		public static var enemyCount:int = 0;
 		public var enemyMCS:Vector.<MovieClip> = new Vector.<MovieClip>();
 		public var encc:int = 0;
 		
@@ -489,7 +489,8 @@
 			var bodyDef:b2BodyDef= new b2BodyDef();
 			bodyDef.position.Set(xx/ptm_ratio,yy/ptm_ratio);
 			bodyDef.type=b2Body.b2_dynamicBody;
-			var udata:MovieClip = new MovieClip();
+			var udata:MovieClip = new JovMC();
+			addChild(udata);
 			udata.name = "arrow";
 			udata.freeFlight = false;
 			udata.follow = camfallow;

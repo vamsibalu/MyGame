@@ -17,6 +17,7 @@
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.ui.Keyboard;
+	import bala.ShapeWorld;
 	
 	public class MainGame extends Starter
 	{
@@ -144,7 +145,7 @@
 		}
 		
 		private function showLevelComp(e:Event):void{
-			trace("all score",gg.enemyCount*1000);
+			trace("all score",ShapeWorld.enemyCount*1000);
 			GameStatics.totalScore = GameStatics.totalScore+GameStatics.currentLevelScore;
 			Game.trying = 0;
 			

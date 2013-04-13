@@ -173,7 +173,7 @@
 			boxDef=new b2PolygonShape();
 			boxDef.SetAsBox((bikeBluePrint.bikemainbody.width/2)/worldScale,(bikeBluePrint.bikemainbody.height/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = 6;
+			fixtureDef.density = 2;
 			fixtureDef.friction = 1;
 			fixtureDef.restitution = 0.2;
 			fixtureDef.shape = boxDef;
@@ -238,7 +238,7 @@
 			trace(13 / r2p,"jhjjhjkk", bikeBluePrint.wf.width/worldScale)
 			circleDef = new b2CircleShape( (bikeBluePrint.wf.width/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = .5;
+			fixtureDef.density = 3;
 			fixtureDef.friction = friction;
 			fixtureDef.restitution = 0.5;
 			fixtureDef.filter.groupIndex = -1;
@@ -260,7 +260,7 @@
 			//circleDef = new b2CircleShape(13 / r2p);
 			circleDef = new b2CircleShape( (bikeBluePrint.wb.width/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = .5;
+			fixtureDef.density = 3;
 			fixtureDef.friction = friction;
 			fixtureDef.restitution = 0.5;
 			fixtureDef.filter.groupIndex = -1;
@@ -598,7 +598,7 @@
 		{
 			if(headDamage == false){
 				if (left) {
-					player_body.ApplyTorque(-40);
+					player_body.ApplyTorque(-90);
 					if(needPerson == true){
 						player_move_body.ApplyImpulse(new b2Vec2(-0.20,-0.01),player_move_body.GetWorldCenter())
 					}
@@ -613,7 +613,7 @@
 				} 
 				
 				if (right) {
-					player_body.ApplyTorque(40);
+					player_body.ApplyTorque(90);
 					if(needPerson == true){
 						player_move_body.ApplyImpulse(new b2Vec2(-0.20,0.01),player_move_body.GetWorldCenter())
 					}
@@ -634,7 +634,7 @@
 				if (up_key) {
 					speed -=  speedIncrementor;
 					maxTorque = maxTourqueIncrementor;
-					player_body.ApplyTorque(speedIncrementor*1.2);
+					//player_body.ApplyTorque(speedIncrementor);
 					if(player_body.GetLinearVelocity().x<10){
 						//trace("push front..")
 						//player_body.ApplyImpulse(new b2Vec2(5,-0.3),player_body.GetWorldCenter());
@@ -642,7 +642,7 @@
 				} else if (down_key) {
 					speed +=  speedIncrementor;
 					maxTorque = maxTourqueIncrementor;
-					player_body.ApplyTorque(-speedIncrementor*1.2);
+					//player_body.ApplyTorque(-speedIncrementor);
 					if(player_body.GetLinearVelocity().x>-5){
 						//trace("push back..")
 						//player_body.ApplyImpulse(new b2Vec2(-5,0.3),player_body.GetWorldCenter());

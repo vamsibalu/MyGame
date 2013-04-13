@@ -1,15 +1,21 @@
 ﻿package bala
 {
+	import Box2D.Collision.Shapes.b2CircleShape;
+	import Box2D.Collision.Shapes.b2PolygonShape;
 	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Collision.b2AABB;
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.Joints.b2RevoluteJointDef;
 	import Box2D.Dynamics.b2Body;
+	import Box2D.Dynamics.b2BodyDef;
 	import Box2D.Dynamics.b2Fixture;
+	import Box2D.Dynamics.b2FixtureDef;
 	
 	import bala.Utils.BalaUtils;
 	
 	import com.Game;
 	
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.geom.Point;
 	
@@ -53,7 +59,7 @@
 		}
 		
 		public function loadMyLevelForPreview(_levelAry:Array):void{
-			trace("loadMyLevelForPreview objects no.=",_levelAry)
+			//trace("loadMyLevelForPreview objects no.=",_levelAry)
 			removeEverything();
 			setUpWalls();
 			encc = 0;
@@ -98,13 +104,13 @@
 						break;
 					case "Bridge":
 						ary = _levelAry[obj];
-						trace("B2Preview Bridge Data to Show=",ary);
+						//trace("B2Preview Bridge Data to Show=",ary);
 						createHangingBridges(ary[1],parseXYToPoints(ary),ary[0],null,Number(ary[ary.length-1]),int(ary[ary.length-2])); //all are statics
 						break;
 				}
 			}
 			
-			trace("creating joints..")
+			//trace("creating joints..")
 			//for joints..
 			for(var jjj:Object in _levelAry){
 				switch(_levelAry[jjj][0])
@@ -169,6 +175,51 @@
 			}
 			world.QueryAABB(GetBodyCallback, aabb);
 			return body;
+		}
+		
+		public var canon:b2Body;
+		public function newHero(_x1:Number,_y1:Number):void{
+			//body medil
+			bodyDef=new b2BodyDef()
+			bodyDef.position.Set(_x1/ptm_ratio,(_y1/ptm_ratio)-realPixels(50))
+			bodyDef.type=b2Body.b2_dynamicBody
+			bodyDef.angle=Math.PI/9
+			bodyDef.userData=new MovieClip();
+			var hipmc:MovieClip = bodyDef.userData;
+			bodyDef.userData.name = "playerhead";
+			Game.me.addChild(bodyDef.userData);
+			boxDef=new b2PolygonShape()
+			boxDef.SetAsBox(realPixels(10),realPixels(60))
+			fixtureDef=new b2FixtureDef()
+			fixtureDef.density=1
+			fixtureDef.friction=0.4
+			fixtureDef.restitution=0.1
+			fixtureDef.shape=boxDef
+			fixtureDef.filter.groupIndex=-3;  //added bala for multiplayer bikes
+			var middliebody:b2Body=world.CreateBody(bodyDef)
+			middliebody.CreateFixture(fixtureDef);
+			
+			//stand...
+			canon = createBox("boxxx",_x1,_y1,60,10,0,"standard",false);
+			
+			var rjd:b2RevoluteJointDef=new b2RevoluteJointDef()
+			rjd.enableLimit=true
+			rjd.lowerAngle=-10//(180/Math.PI)
+			rjd.upperAngle=10;
+			rjd.maxMotorTorque = 1;
+			//rjd.enableMotor = true;
+			
+			rjd.Initialize(canon,middliebody,new b2Vec2((_x1+5)/ptm_ratio,((_y1)/ptm_ratio)))
+			world.CreateJoint(rjd);
+		}
+		
+		public var allZombies:Vector.<ZombieRunner> = new Vector.<ZombieRunner>();
+		public function createZombies(nm:int,xx:Number,yy:Number):void{
+			for(var i:int = 0; i<nm; i++){
+				var zombieRuns:ZombieRunner = new ZombieRunner(this);
+				zombieRuns.createZombieRun("myzimbe",new zombierun1(),xx,yy,0)
+				allZombies.push(zombieRuns);
+			}
 		}
 	}
 }

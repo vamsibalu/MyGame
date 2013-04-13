@@ -10,6 +10,7 @@
 	import bala.SoundM;
 	import bala.Utils.BalaUtils;
 	import bala.Utils.TweenBox2d;
+	import bala.ZombieRunner;
 	
 	import com.greensock.TweenLite;
 	import com.vo.PlatFormType;
@@ -58,7 +59,10 @@
 		
 		public var maxCamMoveX:Number = 15000;
 		public var maxCamMoveY:Number = 680;
-		private var BGG_FarView:Sprite = new Sprite();
+		private var BGG_FarView:MovieClip = new FarViewMC();
+		private var BGG_FrontView:MovieClip = new FrontViewMC();
+		private var BGG_MiddleView:MovieClip = new MiddleViewMC();
+		
 		//public var bike:Bike
 		public function Game(_dummyXML:XML = null)
 		{
@@ -68,7 +72,7 @@
 			myWorld = world;
 			addChild(sp);
 			
-			//this.addEventListener(MouseEvent.CLICK,shootEnemy);  //bala req we will add this for hero hand..
+			this.addEventListener(MouseEvent.CLICK,shootEnemy);  //bala req we will add this for hero hand..
 			createDummyNext();
 			tweenBox = new TweenBox2d(this);
 			
@@ -79,7 +83,7 @@
 				//trace("explosions parnte=",explosions[explosions.length-1].parent)
 			}
 			trying = 0;
-			BGG_FarView.y = -100;
+			//BGG_FarView.y = -100;
 			addEventListener(Event.ADDED_TO_STAGE,added);
 			//testing..
 			
@@ -94,11 +98,7 @@
 		}
 		
 		private function added(e:Event):void{
-			/*MainGame.me.addChildAt(BGG_FarView,0);
-			MainGame.me.addChild(MainGame.me.BGG_shadow);
-			if(testingnext){
-				MainGame.me.addChild(testingnext);
-			}*/
+			
 		}
 		public static function get trying():int
 		{
@@ -132,8 +132,20 @@
 			
 			//shoot it.
 			updateHandAndCam();
-			//traceAllbullets();
+			traceAllbullets();
 			//forArrowsCheck() //bala added for arrows
+			if(canon){
+				var pp:Point = BalaUtils.localToLocal(handMC.pp1,this);
+				canon.SetPosition(new b2Vec2((pp.x+100)/ptm_ratio,(pp.y-80)/ptm_ratio));
+			}
+			
+			
+			
+			for(var k:int = 0; k<allZombies.length; k++){
+				if(Math.random()<.2){
+					allZombies[k].runZombie(2);
+				}
+			}
 		}
 		public var destinationPointXX:Number;
 		public var allBikes:Vector.<BikeBox2d> = new Vector.<BikeBox2d>();
@@ -150,12 +162,16 @@
 			GameStatics.currentLevelScore = 0;
 			tempShadowDepthSetup = false;
 			MainGame.me.footerM.scoreTxt.text = String(GameStatics.currentLevelScore);
-			while(BGG_FarView.numChildren>0){
-				BGG_FarView.removeChildAt(0);
-			}
 			
-			BGG_FarView.y = -100;
-			BGG_FarView.x = -50;
+			BGG_FarView.y = 0;
+			BGG_FarView.x = -100;
+			
+			BGG_FrontView.y = 0;
+			BGG_FrontView.x = -100;
+			
+			BGG_MiddleView.y = 0;
+			BGG_MiddleView.x = -100;
+			
 			BikeBox2d.deleteSpringMC();
 			levelScore = (enemyCount * SCOREPERENEMY);
 			MainGame.me.gotoAndStop(Game.currentLevel+2);
@@ -170,7 +186,7 @@
 				allBikes.shift();
 			}
 			heroBike = new HeroBike(world);
-			heroBike.create(100/30,300/30,false);
+			heroBike.create(200/30,300/30,false);
 			allBikes.push(heroBike);
 			heroUdata = heroBike.player_body.GetUserData();
 			trace("On new Level..heroBike.destroyed=",heroBike.headDamage)
@@ -187,30 +203,25 @@
 			_oponentBike.create(300/BaseWorld.ptm_ratio,300/BaseWorld.ptm_ratio);
 			allBikes.push(_oponentBike);*/
 			MainGame.me.waterEffect.visible = false;
-			MainGame.me.BGG_shadow.visible = false;
-			BGG_FarView.visible = false;
+			//BGG_FrontView.visible = false;
+			//BGG_FarView.visible = false;
 			switch(currentLevel)
 			{
+				case 1:
+					createZombies(4,300,300);
+					destinationPointXX = 17100;
+					maxCamMoveX = destinationPointXX-740
+					break;
 				case 2:
 					destinationPointXX = 14700;
 					maxCamMoveX = destinationPointXX-1040
-					MainGame.me.BGG_shadow.visible = true;
+					BGG_FrontView.visible = true;
 					break;
 				case 3:
 					destinationPointXX = 16700;
 					maxCamMoveX = destinationPointXX-840
 					//add Far Views..
 					BGG_FarView.visible = true;
-					for(var i:int = 0; i<5; i++){
-						var bt:Bitmap = new Bitmap(new far_1());
-						bt.x = bt.width * i;
-						BGG_FarView.addChild(bt);
-					}
-					break;
-				case 1:
-					MainGame.me.waterEffect.visible = true;
-					destinationPointXX = 17100;
-					maxCamMoveX = destinationPointXX-740
 					break;
 				case 4:
 					MainGame.me.waterEffect.visible = true;
@@ -229,10 +240,13 @@
 			//var bodyroad:b2Body=roadPath["Lvl_"+currentLevel](world);
 			
 			MainGame.me.addChildAt(BGG_FarView,0);
-			MainGame.me.addChild(MainGame.me.BGG_shadow);
+			MainGame.me.addChildAt(BGG_MiddleView,1);
+			MainGame.me.addChildAt(BGG_FrontView,2);
 			if(testingnext){
 				MainGame.me.addChild(testingnext);
 			}
+			
+			//newHero(200,100);
 			startRender();
 			//tempRefWheel = heroBike.frent_wheel.GetUserData()
 			//tempRefWheelTest2 = new dummyWheel();
@@ -254,7 +268,8 @@
 		}*/
 		
 		private var enemysDied:int = 0;
-		/*public function set enemyX(bbb:b2Body):void{
+		
+		public function set enemyX(bbb:b2Body):void{
 			//deleteBodisByID(bbb.GetUserData().id);
 			pinkExplosion(bbb);
 			explosionAnim(bbb);
@@ -267,8 +282,8 @@
 			}
 			SoundM.me.playSound(SoundM.EDIE);
 			GameStatics.currentLevelScore = enemysDied * SCOREPERENEMY;
-			MainGame.me.footer.scoreTxt.text = String(GameStatics.currentLevelScore);
-		}*/
+			MainGame.me.footerM.scoreTxt.text = String(GameStatics.currentLevelScore);
+		}
 		
 		public function set bulletX(bbb:b2Body):void{
 			bbb.GetUserData().canTrace = false;
@@ -297,8 +312,8 @@
 		}
 		
 		/*private function deletGift(e:TimerEvent):void{
-			tempBodiesTobeRemoved.push(currentGift);
-			currentGift = null;
+		tempBodiesTobeRemoved.push(currentGift);
+		currentGift = null;
 		}*/
 		
 		private var ppb1:Point = new Point();
@@ -313,7 +328,7 @@
 				ppb1.x = BikeBox2d.bagMC.x;
 				ppb1.y = BikeBox2d.bagMC.y;
 				var curntD:Number = Point.distance(ppb1,ppg1)
-			
+				
 				if(curntD<dd){
 					dd = curntD;
 					currentB = allGifts[i];
@@ -410,8 +425,8 @@
 		
 		
 		private var pointBlock:Point;
-		/*public function shootEnemy(e:MouseEvent):void{
-			if(e.target is SimpleButton || e.target is footerMC){
+		public function shootEnemy(e:MouseEvent):void{
+			if(e.target is SimpleButton || e.target is FooterMC){
 				trace("don't shoot..");
 			}else{
 				
@@ -421,7 +436,7 @@
 					
 				}else if(currentWeponType == GUN){
 					var bul:b2Body = createBullet(handMC);
-					//addChild(new BulletTracer(bul));
+					addChild(new BulletTracer(bul));
 					if(currentWeponMC){
 						var sxx:Number = 1;//heroBody.GetUserData().scaleX;
 						//heroBody.GetUserData().arm.weapon.beffect.visible = true;
@@ -431,7 +446,7 @@
 				}
 				//SoundM.me.playSound(SoundM.SHOOT);
 			}
-		}*/
+		}
 		
 		final private function traceAllbullets():void{
 			for each(var bt:BulletTracer in BulletTracer.allBTracers){
@@ -542,14 +557,20 @@
 			MainGame.me.BGG.x = x;
 			MainGame.me.BGG.y = pos_y;
 			if (heroBike.player_body && x!=0) {
-				BGG_FarView.x -= heroBike.player_body.GetLinearVelocity().x * .2;
-				BGG_FarView.y -= heroBike.player_body.GetLinearVelocity().y * .2;
+				var vvx:Number = heroBike.player_body.GetLinearVelocity().x;
+				var vvy:Number = heroBike.player_body.GetLinearVelocity().y;
+				
+				BGG_FarView.updatePos(vvx * 0.1,0);
+				BGG_MiddleView.updatePos(vvx * 0.4,vvy * 0);
+				//BGG_FrontView.x -= heroBike.player_body.GetLinearVelocity().x * .1;
+				//BGG_FrontView.y -= heroBike.player_body.GetLinearVelocity().y * .1;
+				BGG_FrontView.updatePos(vvx * 1,vvy * 0);
 			}
-			MainGame.me.BGG_shadow.x = x;
-			MainGame.me.BGG_shadow.y = pos_y;
+			//BGG_FrontView.x = x;
+			//BGG_FrontView.y = pos_y;
 			//to make sure 3D Top layer having top depth..
 			if(tempShadowDepthSetup == false){
-				MainGame.me.addChild(MainGame.me.BGG_shadow);
+				//addChild(BGG_FrontView);
 				if(testingnext){
 					MainGame.me.addChild(testingnext)
 				}
