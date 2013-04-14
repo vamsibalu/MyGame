@@ -19,6 +19,8 @@
 	import bala.vo.BodyVO;
 	import bala.vo.PlatFormType;
 	
+	import com.Game;
+	
 	import flash.display.BitmapData;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
@@ -118,8 +120,12 @@
 		public var DegtoRad:Number = Math.PI/180;
 		public function renderGame(e:Event = null):void {
 			// step the world
-			world.Step(1 / 30, 10, 10);
-			
+			if(Game.slowMotion ==2){
+				//trace("")
+				world.Step(1/300, 10, 10);
+			}else{
+			world.Step(1/30, 10, 10);
+			}
 			world.ClearForces();
 			world.DrawDebugData();
 			

@@ -72,7 +72,7 @@
 			myWorld = world;
 			addChild(sp);
 			
-			this.addEventListener(MouseEvent.CLICK,shootEnemy);  //bala req we will add this for hero hand..
+			//this.addEventListener(MouseEvent.CLICK,shootEnemy);  //bala req we will add this for hero hand..
 			createDummyNext();
 			tweenBox = new TweenBox2d(this);
 			
@@ -98,8 +98,25 @@
 		}
 		
 		private function added(e:Event):void{
-			
+			MainGame.me.mpanel.shootbtn.addEventListener(MouseEvent.CLICK,shootEnemy);
+			MainGame.me.mpanel.speedbtn.addEventListener(MouseEvent.MOUSE_DOWN,speedup);
+			MainGame.me.mpanel.speedbtn.addEventListener(MouseEvent.MOUSE_UP,speeddown);
+			MainGame.me.mpanel.sliderbtn.addEventListener(MouseEvent.MOUSE_MOVE,sliderf);
+			//weponchangecheck();
 		}
+		
+		
+		function sliderf(e:MouseEvent):void{
+			updateHand();
+		}
+		function speedup(e:MouseEvent):void{
+			heroBike.up_key=true;
+		}
+		
+		function speeddown(e:MouseEvent):void{
+			heroBike.up_key=false;
+		}
+		
 		public static function get trying():int
 		{
 			return _trying;
@@ -131,7 +148,10 @@
 			}
 			
 			//shoot it.
-			updateHandAndCam();
+			if(heroBike && heroBike.player_body){
+				cameraMovement();
+			}
+			
 			traceAllbullets();
 			//forArrowsCheck() //bala added for arrows
 			if(canon){
@@ -150,15 +170,17 @@
 		public var destinationPointXX:Number;
 		public var allBikes:Vector.<BikeBox2d> = new Vector.<BikeBox2d>();
 		private var _oponentBike:BikeBox2d;
-		
+		public static var slowMotion:Number = 1/30;
 		public override function loadMyLevelForPreview(_levelAry:Array):void{
 			stage.focus = this;
+			stage.stageFocusRect = false;
 			//stage.focusRect = false;
 			super.loadMyLevelForPreview(_levelAry);
 			dispatched = false;
 			heroIsDead = false;
 			enemysDied = 0;
 			enemyCount = 0;
+			MainGame.me.mpanel.visible = true;
 			GameStatics.currentLevelScore = 0;
 			tempShadowDepthSetup = false;
 			MainGame.me.footerM.scoreTxt.text = String(GameStatics.currentLevelScore);
@@ -209,28 +231,122 @@
 			{
 				case 1:
 					createZombies(4,300,300);
-					destinationPointXX = 17100;
+					destinationPointXX = 19737;
 					maxCamMoveX = destinationPointXX-740
 					break;
 				case 2:
-					destinationPointXX = 14700;
+					createZombies(6,400,300);
+					destinationPointXX = 18725;
 					maxCamMoveX = destinationPointXX-1040
 					BGG_FrontView.visible = true;
 					break;
 				case 3:
-					destinationPointXX = 16700;
+					createZombies(8,500,300);
+					destinationPointXX = 18149;
 					maxCamMoveX = destinationPointXX-840
 					//add Far Views..
 					BGG_FarView.visible = true;
 					break;
 				case 4:
+					createZombies(10,550,300);
 					MainGame.me.waterEffect.visible = true;
-					destinationPointXX = 22400;
+					destinationPointXX = 21137;
 					maxCamMoveX = destinationPointXX-740;
 					break;
 				case 5:
+					createZombies(12,600,300);
 					MainGame.me.waterEffect.visible = true;
-					destinationPointXX = 28400;
+					destinationPointXX = 18521;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 6:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+					createZombies(13,650,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 18717;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 7:
+					createZombies(14,700,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 16551;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 8:
+					createZombies(15,750,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 19369;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 9:
+					createZombies(16,800,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 15450;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 10:
+					createZombies(17,800,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 18521;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 11:
+					createZombies(18,800,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 16118;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 12:
+					createZombies(19,800,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 16892;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 13:
+					createZombies(20,800,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 17359;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 14:
+					createZombies(21,800,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 13983;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 15:
+					createZombies(22,800,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 15853;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 16:
+					createZombies(23,800,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 29122;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 17:
+					createZombies(24,800,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 17303;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 18:
+					createZombies(25,800,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 18565;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 19:
+					createZombies(26,800,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 16962;
+					maxCamMoveX = destinationPointXX-740
+					break;
+				case 20:
+					createZombies(27,800,300);
+					MainGame.me.waterEffect.visible = true;
+					destinationPointXX = 17782;
 					maxCamMoveX = destinationPointXX-740
 					break;
 			}
@@ -253,6 +369,7 @@
 			//addChild(tempRefWheelTest2);
 			
 			//placeNearestGift()
+			weponchangecheck();
 		}
 		//var tempRefWheel:MovieClip;
 		//var tempRefWheelTest2:MovieClip;
@@ -391,12 +508,10 @@
 		public var handMC:MovieClip;
 		private var heroUdata:MovieClip;
 		
-		public function updateHandAndCam() : void
+		public function updateHand() : void
 		{
 			
 			if(heroBike && heroBike.player_body && heroUdata && heroUdata.hand){
-				cameraMovement();
-				
 				var handPP:Point = BalaUtils.localToLocal(heroUdata,this,new Point(heroUdata.hand.x,heroUdata.hand.y));
 				var diffx:Number =  handPP.x - mouseX;
 				var diffy:Number =  handPP.y - mouseY;
@@ -413,15 +528,18 @@
 				}
 				heroUdata.hand.rotation = (weaponAngle * RadtoDeg -  heroUdata.rotation) * heroUdata.scaleX;
 				pointBlock = BalaUtils.localToLocal(heroUdata.hand,this,new Point(heroUdata.hand.pp1.x,heroUdata.hand.pp1.y));
-				if(currentWeponType == Javelin){
-					currentWeponMC.gotoAndStop("Javelin");
-					heroUdata.hand.currentWepon.gotoAndStop(Javelin);
-				}else if(currentWeponType == GUN){
-					currentWeponMC.gotoAndStop("GUN");
-					//do gun requirement
-				}
 			}
 		}// end function
+		
+		private function weponchangecheck():void{
+			if(currentWeponType == Javelin){
+				currentWeponMC.gotoAndStop("Javelin");
+				heroUdata.hand.currentWepon.gotoAndStop(Javelin);
+			}else if(currentWeponType == GUN){
+				currentWeponMC.gotoAndStop("GUN");
+				//do gun requirement
+			}
+		}
 		
 		
 		private var pointBlock:Point;
@@ -445,6 +563,7 @@
 					}
 				}
 				//SoundM.me.playSound(SoundM.SHOOT);
+				//slowMotion = 2;
 			}
 		}
 		
@@ -537,7 +656,7 @@
 				//pos_x=the_cannonball_itself.GetWorldCenter().x*world_scale;
 				//pos_y=the_cannonball_itself.GetWorldCenter().y*world_scale; what is
 			}
-			pos_x=320-pos_x;
+			pos_x=50-pos_x;
 			if (pos_x<-maxCamMoveX) {
 				pos_x=-maxCamMoveX;
 			}
@@ -564,7 +683,7 @@
 				BGG_MiddleView.updatePos(vvx * 0.4,vvy * 0);
 				//BGG_FrontView.x -= heroBike.player_body.GetLinearVelocity().x * .1;
 				//BGG_FrontView.y -= heroBike.player_body.GetLinearVelocity().y * .1;
-				BGG_FrontView.updatePos(vvx * 1,vvy * 0);
+				BGG_FrontView.updatePos(vvx * 1.5,vvy * 0);
 			}
 			//BGG_FrontView.x = x;
 			//BGG_FrontView.y = pos_y;
@@ -576,6 +695,7 @@
 				}
 				MainGame.me.addChild(MainGame.me.footerM)
 				tempShadowDepthSetup = true;
+				MainGame.me.addChild(MainGame.me.mpanel);
 			}
 		}
 		

@@ -37,12 +37,12 @@
 		{
 			myroot = _myroot;
 			addEventListener(Event.ENTER_FRAME,preloader);
-			var mymenu:ContextMenu=new ContextMenu();
-			mymenu.hideBuiltInItems();
-			this.contextMenu = mymenu;
-			var iteam_1:ContextMenuItem = new ContextMenuItem("More Games");
-			mymenu.customItems.push(iteam_1);
-			iteam_1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,doSomething);
+			//var mymenu:ContextMenu=new ContextMenu();
+			//mymenu.hideBuiltInItems();
+			//this.contextMenu = mymenu;
+			//var iteam_1:ContextMenuItem = new ContextMenuItem("More Games");
+			//mymenu.customItems.push(iteam_1);
+			//iteam_1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,doSomething);
 			
 			//PlayTomic Code
 			var Local:LocalConnection= new LocalConnection();
@@ -113,9 +113,9 @@
 		}
 		
 		
-		private function doSomething(e:ContextMenuEvent):void {
+		/*private function doSomething(e:ContextMenuEvent):void {
 			morefun();
-		}
+		}*/
 		
 		/*public function HostGame(e:MouseEvent)
 		{

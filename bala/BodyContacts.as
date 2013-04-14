@@ -63,6 +63,30 @@
 					game.addChild(mc2);
 					mc2.name = "blockX";
 				}
+				//Bullet effect..
+				if(mc1.name == "bullet" && (mc2.name == "notmoving" || mc2.name == "glass" || mc2.name == "block" || mc2.name == "rock"||mc2.name == "nife")){
+					
+					if(mc2.name == "glass"){
+						mc2.name = "glassX";
+						mc1.name = "bulletXX";
+						game.glassX = b2;
+						game.bulletXX = b1;
+					}else{
+						mc1.name = "bulletX";
+						game.bulletX = b1;
+					}
+				}else if(mc2.name == "bullet" && (mc1.name == "notmoving" || mc1.name == "glass" || mc1.name == "block" || mc1.name == "rock"||mc1.name == "nife")){
+					
+					if(mc1.name == "glass"){
+						mc1.name = "glassX";
+						mc2.name = "bulletXX";
+						game.glassX = b1;
+						game.bulletXX = b2;
+					}else{
+						mc2.name = "bulletX";
+						game.bulletX = b2;
+					}
+				}
 				
 				//for wepons and attacks....
 				if(mc1.name == "enemy" && (mc2.name == "bullet" || mc2.name == "arrow")){

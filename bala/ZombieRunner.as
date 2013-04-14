@@ -37,6 +37,7 @@ package bala
 			fixtureDef.friction=0.1;
 			fixtureDef.restitution=0;
 			fixtureDef.shape=shapedef;
+			fixtureDef.filter.groupIndex = -44;
 			ShapeWorld.enemyCount++;
 			zombiee.CreateFixture(fixtureDef);
 			

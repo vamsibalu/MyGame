@@ -2,6 +2,7 @@ package com
 {
 	import Box2D.Dynamics.b2World;
 	
+	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
 	
@@ -82,6 +83,36 @@ package com
 					down_key=false;
 					break;
 			}
+		}
+		public var selftControlble:Boolean = true;
+		public override function updateBike(e:Event=null):void{
+			
+			if (selftControlble == true)
+			{
+				if (player_body.GetAngle() < -.3)
+				{
+					//trace("right pressed.",player_body.GetAngle().toFixed(1),player_body.GetAngularVelocity().toFixed(1))
+					right = true;
+				}
+				else
+				{
+					//trace("danger..2",player_body.GetAngularVelocity().toFixed(1))
+					right = false;
+				}
+				
+				if (player_body.GetAngle() > .3)
+				{
+					///trace("leftPressed",player_body.GetAngle().toFixed(1),player_body.GetAngularVelocity().toFixed(1))
+					left = true;
+				}
+				else
+				{
+					//trace("danger..2",player_body.GetAngularVelocity().toFixed(1))
+					left = false;
+				}
+			}
+			
+			super.updateBike();
 		}
 	}
 }

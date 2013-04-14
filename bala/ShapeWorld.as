@@ -189,11 +189,13 @@
 				case PlatFormType.ICE:
 					fixtureDef.friction = 0.01;
 					bodyDef.userData.gotoAndStop("ice");
+					
 					//bodyDef.userData.name = "ice";
 					break;
 				case PlatFormType.GLASS:
 					bodyDef.userData.gotoAndStop("glass");
 					bodyDef.userData.name = "glass";
+					fixtureDef.filter.groupIndex = -44;
 					break;
 			}
 			

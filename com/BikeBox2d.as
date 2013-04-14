@@ -44,8 +44,8 @@
 		private var r2p:Number=17
 		
 		protected var down_key:Boolean;
-		protected var up_key:Boolean;
-		protected var left:Boolean=false;
+		public var up_key:Boolean;
+		public var left:Boolean=false;
 		protected var right:Boolean=false;
 		private var speed:Number = 0;
 		//private var speed_decay:Number =1;
@@ -539,8 +539,8 @@
 		public function bikeRotation()
 		{}
 		
-		var speedIncrementor:Number = 22;
-		var maxTourqueIncrementor:Number = 20;
+		var speedIncrementor:Number = 23;
+		var maxTourqueIncrementor:Number = 25;
 		var springIncrementor:Number = 500;
 		public function changeBikeSpeed(_speed:Number,_maxTorque:Number,_springIncrementor:Number):void{
 			speedIncrementor = _speed;
@@ -634,13 +634,13 @@
 				if (up_key) {
 					speed -=  speedIncrementor;
 					maxTorque = maxTourqueIncrementor;
-					player_body.ApplyTorque(30);
+					player_body.ApplyTorque(40);
 					//maxTorque = 10;
-					trace(maxTorque,"torque")
+					//trace(maxTorque,"torque")
 					//player_body.ApplyTorque(speedIncrementor);
-					if(player_body.GetLinearVelocity().x<10){
+					if(player_body.GetLinearVelocity().x<40){
 						//trace("push front..")
-						//player_body.ApplyImpulse(new b2Vec2(5,-0.3),player_body.GetWorldCenter());
+					//	player_body.ApplyImpulse(new b2Vec2(5,-0.3),player_body.GetWorldCenter());
 					}
 				} else if (down_key) {
 					speed +=  speedIncrementor;
@@ -658,7 +658,6 @@
 				
 				rightWheelRevoluteJoint.SetMotorSpeed(speed);
 				rightWheelRevoluteJoint.SetMaxMotorTorque(maxTorque);
-				
 				leftWheelRevoluteJoint.SetMotorSpeed(speed);
 				leftWheelRevoluteJoint.SetMaxMotorTorque(maxTorque);
 				
