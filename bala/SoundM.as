@@ -122,7 +122,7 @@
 			}*/
 			if(GameStatics.canPlaySND == false){
 				SoundMixer.soundTransform=new SoundTransform(0)
-				trace("Silence pls..");
+				//trace("Silence pls..");
 			}
 		}
 	}

@@ -29,7 +29,7 @@ package bala
 			def.position.Set(_xx/ptm_ratio,_yy/ptm_ratio);
 			def.userData.name = "enemy";
 			game.addChild(def.userData);
-			var shapedef:b2CircleShape = new b2CircleShape(5/30);
+			var shapedef:b2CircleShape = new b2CircleShape(25/30);
 			zombiee = game.world.CreateBody(def);
 			
 			var fixtureDef:b2FixtureDef=new b2FixtureDef();
@@ -39,10 +39,12 @@ package bala
 			fixtureDef.shape=shapedef;
 			ShapeWorld.enemyCount++;
 			zombiee.CreateFixture(fixtureDef);
+			
+			
 		}
 		
 		public function runZombie(nm:Number):void{
-			zombiee.ApplyImpulse(new b2Vec2(1,0),zombiee.GetWorldCenter());
+			zombiee.ApplyImpulse(new b2Vec2(0.5,0),zombiee.GetWorldCenter());
 		}
 	}
 }

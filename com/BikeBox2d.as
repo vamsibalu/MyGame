@@ -173,7 +173,7 @@
 			boxDef=new b2PolygonShape();
 			boxDef.SetAsBox((bikeBluePrint.bikemainbody.width/2)/worldScale,(bikeBluePrint.bikemainbody.height/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = 2;
+			fixtureDef.density = 6;
 			fixtureDef.friction = 1;
 			fixtureDef.restitution = 0.2;
 			fixtureDef.shape = boxDef;
@@ -198,7 +198,7 @@
 			boxDef=new b2PolygonShape();
 			boxDef.SetAsBox(3/r2p,5/r2p);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = 3;
+			fixtureDef.density = 5;
 			fixtureDef.friction = friction;
 			fixtureDef.restitution = 0.2;
 			fixtureDef.shape = boxDef;
@@ -238,7 +238,7 @@
 			trace(13 / r2p,"jhjjhjkk", bikeBluePrint.wf.width/worldScale)
 			circleDef = new b2CircleShape( (bikeBluePrint.wf.width/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = 3;
+			fixtureDef.density = 0.5;
 			fixtureDef.friction = friction;
 			fixtureDef.restitution = 0.5;
 			fixtureDef.filter.groupIndex = -1;
@@ -260,7 +260,7 @@
 			//circleDef = new b2CircleShape(13 / r2p);
 			circleDef = new b2CircleShape( (bikeBluePrint.wb.width/2)/worldScale);
 			fixtureDef=new b2FixtureDef();
-			fixtureDef.density = 3;
+			fixtureDef.density = 0.5;
 			fixtureDef.friction = friction;
 			fixtureDef.restitution = 0.5;
 			fixtureDef.filter.groupIndex = -1;
@@ -634,6 +634,9 @@
 				if (up_key) {
 					speed -=  speedIncrementor;
 					maxTorque = maxTourqueIncrementor;
+					player_body.ApplyTorque(30);
+					//maxTorque = 10;
+					trace(maxTorque,"torque")
 					//player_body.ApplyTorque(speedIncrementor);
 					if(player_body.GetLinearVelocity().x<10){
 						//trace("push front..")
