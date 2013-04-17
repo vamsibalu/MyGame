@@ -8,6 +8,7 @@ package com
 	
 	public class HeroBike extends BikeBox2d
 	{
+		public static const FUELKHATAM:String = "nofuel";
 		public function HeroBike(_passWorld:b2World)
 		{
 			super(_passWorld);

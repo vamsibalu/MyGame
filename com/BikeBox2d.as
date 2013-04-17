@@ -594,102 +594,111 @@
 		}
 		
 		public var headDamage:Boolean = false;
+		private var nofuel:Boolean = false;
 		public function updateBike(e:Event=null):void 
 		{
-			if(headDamage == false){
-				if (left) {
-					player_body.ApplyTorque(-90);
-					if(needPerson == true){
-						player_move_body.ApplyImpulse(new b2Vec2(-0.20,-0.01),player_move_body.GetWorldCenter())
+			if(nofuel == false){
+				if(headDamage == false){
+					if (left) {
+						player_body.ApplyTorque(-90);
+						if(needPerson == true){
+							player_move_body.ApplyImpulse(new b2Vec2(-0.20,-0.01),player_move_body.GetWorldCenter())
+						}
+						//middliebody.ApplyImpulse(new b2Vec2(-0.5,-0.1),middliebody.GetWorldCenter())
+						
+						//middliebody.SetLinearVelocity(new b2Vec2(-2,0))
+						//headbody.ApplyImpulse(new b2Vec2(0.1,-0.1),headbody.GetWorldCenter())
+						//legup.ApplyImpulse(new b2Vec2(-1,-0.50),legup.GetWorldCenter())
+						//middliebody.SetAngularVelocity(-5)
+						//player_body.SetAngularVelocity(-5)
+						
+					} 
+					
+					if (right) {
+						player_body.ApplyTorque(90);
+						if(needPerson == true){
+							player_move_body.ApplyImpulse(new b2Vec2(-0.20,0.01),player_move_body.GetWorldCenter())
+						}
+						//middliebody.ApplyImpulse(new b2Vec2(0.5,0.1),middliebody.GetWorldCenter())
+						//headbody.ApplyImpulse(new b2Vec2(1.2,0.1),headbody.GetWorldCenter())
+						//middliebody.ApplyTorque(-5)
+						
+						
+					} 
+					
+					/*if (Math.abs(speed) > 0.98) {
+					speed *=  speed_decay;
+					} else {
+					speed = 0;
+					}*/
+					//trace("speed:",speed)
+					//	trace("Velocity().x=",player_body.GetLinearVelocity().x.toFixed(2))
+					if (up_key) {
+						speed -=  speedIncrementor;
+						maxTorque = maxTourqueIncrementor;
+						player_body.ApplyTorque(40);
+						player_body.GetUserData().fuel--;
+						//maxTorque = 10;
+						//trace(maxTorque,"torque")
+						//player_body.ApplyTorque(speedIncrementor);
+						if(player_body.GetLinearVelocity().x<40){
+							//trace("push front..")
+							//	player_body.ApplyImpulse(new b2Vec2(5,-0.3),player_body.GetWorldCenter());
+						}
+					} else if (down_key) {
+						speed +=  speedIncrementor;
+						maxTorque = maxTourqueIncrementor;
+						//player_body.ApplyTorque(-speedIncrementor);
+						if(player_body.GetLinearVelocity().x>-5){
+							//trace("push back..")
+							//player_body.ApplyImpulse(new b2Vec2(-5,0.3),player_body.GetWorldCenter());
+						}
+					}else{
+						maxTorque=0;
+						speed = 0;
 					}
-					//middliebody.ApplyImpulse(new b2Vec2(-0.5,-0.1),middliebody.GetWorldCenter())
 					
-					//middliebody.SetLinearVelocity(new b2Vec2(-2,0))
-					//headbody.ApplyImpulse(new b2Vec2(0.1,-0.1),headbody.GetWorldCenter())
-					//legup.ApplyImpulse(new b2Vec2(-1,-0.50),legup.GetWorldCenter())
-					//middliebody.SetAngularVelocity(-5)
-					//player_body.SetAngularVelocity(-5)
-					
-				} 
-				
-				if (right) {
-					player_body.ApplyTorque(90);
-					if(needPerson == true){
-						player_move_body.ApplyImpulse(new b2Vec2(-0.20,0.01),player_move_body.GetWorldCenter())
+					if(player_body.GetUserData().fuel==0){
+						dispatchEvent(new Event(HeroBike.FUELKHATAM));
+						nofuel = true;
 					}
-					//middliebody.ApplyImpulse(new b2Vec2(0.5,0.1),middliebody.GetWorldCenter())
-					//headbody.ApplyImpulse(new b2Vec2(1.2,0.1),headbody.GetWorldCenter())
-					//middliebody.ApplyTorque(-5)
+					rightWheelRevoluteJoint.SetMotorSpeed(speed);
+					rightWheelRevoluteJoint.SetMaxMotorTorque(maxTorque);
+					leftWheelRevoluteJoint.SetMotorSpeed(speed);
+					leftWheelRevoluteJoint.SetMaxMotorTorque(maxTorque);
 					
+					spring_1.SetMaxMotorForce(5+Math.abs(springIncrementor*Math.pow(spring_1.GetJointTranslation(),2)));
+					spring_1.SetMotorSpeed(-4*Math.pow(spring_1.GetJointTranslation(), 1));
 					
-				} 
-				
-				/*if (Math.abs(speed) > 0.98) {
-				speed *=  speed_decay;
-				} else {
-				speed = 0;
-				}*/
-				//trace("speed:",speed)
-				//	trace("Velocity().x=",player_body.GetLinearVelocity().x.toFixed(2))
-				if (up_key) {
-					speed -=  speedIncrementor;
-					maxTorque = maxTourqueIncrementor;
-					player_body.ApplyTorque(40);
-					//maxTorque = 10;
-					//trace(maxTorque,"torque")
-					//player_body.ApplyTorque(speedIncrementor);
-					if(player_body.GetLinearVelocity().x<40){
-						//trace("push front..")
-					//	player_body.ApplyImpulse(new b2Vec2(5,-0.3),player_body.GetWorldCenter());
-					}
-				} else if (down_key) {
-					speed +=  speedIncrementor;
-					maxTorque = maxTourqueIncrementor;
-					//player_body.ApplyTorque(-speedIncrementor);
-					if(player_body.GetLinearVelocity().x>-5){
-						//trace("push back..")
-						//player_body.ApplyImpulse(new b2Vec2(-5,0.3),player_body.GetWorldCenter());
+					spring_2.SetMaxMotorForce(5+Math.abs(springIncrementor*Math.pow(spring_2.GetJointTranslation(), 2)));
+					spring_2.SetMotorSpeed(-4*Math.pow(spring_2.GetJointTranslation(), 1));
+					
+					/*bikeBluePrint.wfshadow.x = bikeBluePrint.wf.x;
+					bikeBluePrint.wfshadow.y = bikeBluePrint.wf.y;
+					bikeBluePrint.wbshadow.x = bikeBluePrint.wb.x;
+					bikeBluePrint.wbshadow.y = bikeBluePrint.wb.y;*/
+					
+					if(player_body){
+						//if((player_body.GetAngle()>3 || player_body.GetAngle()<-3) && destroyed == false){
+						//trace("getr spring..",player_body.GetUserData().Springp1)
+						ppTemp.x = player_body.GetUserData().Springp1.x;
+						ppTemp.y = player_body.GetUserData().Springp1.y;
+						ppTemp = BalaUtils.localToLocal(player_body.GetUserData(),Game.me,ppTemp)
+						origX =  ppTemp.x;
+						origY = ppTemp.y;
+						
+						ppTemp2.x = player_body.GetUserData().Springp2.x;
+						ppTemp2.y = player_body.GetUserData().Springp2.y;
+						ppTemp2 = BalaUtils.localToLocal(player_body.GetUserData(),Game.me,ppTemp2)
+						origX2 =  ppTemp2.x;
+						origY2 = ppTemp2.y;
+						springMove();
 					}
 				}else{
-					maxTorque=0;
-					speed = 0;
-				}
-				
-				
-				rightWheelRevoluteJoint.SetMotorSpeed(speed);
-				rightWheelRevoluteJoint.SetMaxMotorTorque(maxTorque);
-				leftWheelRevoluteJoint.SetMotorSpeed(speed);
-				leftWheelRevoluteJoint.SetMaxMotorTorque(maxTorque);
-				
-				spring_1.SetMaxMotorForce(5+Math.abs(springIncrementor*Math.pow(spring_1.GetJointTranslation(),2)));
-				spring_1.SetMotorSpeed(-4*Math.pow(spring_1.GetJointTranslation(), 1));
-				
-				spring_2.SetMaxMotorForce(5+Math.abs(springIncrementor*Math.pow(spring_2.GetJointTranslation(), 2)));
-				spring_2.SetMotorSpeed(-4*Math.pow(spring_2.GetJointTranslation(), 1));
-				
-				/*bikeBluePrint.wfshadow.x = bikeBluePrint.wf.x;
-				bikeBluePrint.wfshadow.y = bikeBluePrint.wf.y;
-				bikeBluePrint.wbshadow.x = bikeBluePrint.wb.x;
-				bikeBluePrint.wbshadow.y = bikeBluePrint.wb.y;*/
-				
-				if(player_body){
-					//if((player_body.GetAngle()>3 || player_body.GetAngle()<-3) && destroyed == false){
-					//trace("getr spring..",player_body.GetUserData().Springp1)
-					ppTemp.x = player_body.GetUserData().Springp1.x;
-					ppTemp.y = player_body.GetUserData().Springp1.y;
-					ppTemp = BalaUtils.localToLocal(player_body.GetUserData(),Game.me,ppTemp)
-					origX =  ppTemp.x;
-					origY = ppTemp.y;
-					
-					ppTemp2.x = player_body.GetUserData().Springp2.x;
-					ppTemp2.y = player_body.GetUserData().Springp2.y;
-					ppTemp2 = BalaUtils.localToLocal(player_body.GetUserData(),Game.me,ppTemp2)
-					origX2 =  ppTemp2.x;
-					origY2 = ppTemp2.y;
-					springMove();
+					bikeDestroy(false,false);
 				}
 			}else{
-				bikeDestroy(false,false);
+				trace("don;t move..")
 			}
 		}
 		

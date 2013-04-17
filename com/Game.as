@@ -684,6 +684,15 @@
 				//BGG_FrontView.x -= heroBike.player_body.GetLinearVelocity().x * .1;
 				//BGG_FrontView.y -= heroBike.player_body.GetLinearVelocity().y * .1;
 				BGG_FrontView.updatePos(vvx * 1.5,vvy * 0);
+				if(vvx>0){
+					MainGame.me.mpanel.dashboard.line1.rotation = vvx * 10;
+					
+				}
+				
+				MainGame.me.mpanel.dashboard.line2.rotation = heroUdata.fuel/2;
+				if(MainGame.me.mpanel.dashboard.line2.rotation<20){
+					MainGame.me.mpanel.dashboard.fuelalert.gotoAndStop(2);
+				}
 			}
 			//BGG_FrontView.x = x;
 			//BGG_FrontView.y = pos_y;
