@@ -42,7 +42,7 @@
 			trace("BalaBaseGame initialized1..")
 			super(ww);
 			
-			debugDraw = sp;
+			//debugDraw = sp;
 			addChild(sp);
 			
 			if(_dummyXML){

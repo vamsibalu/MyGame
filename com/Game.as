@@ -702,9 +702,11 @@
 				if(testingnext){
 					MainGame.me.addChild(testingnext)
 				}
+				//MainGame.me.addChild(BGG_FrontView);
 				MainGame.me.addChild(MainGame.me.footerM)
 				tempShadowDepthSetup = true;
 				MainGame.me.addChild(MainGame.me.mpanel);
+				
 			}
 		}
 		

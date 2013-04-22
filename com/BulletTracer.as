@@ -69,6 +69,9 @@ package com
 				traceClip.rotation = 0;
 				traceClip.width = Math.sqrt((origX - bb.GetUserData().x) * (origX - bb.GetUserData().x) + (origY - bb.GetUserData().y) * (origY - bb.GetUserData().y));
 				traceClip.rotation = 180 + Math.atan2(origY - bb.GetUserData().y,origX - bb.GetUserData().x) * (180 / Math.PI);
+				if(traceClip.width >700){
+					bb.GetUserData().canTrace = false;
+				}
 			}else{
 				compltForRemove(traceClip);
 				compltForRemove(this);

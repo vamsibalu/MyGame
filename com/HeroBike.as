@@ -115,5 +115,13 @@ package com
 			
 			super.updateBike();
 		}
+		
+		//chary needs work on it....
+		
+		/*public function updateWithGarageData(_vo:Car):void{
+			if(_vo.enging == Carvo.en1){
+				changeBikeSpeed(1
+			}
+		}*/
 	}
 }
