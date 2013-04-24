@@ -143,8 +143,8 @@
 			springClip.gotoAndStop(1);
 			springClip2 = new Springs();
 			springClip2.gotoAndStop(2);
-			/*bikeBluePrint.wfshadow.visible = false;
-			bikeBluePrint.wbshadow.vsibile = false;*/
+			bikeBluePrint.wfshadow.visible = true;
+			bikeBluePrint.wbshadow.vsibile = true;
 			springMcs.push(springClip,springClip2);
 			trace("new bike Createdd..")
 		}
@@ -231,8 +231,8 @@
 			bodyDef.userData.width = (bikeBluePrint.wf.width)
 			//bodyDef.userData.width = bikeBluePrint.wf.width
 			bodyDef.userData.height = (bikeBluePrint.wf.width)
+			Game.me.addChild(bikeBluePrint.wfshadow);//its wheel shadow
 			Game.me.addChild(bodyDef.userData);
-			//Game.me.addChild(bikeBluePrint.wfshadow);//its wheel shadow
 			//Physics.frent_wheel_skin=bodyDef.userData
 			//circleDef = new b2CircleShape(13 / r2p);
 			trace(13 / r2p,"jhjjhjkk", bikeBluePrint.wf.width/worldScale)
@@ -254,8 +254,8 @@
 			bodyDef.userData= bikeBluePrint.wb;//new Wheel_MC();
 			bodyDef.userData.width = bikeBluePrint.wb.width
 			bodyDef.userData.height = bikeBluePrint.wb.width
+			Game.me.addChild(bikeBluePrint.wbshadow);//its wheel shadow
 			Game.me.addChild(bodyDef.userData);
-			//Game.me.addChild(bikeBluePrint.wbshadow);//its wheel shadow
 			back_wheel_skin=bodyDef.userData
 			//circleDef = new b2CircleShape(13 / r2p);
 			circleDef = new b2CircleShape( (bikeBluePrint.wb.width/2)/worldScale);
@@ -673,11 +673,28 @@
 					spring_2.SetMaxMotorForce(5+Math.abs(springIncrementor*Math.pow(spring_2.GetJointTranslation(), 2)));
 					spring_2.SetMotorSpeed(-4*Math.pow(spring_2.GetJointTranslation(), 1));
 					
-					/*bikeBluePrint.wfshadow.x = bikeBluePrint.wf.x;
+					bikeBluePrint.wfshadow.x = bikeBluePrint.wf.x;
 					bikeBluePrint.wfshadow.y = bikeBluePrint.wf.y;
 					bikeBluePrint.wbshadow.x = bikeBluePrint.wb.x;
-					bikeBluePrint.wbshadow.y = bikeBluePrint.wb.y;*/
+					bikeBluePrint.wbshadow.y = bikeBluePrint.wb.y;
 					
+					//working fine but performence issue..
+					/*var tempPP:Point = BalaUtils.localToLocal(bikeBluePrint.wbshadow,MainGame.me,new Point(bikeBluePrint.wbshadow.pp.x,bikeBluePrint.wbshadow.pp.y));
+					if(MainGame.me.BGG.hitTestPoint(tempPP.x,tempPP.y,false) == true){
+						trace("toucheing..")
+						bikeBluePrint.wbshadow.shadow.visible = true;
+					}else{
+						trace("woowww....")
+						bikeBluePrint.wbshadow.shadow.visible = false;
+					}
+					var tempPP2:Point = BalaUtils.localToLocal(bikeBluePrint.wfshadow,MainGame.me,new Point(bikeBluePrint.wfshadow.pp.x,bikeBluePrint.wfshadow.pp.y));
+					if(MainGame.me.BGG.hitTestPoint(tempPP2.x,tempPP2.y,false) == true){
+						trace("toucheing..")
+						bikeBluePrint.wfshadow.shadow.visible = true;
+					}else{
+						trace("woowww....")
+						bikeBluePrint.wfshadow.shadow.visible = false;
+					}*/
 					if(player_body){
 						//if((player_body.GetAngle()>3 || player_body.GetAngle()<-3) && destroyed == false){
 						//trace("getr spring..",player_body.GetUserData().Springp1)
@@ -693,6 +710,14 @@
 						origX2 =  ppTemp2.x;
 						origY2 = ppTemp2.y;
 						springMove();
+						trace("yyyy=",player_body.GetLinearVelocity().y.toFixed(2))
+						if(player_body.GetLinearVelocity().y>1 || player_body.GetLinearVelocity().y<-1){
+							bikeBluePrint.wfshadow.shadow.visible = false;
+							bikeBluePrint.wbshadow.shadow.visible = false;
+						}else{
+							bikeBluePrint.wfshadow.shadow.visible = true;
+							bikeBluePrint.wbshadow.shadow.visible = true;
+						}
 					}
 				}else{
 					bikeDestroy(false,false);

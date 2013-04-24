@@ -1,6 +1,7 @@
 ﻿package
 {
 	import bala.BodyContacts;
+	import bala.ShapeWorld;
 	import bala.SoundM;
 	import bala.Starter;
 	import bala.Utils.BalaUtils;
@@ -17,7 +18,6 @@
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.ui.Keyboard;
-	import bala.ShapeWorld;
 	
 	public class MainGame extends Starter
 	{
@@ -38,6 +38,7 @@
 		public var allPages:Vector.<MovieClip> = new Vector.<MovieClip>();
 		public var footerM:FooterMC;
 		private var sndManager:SoundM;
+		public static var hideIt:Boolean = true;
 		public function MainGame()
 		{
 			super(this);

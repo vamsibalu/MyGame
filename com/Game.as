@@ -418,7 +418,7 @@
 		
 		public var currentGift:MovieClip;
 		public var currentGift2:MovieClip;
-		public function set giftX(bbb:b2Body):void{
+		/*public function set giftX(bbb:b2Body):void{
 			SoundM.me.playSound(SoundM.GLASS);
 			bbb.GetUserData().anim.gotoAndPlay(2);
 			GameStatics.currentLevelScore += 100;
@@ -426,7 +426,7 @@
 			//gtime.start();
 			tempBodiesTobeRemoved.push(bbb);
 			MainGame.me.footerM.scoreTxt.text = String(GameStatics.currentLevelScore);
-		}
+		}*/
 		
 		/*private function deletGift(e:TimerEvent):void{
 		tempBodiesTobeRemoved.push(currentGift);
