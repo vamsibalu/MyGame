@@ -84,20 +84,20 @@
 		}
 		
 		//public var wallT:b2Body;
-		//public var wallR:b2Body;
-		//public var wallL:b2Body;
+		public var wallR:b2Body;
+		public var wallL:b2Body;
 		//for reloading levels and walls bala
 		public function setUpWalls()
 		{
-			//wallL = createBox("border1",-3, 500/2, 5, 500); //left
+			wallL = createBox("border1",-100, 500/2, 5, 500); //left
 			
-			//wallR = createBox("border2",643, 500/2, 5,  500); //right
+			wallR = createBox("border2",643, 500/2, 5,500); //right
 			
 			
 			//wallT =	createBox("border3",640/2, -3, 700, 5);
 			
 			//bottom
-			createBox("border4",640/2, 384, 700, 5);
+			createBox("border4",700/2, 384, 900, 5);
 		}
 		
 		final protected function createBox(bodyID:String,x:int,y:int,ww:int,hh:int,_angle:Number=0):b2Body
