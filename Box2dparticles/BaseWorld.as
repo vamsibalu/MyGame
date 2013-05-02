@@ -180,6 +180,35 @@
 			
 		}
 		
+		//bala create Poly...
+		var enterPointsVec:Vector.<b2Vec2> = new Vector.<b2Vec2>();
+		protected var woodTexture:BitmapData, rockTexture:BitmapData;
+		protected function createPoly(bodyID:String,vec:Vector.<b2Vec2>,_name:String,polyTexture:BitmapData) : b2Body
+		{
+			this.bodyDef = new b2BodyDef();
+			this.bodyDef.type = b2Body.b2_staticBody;
+			//this.bodyDef.userData = new MovieClip();
+			if(polyTexture){
+				//bodyDef.userData = new userData(0, vec, polyTexture); //for slicing..
+				bodyDef.userData = new MovieClip();
+			}else{
+				bodyDef.userData = new MovieClip();//new userData(0, vec, new BitmapData(200,200)); //for slicing..
+			}
+			bodyDef.userData.bodyID = bodyID;
+			addChild(bodyDef.userData);
+			this.bodyDef.userData.name = _name;
+			//this.bodyDef.position.Set(0/30, 0/30);//100
+			this.body = this.world.CreateBody(this.bodyDef);
+			this.fixtureDef = new b2FixtureDef();
+			this.fixtureDef.density = 5;
+			this.fixtureDef.friction = 0.2;
+			this.fixtureDef.restitution = 0;
+			this.conv.Separate(this.body, this.fixtureDef, vec);
+			trace("created you poly body..")
+			body.SetBullet(true);
+			return body;
+		}
+		
 		
 		private function fallower(obj:b2Body):void{
 			if(obj.GetUserData().fallowme && obj.GetUserData().fallowme is b2Body){
@@ -188,7 +217,7 @@
 			}
 		}
 		
-		
+		protected var conv:b2Separator = new b2Separator();
 		public var allGifts:Vector.<b2Body> = new Vector.<b2Body>();
 		public function set debugDraw(sp:Sprite)
 		{
