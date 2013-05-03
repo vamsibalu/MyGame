@@ -2,10 +2,13 @@
 {
 	import Box2D.Collision.Shapes.b2CircleShape;
 	import Box2D.Collision.Shapes.b2PolygonShape;
+	import Box2D.Collision.Shapes.b2Shape;
+	import Box2D.Collision.b2AABB;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Joints.b2DistanceJointDef;
 	import Box2D.Dynamics.Joints.b2Joint;
 	import Box2D.Dynamics.Joints.b2PrismaticJointDef;
+	import Box2D.Dynamics.Joints.b2RevoluteJoint;
 	import Box2D.Dynamics.Joints.b2RevoluteJointDef;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2BodyDef;
@@ -49,6 +52,7 @@
 		public var fixtureDef:b2FixtureDef;
 		public var debugging:Boolean = false;
 		
+		var sp:Sprite = new Sprite();
 		public static var bodyID:int = 1;
 		
 		public function BaseWorldSingle()
@@ -57,7 +61,11 @@
 			trace("BaseWorld created.")
 			super();
 			bg();
+			if(stage == null){
 			addEventListener(Event.ADDED_TO_STAGE,addedToStage);
+			}else{
+				addedToStage();
+			}
 			trace("BaseWorld created.")
 		}
 		
@@ -73,16 +81,25 @@
 			//world.SetContactListener(new BodyContacts())
 		}
 		
-		private function addedToStage(e:Event):void{
-			setUpWalls();
+		private function addedToStage(e:Event=null):void{
+			//setUpWalls();
 			//addChild(objectsCont);
 			//for slicing..
 			//stage.addEventListener(MouseEvent.MOUSE_DOWN, mDown);
 		levelDataXML = XML(new Levels());
 		
 		parseXMLData(levelDataXML,allLevels);
+		this.addEventListener(MouseEvent.CLICK,clickedbox);
+		debugDraw = sp;
+		trace("xmll addedToStage.")
 		}
 		
+		private function clickedbox(e:MouseEvent):void{
+			trace("xmll clickedbox.",allLevels[1])
+			loadMyLevelForPreview(allLevels[1]);
+		}
+		
+		public var myBoxRoatatble:b2Body;
 		public function loadMyLevelForPreview(_levelAry:Array):void{
 			//trace("loadMyLevelForPreview objects no.=",_levelAry)
 			removeEverything();
@@ -105,9 +122,40 @@
 						ary = _levelAry[obj];
 						//trace("Poly Data to Show=",ary);
 						//trace("Poly Data to Show parsed=",parseXY(ary));
-						createPoly(ary[1],parseXY(ary),"notmoving",null);
+						myBoxRoatatble = createPoly(ary[1],parseXY(ary),"notmoving",null);
 						break;
 				}
+			}
+			
+			//
+			//trace("creating joints..")
+			//for joints..
+			for(var jjj:Object in _levelAry){
+				switch(_levelAry[jjj][0])
+				{
+					case "JNT":
+						ary = _levelAry[jjj];
+						var p11:Point = new Point(ary[2].split("_")[0],ary[2].split("_")[1]);
+						var p22:Point = new Point(ary[3].split("_")[0],ary[3].split("_")[1]);
+						createJoint(ary[1].split("_")[1],p11,p22,ary[4],ary[5],ary[6],ary[7]);
+						break;
+				}
+			}
+			
+			startRender();
+			myBoxRoatatble.GetUserData().x=200;
+			myBoxRoatatble.GetUserData().y=278;
+			addChild(sp);
+		}
+		//var nmm:Number = 0;
+		public function rotateBox(nm:Number):void{
+			if(myBoxRoatatble){
+			//myBoxRoatatble.ApplyTorque(nm);
+				//nmm += 0.01;
+				boxJoint.SetMaxMotorTorque(nm*10);
+				boxJoint.SetMotorSpeed(nm);
+			}else{
+				trace("not rotatble..")
 			}
 		}
 		
@@ -182,18 +230,18 @@
 		//for reloading levels and walls bala
 		public function setUpWalls()
 		{
-			wallL = createBox("border1",-100, 500/2, 5, 500); //left
+			//wallL = createBox("border1",-100, 500/2, 5, 500); //left
 			
-			wallR = createBox("border2",643, 500/2, 5,500); //right
+			//wallR = createBox("border2",643, 500/2, 5,500); //right
 			
 			
 			//wallT =	createBox("border3",640/2, -3, 700, 5);
 			
 			//bottom
-			createBox("border4",700/2, 384, 900, 5);
+			createBox("border4",500/2, 884, 900, 5);
 		}
 		
-		final protected function createBox(bodyID:String,x:int,y:int,ww:int,hh:int,_angle:Number=0):b2Body
+		final protected function createBox(bodyID:String,x:int,y:int,ww:int,hh:int,_angle:Number=0,typee:int = 1):b2Body
 		{
 			
 			var bodyDef:b2BodyDef = new b2BodyDef();
@@ -252,11 +300,20 @@
 					var mcc:MovieClip = MovieClip(Body.GetUserData());
 					
 					// extract the position and set the sprite to it
+					if(mcc is BOXMC){
+						//mcc.x=200;
+						//mcc.y=350;
+						
+						//mcc.x=Body.GetPosition().x*ptm_ratio;
+						//mcc.y=Body.GetPosition().y*ptm_ratio;
+					}else{
 					mcc.x=Body.GetPosition().x*ptm_ratio;
 					mcc.y=Body.GetPosition().y*ptm_ratio;
+					}
 					
+					mcc.rotation = Body.GetAngle() * RadtoDeg ;
 					// set the rotation of the sprite
-					if(mcc.name == "wf" || mcc.name == "wb"){
+					/*if(mcc.name == "wf" || mcc.name == "wb"){
 						mcc.rotation += Body.GetAngularVelocity(); //Body.GetAngle() * RadtoDeg;
 						//mcc.rotation = Body.GetAngle() * RadtoDeg ;
 						//mcc.rotation = newRotation % 2*Math.PI;
@@ -266,11 +323,16 @@
 						}
 					}else{
 						mcc.rotation = Body.GetAngle() * RadtoDeg ;
-					}
+					}*/
 					//fallower(Body);
 				}
 			}
 			
+			rotateBox(randomWithinRange(0,-20));
+		}
+		
+		public static function randomWithinRange(min:Number, max:Number):Number {
+			return min + (Math.random() * (max - min));
 		}
 		
 		//bala create Poly...
@@ -279,13 +341,13 @@
 		protected function createPoly(bodyID:String,vec:Vector.<b2Vec2>,_name:String,polyTexture:BitmapData) : b2Body
 		{
 			this.bodyDef = new b2BodyDef();
-			this.bodyDef.type = b2Body.b2_staticBody;
+			this.bodyDef.type = b2Body.b2_dynamicBody;
 			//this.bodyDef.userData = new MovieClip();
 			if(polyTexture){
 				//bodyDef.userData = new userData(0, vec, polyTexture); //for slicing..
-				bodyDef.userData = new MovieClip();
+				bodyDef.userData = new BOXMC();
 			}else{
-				bodyDef.userData = new MovieClip();//new userData(0, vec, new BitmapData(200,200)); //for slicing..
+				bodyDef.userData = new BOXMC();//new userData(0, vec, new BitmapData(200,200)); //for slicing..
 			}
 			bodyDef.userData.bodyID = bodyID;
 			addChild(bodyDef.userData);
@@ -370,6 +432,92 @@
 				}
 			}
 			return vvvc;
+		}
+		
+		public static function getB2vec(xx:Number,yy:Number):b2Vec2{
+			var b2v:b2Vec2 = new b2Vec2(xx/ptm_ratio,yy/ptm_ratio);
+			return b2v;
+		}
+		
+		public static function parseXY(ary:Array):Vector.<b2Vec2>{
+			var vvvc:Vector.<b2Vec2> = new Vector.<b2Vec2>();
+			for(var i:int =0; i<ary.length; i++){
+				var k:Array = ary[i].split("+");
+				if(k && k.length>1){
+					vvvc.push(getB2vec(k[0],k[1]));
+				}
+			}
+			return vvvc;
+		}
+		
+		//test for joints..
+		var boxJoint:b2RevoluteJoint;
+		private function createJoint(jointID:int,p1:Point,p2:Point,motorSpeed:Number,maxMotorTorque:Number,lowerAngle:Number,upperAngle:Number):void{
+			trace("P1=",p1,"p2=",p2)
+			p1.x = p1.x/ptm_ratio;
+			p1.y = p1.y/ptm_ratio;
+			p2.x = p2.x/ptm_ratio;
+			p2.y = p2.y/ptm_ratio;
+			var b1:b2Body = GetBodyAtMouse(p1.x,p1.y,true);//findBodyAtPoint(p1.x,p1.y);//getBodyByID(b1id);//
+			var b2:b2Body = GetBodyAtMouse(p2.x,p2.y,true);
+			//trace("preview Joint points=",p1,p2);
+			//trace("preview Joint id=",jointID,b1,b2);
+			if(b1==null || b2==null){
+				if(b1){
+					boxJoint = revoluteJointMaker(b1,world.GetGroundBody(),new b2Vec2(p1.x,p1.y),motorSpeed,maxMotorTorque,lowerAngle,upperAngle);
+				}else if(b2){
+					boxJoint = revoluteJointMaker(b2,world.GetGroundBody(),new b2Vec2(p2.x,p2.y),motorSpeed,maxMotorTorque,lowerAngle,upperAngle);
+				}
+			}else{
+				boxJoint = revoluteJointMaker(b1,b2,new b2Vec2(p1.x,p1.y),motorSpeed,maxMotorTorque,lowerAngle,upperAngle);
+			}
+		}
+		
+		private var _mousePVec:b2Vec2 = new b2Vec2();
+		private function GetBodyAtMouse(_mouseXWorldPhys:Number,_mouseYWorldPhys:Number,includeStatic:Boolean = false):b2Body
+		{
+			_mousePVec.Set(_mouseXWorldPhys, _mouseYWorldPhys);
+			var aabb:b2AABB = new b2AABB();
+			aabb.lowerBound.Set(_mouseXWorldPhys - 0.001, _mouseYWorldPhys - 0.001);
+			aabb.upperBound.Set(_mouseXWorldPhys + 0.001, _mouseYWorldPhys + 0.001);
+			var body:b2Body = null;
+			var fixture:b2Fixture;
+			
+			// Query the world for overlapping shapes.
+			function GetBodyCallback(fixture:b2Fixture):Boolean
+			{
+				var shape:b2Shape = fixture.GetShape();
+				if (fixture.GetBody().GetType() != b2Body.b2_staticBody || includeStatic)
+				{
+					var inside:Boolean = shape.TestPoint(fixture.GetBody().GetTransform(), _mousePVec);
+					if (inside)
+					{
+						body = fixture.GetBody();
+						return false;
+					}
+				}
+				return true;
+			}
+			world.QueryAABB(GetBodyCallback, aabb);
+			return body;
+		}
+		// this is the core of the script: despite the official docs which suggest to use Initialize,
+		// use this method instead
+		public function revoluteJointMaker(bodyA:b2Body,bodyB:b2Body,_anchor:b2Vec2,motorSpeed:Number,maxMotorTorque:Number,lowerAngle:Number,upperAngle:Number):b2RevoluteJoint {
+			var revoluteJointDef:b2RevoluteJointDef=new b2RevoluteJointDef();
+			/*revoluteJointDef.localAnchorA.Set(anchorA.x,anchorA.y);
+			revoluteJointDef.localAnchorB.Set(anchorB.x,anchorB.y);
+			revoluteJointDef.bodyA=bodyA;
+			revoluteJointDef.bodyB=bodyB;*/
+			revoluteJointDef.Initialize(bodyA,bodyB,_anchor);
+			revoluteJointDef.enableLimit = (lowerAngle>0 && upperAngle>0);
+			revoluteJointDef.lowerAngle = lowerAngle;
+			revoluteJointDef.upperAngle = upperAngle;
+			revoluteJointDef.enableMotor = motorSpeed>0;
+			revoluteJointDef.motorSpeed = motorSpeed;
+			revoluteJointDef.maxMotorTorque = maxMotorTorque;
+			//revoluteJointDef.collideConnected = false;
+			return world.CreateJoint(revoluteJointDef) as b2RevoluteJoint;
 		}
 	}
 }
