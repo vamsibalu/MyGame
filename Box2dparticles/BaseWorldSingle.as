@@ -90,19 +90,21 @@
 		
 		parseXMLData(levelDataXML,allLevels);
 		this.addEventListener(MouseEvent.CLICK,clickedbox);
-		debugDraw = sp;
+		//debugDraw = sp;
 		trace("xmll addedToStage.")
 		}
 		
 		private function clickedbox(e:MouseEvent):void{
 			trace("xmll clickedbox.",allLevels[1])
+			if(myBoxRoatatble == null){
 			loadMyLevelForPreview(allLevels[1]);
+			}
 		}
 		
 		public var myBoxRoatatble:b2Body;
 		public function loadMyLevelForPreview(_levelAry:Array):void{
 			//trace("loadMyLevelForPreview objects no.=",_levelAry)
-			removeEverything();
+			//removeEverything();
 			setUpWalls();
 			for(var obj:Object in _levelAry){
 				var ary:Array;
@@ -147,13 +149,15 @@
 			myBoxRoatatble.GetUserData().y=278;
 			addChild(sp);
 		}
-		//var nmm:Number = 0;
+		var nmm:Number = 0;
 		public function rotateBox(nm:Number):void{
+			nmm += 0.01;
 			if(myBoxRoatatble){
 			//myBoxRoatatble.ApplyTorque(nm);
-				//nmm += 0.01;
-				boxJoint.SetMaxMotorTorque(nm*10);
-				boxJoint.SetMotorSpeed(nm);
+			//myBoxRoatatble.SetAngle(nmm)
+				
+				//boxJoint.SetMaxMotorTorque(nm*10);
+				//boxJoint.SetMotorSpeed(nm);
 			}else{
 				trace("not rotatble..")
 			}
@@ -341,7 +345,7 @@
 		protected function createPoly(bodyID:String,vec:Vector.<b2Vec2>,_name:String,polyTexture:BitmapData) : b2Body
 		{
 			this.bodyDef = new b2BodyDef();
-			this.bodyDef.type = b2Body.b2_dynamicBody;
+			this.bodyDef.type = b2Body.b2_staticBody;
 			//this.bodyDef.userData = new MovieClip();
 			if(polyTexture){
 				//bodyDef.userData = new userData(0, vec, polyTexture); //for slicing..
