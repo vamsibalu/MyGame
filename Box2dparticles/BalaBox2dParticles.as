@@ -36,7 +36,7 @@
 			bodyDef.userData.name="ball";//override
 			fixtureDef.friction=1;
 			fixtureDef.restitution=0.1;
-			fixtureDef.filter.groupIndex=-4;
+			//fixtureDef.filter.groupIndex=-4;
 			bodyDef.userData.width=rr;
 			bodyDef.userData.height=rr;
 			bodyDef.userData.x=xx;
@@ -56,10 +56,8 @@
 				bodyDef.userData.busy=false;
 				var bb:b2Body=createBody();
 				bb.SetActive(false);
-
 			}
 		}
-
 
 		private function createBody():b2Body {
 			body=world.CreateBody(bodyDef);
@@ -71,9 +69,9 @@
 
 		var tempBB:b2Body;
 		var tempVec:b2Vec2 = new b2Vec2();
-		public function addParticle(xx:Number,yy:Number,ang:Number,ang2:Number,pow:Number = 0.001):void {
+		public function addParticle(xx:Number,yy:Number,ang:Number,ang2:Number,pow:Number = 0.001,canDie:Boolean = true):void {
 			for each (var bb:b2Body in busyItems) {
-				if (bb.IsAwake()==false || bb.GetUserData().currentFrame == 1) {
+				if (bb.IsAwake()==false||bb.GetUserData().currentFrame==1) {
 					tempBB=busyItems.splice(busyItems.indexOf(bb),1)[0];
 					bodies.push(tempBB);
 					tempVec.x=0;
@@ -89,7 +87,12 @@
 			if (tempBB) {
 				tempVec.x=xx;
 				tempVec.y=yy;
-				tempBB.GetUserData().play();
+				if (canDie == true) {
+					tempBB.GetUserData().play();
+				} else {
+					trace("all parti creating..")
+					tempBB.GetUserData().gotoAndStop(1);
+				}
 				tempBB.SetPosition(tempVec);
 				tempBB.SetActive(true);
 				tempBB.SetAwake(true);
@@ -97,12 +100,12 @@
 				//tempBB.ApplyTorque(Math.random());
 				//tempBB.ApplyImpulse(new b2Vec2(Math.random()/2,Math.random()/2),tempBB.GetWorldCenter());
 				//watr.ApplyImpulse(new b2Vec2(Math.cos(fireEngine1_angle)*pow/90, Math.sin(fireEngine1_angle)*pow/90),watr.GetWorldCenter());
-				var cc:Number = randomWithinRange(ang,ang2);
-				tempBB.ApplyImpulse(new b2Vec2(Math.cos(cc),Math.sin(cc)),tempBB.GetWorldCenter());
+				var cc:Number=randomWithinRange(ang,ang2);
+				//tempBB.ApplyImpulse(new b2Vec2(Math.cos(cc),Math.sin(cc)),tempBB.GetWorldCenter());
 			}
 
 		}
-		
+
 		public function randomWithinRange(min:Number, max:Number):Number {
 			return min + (Math.random() * (max - min));
 		}
