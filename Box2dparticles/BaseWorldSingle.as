@@ -78,7 +78,7 @@
 			//world.SetContactListener(new BodyContacts())
 		}
 
-		private function addedToStage(e:Event=null):void {
+		public function addedToStage(e:Event=null):void {
 			//setUpWalls();
 			//addChild(objectsCont);
 			//for slicing..
@@ -86,27 +86,11 @@
 			levelDataXML = XML(new Levels());
 
 			parseXMLData(levelDataXML,allLevels);
-			balaEffectEngn.createCircle("ab",100,100,5,320);
-			this.addEventListener(MouseEvent.CLICK,clickedbox);
-			//debugDraw = sp;
-			trace("xmll addedToStage.");
 		}
 
-		private function clickedbox(e:MouseEvent):void {
-			//trace("xmll clickedbox.",allLevels[1])
-			if (myBoxRoatatble == null) {
-				loadMyLevelForPreview(allLevels[1]);
-				//add water..
-				for (var i:int = 0; i<300; i++) {
-					//trace("for loop parti");
-					balaEffectEngn.addParticle(200/30,200/30,45,0,0.001,false);
-				}
-			}
-		}
-
-		public var myBoxRoatatble:b2Body;
+		public var mytable:b2Body;
 		
-		var balaEffectEngn:BalaBox2dParticles = new BalaBox2dParticles(world,this);
+		
 		public function loadMyLevelForPreview(_levelAry:Array):void {
 			//trace("loadMyLevelForPreview objects no.=",_levelAry)
 			//removeEverything();
@@ -128,7 +112,7 @@
 						ary=_levelAry[obj];
 						//trace("Poly Data to Show=",ary);
 						//trace("Poly Data to Show parsed=",parseXY(ary));
-						myBoxRoatatble=createPoly(ary[1],parseXY(ary),"notmoving",null);
+						mytable=createPoly(ary[1],parseXY(ary),"notmoving",null);
 						break;
 				}
 			}
@@ -148,17 +132,17 @@
 			}
 
 			startRender();
-			myBoxRoatatble.GetUserData().x=200;
-			myBoxRoatatble.GetUserData().y=278;
+			mytable.GetUserData().x=200;
+			mytable.GetUserData().y=278;
 			addChild(sp);
 		}
 		var nmm:Number=0;
 		public function rotateBox(nm:Number):void {
 			nmm+=0.01;
-			if (myBoxRoatatble) {
-				//myBoxRoatatble.ApplyTorque(nm);
-				//myBoxRoatatble.SetAngle(nmm)
-				//trace(myBoxRoatatble.IsActive());
+			if (mytable) {
+				//mytable.ApplyTorque(nm);
+				//mytable.SetAngle(nmm)
+				//trace(mytable.IsActive());
 				//boxJoint.SetMaxMotorTorque(nm*10);
 				//boxJoint.SetMotorSpeed(nm);
 			} else {
@@ -341,6 +325,7 @@
 	//bala create Poly...
 	var enterPointsVec:Vector.<b2Vec2> = new Vector.<b2Vec2>();
 	protected var woodTexture:BitmapData,rockTexture:BitmapData;
+	
 	protected function createPoly(bodyID:String,vec:Vector.<b2Vec2>,_name:String,polyTexture:BitmapData):b2Body {
 		this.bodyDef = new b2BodyDef();
 		this.bodyDef.type=b2Body.b2_dynamicBody;
@@ -361,7 +346,7 @@
 		this.fixtureDef.friction=0.2;
 		this.fixtureDef.restitution=0;
 		this.conv.Separate(this.body, this.fixtureDef, vec);
-		trace("created you poly body..");
+		trace("created you poly body..",bodyDef.userData.bodyID);
 		body.SetBullet(true);
 		return body;
 	}
@@ -380,7 +365,7 @@
 		var db:b2DebugDraw=new b2DebugDraw();
 		db.SetSprite(sp);
 		db.SetDrawScale(ptm_ratio);
-		db.SetFillAlpha(0.2);
+		db.SetFillAlpha(0.7);
 		db.SetLineThickness(2);
 		db.SetFlags(b2DebugDraw.e_jointBit | b2DebugDraw.e_shapeBit);// | b2DebugDraw.e_centerOfMassBit//b2DebugDraw.e_shapeBit//t|b2DebugDraw.e_shapeBit
 		world.SetDebugDraw(db);
